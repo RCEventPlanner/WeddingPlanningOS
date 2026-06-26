@@ -3,6 +3,7 @@ import { RSVPFilter } from "../../components/RSVPFilter";
 import { RSVPForm } from "../../components/RSVPForm";
 import { RSVPOverview } from "../../components/RSVPOverview";
 import { RSVPSearchBar } from "../../components/RSVPSearchBar";
+import { RSVPStatistics } from "../../components/RSVPStatistics";
 import { RSVPTable } from "../../components/RSVPTable";
 
 export default function RSVPPage() {
@@ -34,6 +35,7 @@ export default function RSVPPage() {
 
       <RSVPForm />
       <RSVPDetailCard />
+      <RSVPStatistics />
     </div>
   );
 }
