@@ -1,4 +1,5 @@
 import { BudgetFilter } from "../../components/BudgetFilter";
+import { BudgetForm } from "../../components/BudgetForm";
 import { BudgetOverview } from "../../components/BudgetOverview";
 import { BudgetSearchBar } from "../../components/BudgetSearchBar";
 import { BudgetTable } from "../../components/BudgetTable";
@@ -29,6 +30,8 @@ export default function BudgetPage() {
       </div>
 
       <BudgetTable />
+
+      <BudgetForm />
     </div>
   );
 }
