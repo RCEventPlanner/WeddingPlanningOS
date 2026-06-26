@@ -50,6 +50,9 @@ export function RSVPForm({
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Guest Full Name
               </label>
+              <p className="mb-2 text-xs text-slate-500">
+                Used for registration and official records
+              </p>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
                 defaultValue={guestName}
@@ -60,6 +63,9 @@ export function RSVPForm({
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Preferred Name
               </label>
+              <p className="mb-2 text-xs text-slate-500">
+                How should the couple address you?
+              </p>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
                 defaultValue={preferredName}
@@ -70,6 +76,9 @@ export function RSVPForm({
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Phone Number
               </label>
+              <p className="mb-2 text-xs text-slate-500">
+                Used for registration and contact
+              </p>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
                 defaultValue={phoneNumber}
@@ -80,6 +89,9 @@ export function RSVPForm({
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Email Address
               </label>
+              <p className="mb-2 text-xs text-slate-500">
+                Used for RSVP confirmation
+              </p>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
                 defaultValue={emailAddress}
@@ -90,6 +102,9 @@ export function RSVPForm({
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Guest From
               </label>
+              <p className="mb-2 text-xs text-slate-500">
+                Please select which side you are invited from
+              </p>
               <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue={guestFrom}>
                 <option>Groom's Side</option>
                 <option>Bride's Side</option>
@@ -101,6 +116,9 @@ export function RSVPForm({
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Guest Group
               </label>
+              <p className="mb-2 text-xs text-slate-500">
+                Please select your relationship group
+              </p>
               <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue={guestGroup}>
                 <option>Family</option>
                 <option>Friends</option>
@@ -119,6 +137,9 @@ export function RSVPForm({
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Number of Adults
               </label>
+              <p className="mb-2 text-xs text-slate-500">
+                Adults attending the wedding
+              </p>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
                 defaultValue={adults}
@@ -129,6 +150,9 @@ export function RSVPForm({
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Number of Children
               </label>
+              <p className="mb-2 text-xs text-slate-500">
+                Children requiring their own seat
+              </p>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
                 defaultValue={children}
@@ -139,6 +163,9 @@ export function RSVPForm({
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 RSVP Status
               </label>
+              <p className="mb-2 text-xs text-slate-500">
+                Please confirm your attendance status
+              </p>
               <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue={rsvpStatus}>
                 <option>Pending</option>
                 <option>Confirmed</option>
@@ -150,6 +177,9 @@ export function RSVPForm({
 
         <div>
           <h3 className="text-lg font-semibold text-slate-900">Meal Requirements</h3>
+          <p className="mt-2 text-sm text-slate-600">
+            Please make sure total meals match the number of attending guests.
+          </p>
           <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-4 rounded-xl bg-white px-3 py-3 shadow-sm">
@@ -195,6 +225,9 @@ export function RSVPForm({
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Special Requests
               </label>
+              <p className="mb-2 text-xs text-slate-500">
+                Any special arrangements we should know?
+              </p>
               <textarea
                 className="min-h-24 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
                 defaultValue={specialRequests}
@@ -205,6 +238,9 @@ export function RSVPForm({
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Notes
               </label>
+              <p className="mb-2 text-xs text-slate-500">
+                Additional notes for the couple
+              </p>
               <textarea
                 className="min-h-24 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
                 defaultValue={notes}
