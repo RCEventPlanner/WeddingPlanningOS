@@ -5,7 +5,7 @@ export function RSVPSearchBar() {
         <span className="text-slate-400">🔎</span>
         <input
           className="w-full border-none bg-transparent text-sm outline-none placeholder:text-slate-400"
-          placeholder="Search RSVP..."
+          placeholder="Search guest..."
         />
       </div>
     </div>

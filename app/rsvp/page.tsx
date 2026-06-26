@@ -1,4 +1,5 @@
 import { RSVPFilter } from "../../components/RSVPFilter";
+import { RSVPOverview } from "../../components/RSVPOverview";
 import { RSVPSearchBar } from "../../components/RSVPSearchBar";
 import { RSVPTable } from "../../components/RSVPTable";
 
@@ -14,9 +15,11 @@ export default function RSVPPage() {
         </div>
 
         <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
-          Add RSVP
+          Send Invitation
         </button>
       </div>
+
+      <RSVPOverview />
 
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="w-full lg:max-w-md">
