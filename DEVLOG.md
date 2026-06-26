@@ -315,3 +315,14 @@ Completed:
 - Added Share Wedding button
 - Created Wedding Profile page
 
+### Module 1 - Wedding Profile (Part 2)
+
+Completed:
+- Created reusable WeddingTabs component
+- Added Overview tab
+- Added Ceremony tab
+- Added Reception tab
+- Added Vendors tab
+- Added Notes tab
+- Updated Wedding Profile page layout
+
