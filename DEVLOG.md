@@ -326,105 +326,38 @@ Completed:
 - Added Notes tab
 - Updated Wedding Profile page layout
 
-# Wedding Planning OS Roadmap (Add on UI / UX Polish)
+## 🔄 Roadmap Adjustment (Update to roadmap.md and Contributing.md)
+ #  (Add on UI / UX Polish)
 
-## Phase 1 — Foundation ✅
-- Application Layout
-- Sidebar Navigation
-- Top Navigation
-- Dashboard
-- Reusable Components
-- UI State Components
 
----
+## Wedding Management
 
-## Phase 2 — Core Business Modules
+### Module 1 - Wedding Profile (Part 3)
 
-### Module 1
-- Wedding Profile
-
-### Module 2
-- Guest Management
-
-### Module 3
-- RSVP Management
-
-### Module 4
-- Budget Management
-
-### Module 5
-- Vendor Management
-
-### Module 6
-- Task Management
-
-### Module 7
-- Timeline Management
-
-Goal:
-Build all core business features first using placeholder data and reusable components.
+Completed:
+- Created reusable WeddingInfoForm component
+- Added editable wedding information form
+- Added wedding type selector
+- Added guest target input
+- Added budget target input
+- Added wedding status selector
+- Added Save and Cancel actions
 
 ---
 
-## Phase 3 — Data & Backend
+## Module 1 Completed ✅
 
-- Firebase Authentication
-- Firestore Database
-- CRUD Operations
-- Real-time Dashboard
-- File Uploads
-- Data Validation
+Features completed:
+- WeddingProfileCard
+- WeddingTabs
+- WeddingInfoForm
 
-Goal:
-Replace placeholder data with real application data.
+Current capabilities:
+- Display wedding information
+- Organize content with tabs
+- Edit wedding details (UI)
+- Ready for future backend integration
 
----
+Next Module:
+Guest Management
 
-## Phase 4 — UI / UX Polish
-
-Focus on improving the overall user experience after all modules are functional.
-
-Tasks:
-
-### Dashboard Polish
-- Improve spacing and alignment
-- Standardize card sizes
-- Improve responsive layouts
-- Add subtle animations
-
-### Wedding Module Polish
-- Replace duplicated display/edit layout
-- Introduce View Mode
-- Introduce Edit Mode
-- Edit button opens editable form
-- Save/Cancel returns to display mode
-
-### Global UI Improvements
-- Consistent colors
-- Consistent typography
-- Better icons
-- Loading animations
-- Empty states
-- Error states
-- Toast notifications
-- Modal dialogs
-
-Goal:
-Create a clean and professional SaaS experience.
-
----
-
-## Phase 5 — Production Ready
-
-- Settings
-- Notifications
-- Security
-- Performance Optimization
-- Testing
-- Bug Fixes
-- Mobile Optimization
-- Accessibility
-- Deployment (Vercel)
-
-Goal:
-Prepare Wedding Planning OS for public release.
