@@ -21,7 +21,7 @@ export function GuestForm() {
               </p>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="Rachel Tan"
+                defaultValue="Rachel Chong"
               />
             </div>
 
@@ -44,7 +44,7 @@ export function GuestForm() {
               </label>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="rachel@example.com"
+                defaultValue="rcevent@example.com"
               />
             </div>
 
@@ -57,7 +57,7 @@ export function GuestForm() {
               </p>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="Rachel"
+                defaultValue="Auntie Rachel"
               />
             </div>
 
@@ -129,15 +129,29 @@ export function GuestForm() {
         <div>
           <h3 className="text-lg font-semibold text-slate-900">Additional Information</h3>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Dietary Requirements
+            <div className="md:col-span-2 rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+              <label className="mb-4 block text-sm font-medium text-slate-700">
+                Meal Preferences
               </label>
-              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400">
-                <option>Normal</option>
-                <option>Vegetarian</option>
-                <option>Halal</option>
-              </select>
+
+              <div className="space-y-3">
+                {[
+                  { label: "Normal", value: 0 },
+                  { label: "Vegetarian", value: 0 },
+                  { label: "Halal", value: 0 },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center justify-between gap-4 rounded-xl bg-white px-3 py-3 shadow-sm">
+                    <span className="text-sm font-medium text-slate-700">{item.label}</span>
+                    <select className="w-20 rounded-lg border border-slate-200 px-2 py-2 text-sm outline-none focus:border-rose-400">
+                      {Array.from({ length: 11 }, (_, i) => i).map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="md:col-span-2">
