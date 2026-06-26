@@ -1,4 +1,5 @@
 import { DashboardCard } from "../components/DashboardCard";
+import { ProgressOverview } from "../components/ProgressOverview";
 import { QuickActions } from "../components/QuickActions";
 import { RecentActivity } from "../components/RecentActivity";
 import { Sidebar } from "../components/Sidebar";
@@ -74,6 +75,7 @@ export default function Home() {
 
         <QuickActions />
         <RecentActivity />
+        <ProgressOverview />
       </main>
     </div>
   );
