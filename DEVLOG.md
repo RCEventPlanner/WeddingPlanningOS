@@ -27,3 +27,30 @@
 - Create project layout
 - Sidebar navigation
 - Dashboard page
+## Day 2 - Part 1 (2026-06-26)
+
+### ✅ Completed
+- Configured GitHub Copilot in VS Code
+- Created reusable Sidebar
+- Added Dashboard layout
+- Added placeholder pages:
+  - Wedding
+  - Guests
+  - RSVP
+  - Budget
+  - Vendors
+  - Tasks
+  - Timeline
+  - Settings
+- Successfully verified with `npm run build`
+- Resolved Git merge conflict
+- Pushed changes to GitHub
+
+### 💡 What I Learned
+- How to use GitHub Copilot with VS Code
+- How to verify a production build
+- How to resolve a Git merge conflict using rebase
+
+### 🎯 Next Goal
+- Create Top Navigation
+- Improve Dashboard UI
