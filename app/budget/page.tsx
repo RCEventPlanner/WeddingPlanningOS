@@ -3,6 +3,7 @@ import { BudgetFilter } from "../../components/BudgetFilter";
 import { BudgetForm } from "../../components/BudgetForm";
 import { BudgetOverview } from "../../components/BudgetOverview";
 import { BudgetSearchBar } from "../../components/BudgetSearchBar";
+import { BudgetStatistics } from "../../components/BudgetStatistics";
 import { BudgetTable } from "../../components/BudgetTable";
 
 export default function BudgetPage() {
@@ -34,6 +35,7 @@ export default function BudgetPage() {
 
       <BudgetForm />
       <BudgetDetailCard />
+      <BudgetStatistics />
     </div>
   );
 }
