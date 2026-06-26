@@ -1,5 +1,6 @@
 import { Sidebar } from "../components/Sidebar";
 import { TopNav } from "../components/TopNav";
+import { WeddingHeader } from "../components/WeddingHeader";
 
 const dashboardCards = [
   {
@@ -47,6 +48,7 @@ export default function Home() {
 
       <main className="flex-1 p-6 sm:p-8 lg:ml-72 lg:p-10">
         <TopNav title="Dashboard" />
+        <WeddingHeader />
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {dashboardCards.map((card) => (
