@@ -1,4 +1,5 @@
 import { GuestFilter } from "../../components/GuestFilter";
+import { GuestForm } from "../../components/GuestForm";
 import { GuestSearchBar } from "../../components/GuestSearchBar";
 import { GuestTable } from "../../components/GuestTable";
 
@@ -26,6 +27,7 @@ export default function GuestsPage() {
       </div>
 
       <GuestTable />
+      <GuestForm />
     </div>
   );
 }

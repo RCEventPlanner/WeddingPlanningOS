@@ -361,3 +361,19 @@ Current capabilities:
 Next Module:
 Guest Management
 
+## Module 2 - Guest Management
+
+### Part 1 - Guest List
+
+Completed:
+- Created Guest Management page
+- Created reusable GuestTable component
+- Created reusable GuestSearchBar component
+- Created reusable GuestFilter component
+- Added Add Guest button
+- Added guest status badges
+- Displayed placeholder guest data
+- Established Guest Management page architecture
+
+Next:
+- Guest Form (Create/Edit)

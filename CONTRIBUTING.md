@@ -1,5 +1,13 @@
 # Development Principles
 
+Build functionality before polishing the interface.
+
+Prioritize reusable components and stable architecture.
+
+Complete all business modules before performing large-scale UI/UX refinements.
+
+Avoid redesigning pages repeatedly during feature development unless it blocks usability.
+
 ## Feature First
 
 Always prioritize building complete business functionality before polishing the user interface.
