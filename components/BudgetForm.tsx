@@ -277,6 +277,40 @@ export function BudgetForm({
                 <option>Overdue</option>
               </select>
             </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Payment Method
+              </label>
+              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400">
+                <option>Bank Transfer</option>
+                <option>DuitNow QR</option>
+                <option>Cash</option>
+                <option>Credit Card</option>
+                <option>E-Wallet</option>
+                <option>Others</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Invoice Number (Optional)
+              </label>
+              <input
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
+                defaultValue="INV-2026-001"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Receipt / Invoice Upload
+              </label>
+              <input
+                type="file"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-500 file:mr-3 file:rounded-full file:border-0 file:bg-slate-100 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-slate-700"
+              />
+            </div>
           </div>
         </div>
 
