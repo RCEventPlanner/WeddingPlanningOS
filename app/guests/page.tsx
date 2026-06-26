@@ -2,6 +2,7 @@ import { GuestDetailCard } from "../../components/GuestDetailCard";
 import { GuestFilter } from "../../components/GuestFilter";
 import { GuestForm } from "../../components/GuestForm";
 import { GuestSearchBar } from "../../components/GuestSearchBar";
+import { GuestStatistics } from "../../components/GuestStatistics";
 import { GuestTable } from "../../components/GuestTable";
 
 export default function GuestsPage() {
@@ -30,6 +31,7 @@ export default function GuestsPage() {
       <GuestTable />
       <GuestForm />
       <GuestDetailCard />
+      <GuestStatistics />
     </div>
   );
 }
