@@ -73,9 +73,9 @@ export default function Home() {
           ))}
         </div>
 
+        <ProgressOverview />
         <QuickActions />
         <RecentActivity />
-        <ProgressOverview />
       </main>
     </div>
   );
