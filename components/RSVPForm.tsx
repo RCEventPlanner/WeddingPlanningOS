@@ -18,10 +18,10 @@ type RSVPFormProps = {
 const mealOptions = Array.from({ length: 11 }, (_, i) => i);
 
 export function RSVPForm({
-  guestName = "Rachel Tan",
-  preferredName = "Rachel",
+  guestName = "Rachel Chong",
+  preferredName = "Auntie Rachel",
   phoneNumber = "012-3456789",
-  emailAddress = "rachel@example.com",
+  emailAddress = "rcevent@example.com",
   guestFrom = "Bride's Side",
   guestGroup = "Family",
   adults = 2,
