@@ -1,3 +1,4 @@
+import { BudgetDetailCard } from "../../components/BudgetDetailCard";
 import { BudgetFilter } from "../../components/BudgetFilter";
 import { BudgetForm } from "../../components/BudgetForm";
 import { BudgetOverview } from "../../components/BudgetOverview";
@@ -32,6 +33,7 @@ export default function BudgetPage() {
       <BudgetTable />
 
       <BudgetForm />
+      <BudgetDetailCard />
     </div>
   );
 }
