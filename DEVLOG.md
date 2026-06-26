@@ -27,6 +27,7 @@
 - Create project layout
 - Sidebar navigation
 - Dashboard page
+
 ## Day 2 - Part 1 (2026-06-26)
 
 ### ✅ Completed
@@ -54,3 +55,25 @@
 ### 🎯 Next Goal
 - Create Top Navigation
 - Improve Dashboard UI
+
+## Day 2 - Part 2 - 2026-06-26
+
+### ✅ Completed
+- Set up GitHub Copilot in VS Code
+- Created Sidebar navigation
+- Created Top Navigation
+- Added Dashboard homepage
+- Added 6 dashboard cards
+- Verified build successfully
+- Pushed latest changes to GitHub
+
+### 💡 What I Learned
+- How to use Copilot with VS Code
+- How to review Keep / Undo changes
+- How to run `npm run build`
+- How to handle Git rebase conflict
+
+### 🎯 Next Goal
+- Prepare Firebase setup
+- Plan Login / Authentication flow
+
