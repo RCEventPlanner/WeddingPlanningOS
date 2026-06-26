@@ -164,3 +164,13 @@ Every generated code change should be:
 - Committed intentionally
 
 Avoid accepting code without verification.
+
+## Dashboard vs Form Principle
+
+Dashboard pages should present only the most important categories for quick filtering and overview.
+
+Forms should provide the complete list of categories for accurate data entry.
+
+Keep dashboards simple.
+Keep forms comprehensive.
+

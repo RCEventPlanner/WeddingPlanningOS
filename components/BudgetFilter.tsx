@@ -1,4 +1,4 @@
-const filters = ["All", "Venue", "Catering", "Photography", "Decoration", "Others"];
+const filters = ["All", "Venue", "MUA", "Photographer", "Videographer", "Wedding Planner", "Decoration"];
 
 export function BudgetFilter() {
   return (
