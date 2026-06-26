@@ -303,3 +303,15 @@ After completing these modules:
 - Real-time Dashboard Data
 - Vercel Deployment
 
+## Wedding Management
+
+### Module 1 - Wedding Profile (Part 1)
+
+Completed:
+- Created reusable WeddingProfileCard component
+- Added Wedding Information section
+- Added Statistics section
+- Added Edit Wedding button
+- Added Share Wedding button
+- Created Wedding Profile page
+
