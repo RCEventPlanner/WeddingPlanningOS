@@ -160,7 +160,7 @@ export function GuestForm() {
               </label>
               <textarea
                 className="min-h-24 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="No special requests"
+                defaultValue="Baby Chairs needed for 2 children. 1 Stoller space needed"
               />
             </div>
 
