@@ -378,23 +378,27 @@ Completed:
 Next:
 - Guest Form (Create/Edit)
 
-## Module 2 - Guest Management
+### Module 2 - Guest Management
 
-### Part 2 - Guest Form
+#### Part 2 - Guest Form
 
 Completed:
 - Created reusable GuestForm component
-- Added guest registration information
-- Added Preferred Name field
+- Added guest registration fields
 - Added Guest From selector
 - Added Guest Group selector
 - Added attendance information
 - Added adult and child guest counts
 - Added RSVP status selector
-- Added dietary requirements selector
+- Replaced the dietary requirement dropdown with meal quantity selectors
+- Added quantity selectors (0–10) for:
+  - Normal Meals
+  - Vegetarian Meals
+  - Halal Meals
 - Added Special Requests and Notes fields
-- Added Save and Cancel actions
+- Added Save and Cancel buttons
 
 Architecture Notes:
-- Updated Guest data model for future RSVP, seating, and invitation features.
-- Component remains reusable for both Add Guest and Edit Guest workflows.
+- GuestForm is reusable for both Add Guest and Edit Guest workflows.
+- Meal quantities are structured to support future banquet planning and reporting.
+
