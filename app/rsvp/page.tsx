@@ -1,4 +1,5 @@
 import { RSVPFilter } from "../../components/RSVPFilter";
+import { RSVPForm } from "../../components/RSVPForm";
 import { RSVPOverview } from "../../components/RSVPOverview";
 import { RSVPSearchBar } from "../../components/RSVPSearchBar";
 import { RSVPTable } from "../../components/RSVPTable";
@@ -29,6 +30,8 @@ export default function RSVPPage() {
       </div>
 
       <RSVPTable />
+
+      <RSVPForm />
     </div>
   );
 }
