@@ -77,3 +77,23 @@
 - Prepare Firebase setup
 - Plan Login / Authentication flow
 
+## Day 2 - Part 3 - 2026-06-26
+
+### ✅ Completed
+- Created reusable WeddingHeader component
+- Created reusable DashboardCard component
+- Refactored dashboard to use reusable components
+- Improved project component structure
+- Verified build successfully
+- Pushed latest changes to GitHub
+
+### 💡 What I Learned
+- Why reusable components are important
+- How to refactor duplicated UI
+- How to keep page.tsx clean and maintainable
+
+### 🎯 Next Goal
+- Create Quick Actions section
+- Add Progress Bar component
+- Build Recent Activity timeline
+
