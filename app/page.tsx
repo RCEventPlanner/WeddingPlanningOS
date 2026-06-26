@@ -1,5 +1,6 @@
 import { DashboardCard } from "../components/DashboardCard";
 import { QuickActions } from "../components/QuickActions";
+import { RecentActivity } from "../components/RecentActivity";
 import { Sidebar } from "../components/Sidebar";
 import { TopNav } from "../components/TopNav";
 import { WeddingHeader } from "../components/WeddingHeader";
@@ -72,6 +73,7 @@ export default function Home() {
         </div>
 
         <QuickActions />
+        <RecentActivity />
       </main>
     </div>
   );
