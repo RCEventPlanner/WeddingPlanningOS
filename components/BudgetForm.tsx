@@ -127,54 +127,39 @@ export function BudgetForm({
               <p className="mt-2 text-xs text-slate-500">Selecting a vendor shows placeholder contact info (UI-only).</p>
             </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Vendor Website (if any)
-              </label>
-              <input
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue={"https://www.rceventplanner.com.my"}
-              />
-            </div>
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">Vendor Information</label>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div>
+                    <p className="text-xs text-slate-500">Website</p>
+                    <p className="mt-1 text-sm text-slate-900">https://www.rceventplanner.com.my</p>
+                  </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Vendor Facebook (if any)
-              </label>
-              <input
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue={"RC Event Planner"}
-              />
-            </div>
+                  <div>
+                    <p className="text-xs text-slate-500">Facebook</p>
+                    <p className="mt-1 text-sm text-slate-900">RC Event Planner</p>
+                  </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Vendor Instagram (if any)
-              </label>
-              <input
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue={"@rc_event_planner.25"}
-              />
-            </div>
+                  <div>
+                    <p className="text-xs text-slate-500">Instagram</p>
+                    <p className="mt-1 text-sm text-slate-900">@rc_event_planner.25</p>
+                  </div>
+                </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Vendor PIC Name
-              </label>
-              <input
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue={"Rachel Chong"}
-              />
-            </div>
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
+                  <div>
+                    <p className="text-xs text-slate-500">PIC Name</p>
+                    <p className="mt-1 text-sm text-slate-900">Rachel Chong</p>
+                  </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Vendor PIC Contact
-              </label>
-              <input
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue={"+60 19-2691475"}
-              />
+                  <div>
+                    <p className="text-xs text-slate-500">PIC Contact</p>
+                    <p className="mt-1 text-sm text-slate-900">+60 19-2691475</p>
+                  </div>
+                </div>
+              </div>
+              <p className="mt-2 text-xs text-slate-500">Read-only vendor details — UI placeholder only.</p>
             </div>
 
             <div className="md:col-span-2">
