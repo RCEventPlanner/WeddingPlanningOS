@@ -2,7 +2,6 @@ import { BudgetDetailCard } from "../../components/BudgetDetailCard";
 import { BudgetFilter } from "../../components/BudgetFilter";
 import { BudgetForm } from "../../components/BudgetForm";
 import { BudgetOverview } from "../../components/BudgetOverview";
-import { BudgetSearchBar } from "../../components/BudgetSearchBar";
 import { BudgetStatistics } from "../../components/BudgetStatistics";
 import { BudgetTable } from "../../components/BudgetTable";
 
@@ -24,10 +23,7 @@ export default function BudgetPage() {
 
       <BudgetOverview />
 
-      <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="w-full lg:max-w-md">
-          <BudgetSearchBar />
-        </div>
+      <div className="mt-6">
         <BudgetFilter />
       </div>
 

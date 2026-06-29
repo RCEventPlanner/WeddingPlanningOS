@@ -21,7 +21,6 @@ type BudgetDetailCardProps = {
   paymentMethod?: string;
   invoiceNumber?: string;
   receiptUpload?: string;
-  notes?: string;
 };
 
 export function BudgetDetailCard({
@@ -47,7 +46,6 @@ export function BudgetDetailCard({
   paymentMethod = "Bank Transfer",
   invoiceNumber = "INV-2026-001",
   receiptUpload = "Placeholder receipt upload",
-  notes = "Payment was completed on schedule.",
 }: BudgetDetailCardProps) {
   return (
     <section className="mt-6 rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/80 p-6 shadow-sm sm:p-8">
@@ -69,24 +67,20 @@ export function BudgetDetailCard({
           <h3 className="text-lg font-semibold text-slate-900">Expense Information</h3>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div>
-              <p className="text-sm text-slate-500">Expense Name</p>
-              <p className="mt-1 font-medium text-slate-900">{expenseName}</p>
-            </div>
-            <div>
               <p className="text-sm text-slate-500">Category</p>
               <p className="mt-1 font-medium text-slate-900">{category}</p>
+            </div>
+            <div>
+              <p className="text-sm text-slate-500">Expense Name</p>
+              <p className="mt-1 font-medium text-slate-900">{expenseName}</p>
             </div>
             <div>
               <p className="text-sm text-slate-500">Vendor Name</p>
               <p className="mt-1 font-medium text-slate-900">{vendorName}</p>
             </div>
             <div>
-              <p className="text-sm text-slate-500">Vendor PIC Name</p>
-              <p className="mt-1 font-medium text-slate-900">{vendorPicName}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Vendor PIC Contact</p>
-              <p className="mt-1 font-medium text-slate-900">{vendorPicContact}</p>
+              <p className="text-sm text-slate-500">Vendor Website</p>
+              <p className="mt-1 font-medium text-slate-900">{vendorWebsite}</p>
             </div>
             <div>
               <p className="text-sm text-slate-500">Vendor Facebook</p>
@@ -97,8 +91,12 @@ export function BudgetDetailCard({
               <p className="mt-1 font-medium text-slate-900">{vendorInstagram}</p>
             </div>
             <div>
-              <p className="text-sm text-slate-500">Vendor Website</p>
-              <p className="mt-1 font-medium text-slate-900">{vendorWebsite}</p>
+              <p className="text-sm text-slate-500">Vendor PIC Name</p>
+              <p className="mt-1 font-medium text-slate-900">{vendorPicName}</p>
+            </div>
+            <div>
+              <p className="text-sm text-slate-500">Vendor PIC Contact</p>
+              <p className="mt-1 font-medium text-slate-900">{vendorPicContact}</p>
             </div>
             <div className="md:col-span-2">
               <p className="text-sm text-slate-500">Package Details</p>
@@ -108,48 +106,75 @@ export function BudgetDetailCard({
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold text-slate-900">Payment Details</h3>
-          <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <h3 className="text-lg font-semibold text-slate-900">Payment Summary</h3>
+          <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <div>
               <p className="text-sm text-slate-500">Total Amount</p>
               <p className="mt-1 font-medium text-slate-900">{totalAmount}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Deposit Required</p>
-              <p className="mt-1 font-medium text-slate-900">{depositRequired}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Deposit Amount</p>
-              <p className="mt-1 font-medium text-slate-900">{depositAmount}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Deposit Due Date</p>
-              <p className="mt-1 font-medium text-slate-900">{depositDueDate}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Balance Payment 1 Amount</p>
-              <p className="mt-1 font-medium text-slate-900">{balancePayment1Amount}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Balance Payment 1 Due Date</p>
-              <p className="mt-1 font-medium text-slate-900">{balancePayment1DueDate}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Balance Payment 2 Amount</p>
-              <p className="mt-1 font-medium text-slate-900">{balancePayment2Amount}</p>
-            </div>
-            <div>
-              <p className="text-sm text-slate-500">Balance Payment 2 Due Date</p>
-              <p className="mt-1 font-medium text-slate-900">{balancePayment2DueDate}</p>
             </div>
             <div>
               <p className="text-sm text-slate-500">Remaining Amount to Pay</p>
               <p className="mt-1 font-medium text-slate-900">{remainingAmountToPay}</p>
             </div>
             <div>
+              <p className="text-sm text-slate-500">Deposit Required</p>
+              <p className="mt-1 font-medium text-slate-900">{depositRequired}</p>
+            </div>
+            <div>
               <p className="text-sm text-slate-500">Payment Status</p>
               <p className="mt-1 font-medium text-slate-900">{paymentStatus}</p>
             </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-lg font-semibold text-slate-900">Payment Schedule</h3>
+          <div className="mt-4 grid gap-4 md:grid-cols-3">
+            <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-sm font-medium text-slate-700">Deposit</p>
+              <div className="mt-4 space-y-2">
+                <div>
+                  <p className="text-sm text-slate-500">Amount</p>
+                  <p className="mt-1 font-medium text-slate-900">{depositAmount}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-500">Due Date</p>
+                  <p className="mt-1 font-medium text-slate-900">{depositDueDate}</p>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-sm font-medium text-slate-700">Balance Payment 1</p>
+              <div className="mt-4 space-y-2">
+                <div>
+                  <p className="text-sm text-slate-500">Amount</p>
+                  <p className="mt-1 font-medium text-slate-900">{balancePayment1Amount}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-500">Due Date</p>
+                  <p className="mt-1 font-medium text-slate-900">{balancePayment1DueDate}</p>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+              <p className="text-sm font-medium text-slate-700">Balance Payment 2</p>
+              <div className="mt-4 space-y-2">
+                <div>
+                  <p className="text-sm text-slate-500">Amount</p>
+                  <p className="mt-1 font-medium text-slate-900">{balancePayment2Amount}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-500">Due Date</p>
+                  <p className="mt-1 font-medium text-slate-900">{balancePayment2DueDate}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-lg font-semibold text-slate-900">Payment Information</h3>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div>
               <p className="text-sm text-slate-500">Payment Method</p>
               <p className="mt-1 font-medium text-slate-900">{paymentMethod}</p>
@@ -158,17 +183,10 @@ export function BudgetDetailCard({
               <p className="text-sm text-slate-500">Invoice Number</p>
               <p className="mt-1 font-medium text-slate-900">{invoiceNumber}</p>
             </div>
-            <div>
-              <p className="text-sm text-slate-500">Receipt / Invoice Upload</p>
+            <div className="md:col-span-2">
+              <p className="text-sm text-slate-500">Receipt / Invoice</p>
               <p className="mt-1 font-medium text-slate-900">{receiptUpload}</p>
             </div>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="text-lg font-semibold text-slate-900">Notes</h3>
-          <div className="mt-4">
-            <p className="text-sm text-slate-700">{notes}</p>
           </div>
         </div>
       </div>
