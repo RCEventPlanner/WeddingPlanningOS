@@ -174,3 +174,22 @@ Forms should provide the complete list of categories for accurate data entry.
 Keep dashboards simple.
 Keep forms comprehensive.
 
+# Architecture Principles
+
+## Shared Data Architecture
+
+Wedding Profile
+├── Guest Management
+├── RSVP Management
+├── Budget Management
+├── Vendor Management
+├── Task Management
+└── Timeline Management
+
+Budget Management ↔ Vendor Management
+
+- Shared Vendor Database
+- Budget references Vendor records
+- Vendor information is maintained in one place only
+
+Package Details and Payment Information belong to Budget records and are not stored in the Vendor database.

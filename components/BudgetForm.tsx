@@ -53,13 +53,14 @@ const vendorOptions = [
   "Dream Decoration",
   "ABC Photography",
   "Crystal Makeup Studio",
+  "RC Event Planner",
   "+ Add New Vendor",
 ];
 
 export function BudgetForm({
   expenseName = "Venue Deposit",
   category = "Venue",
-  vendorName = "The Garden Hall",
+  vendorName = "RC Event Planner",
   description = "Venue booking deposit for the wedding reception.",
   totalAmount = "RM 25,000",
   depositRequired = "Yes",
@@ -123,6 +124,7 @@ export function BudgetForm({
                   </option>
                 ))}
               </select>
+              <p className="mt-2 text-xs text-slate-500">Selecting a vendor shows placeholder contact info (UI-only).</p>
             </div>
 
             <div>
@@ -131,7 +133,7 @@ export function BudgetForm({
               </label>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="www.thegardenhall.com"
+                defaultValue={"https://www.rceventplanner.com.my"}
               />
             </div>
 
@@ -141,7 +143,7 @@ export function BudgetForm({
               </label>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="facebook.com/thegardenhall"
+                defaultValue={"RC Event Planner"}
               />
             </div>
 
@@ -151,7 +153,7 @@ export function BudgetForm({
               </label>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="@thegardenhall"
+                defaultValue={"@rc_event_planner.25"}
               />
             </div>
 
@@ -161,7 +163,7 @@ export function BudgetForm({
               </label>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="Alicia Tan"
+                defaultValue={"Rachel Chong"}
               />
             </div>
 
@@ -171,7 +173,7 @@ export function BudgetForm({
               </label>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="012-3456789"
+                defaultValue={"+60 19-2691475"}
               />
             </div>
 

@@ -5,14 +5,17 @@ The project follows a feature-first development approach.
 During development, UI duplication and placeholder content are acceptable.
 The priority is to complete all core business modules before performing large-scale UI/UX refinements.
 
-After all core features are implemented, a dedicated UI/UX Polish phase will refine layouts, interactions, animations, and editing workflows.
+After all core features are implemented, a dedicated UI/UX Polish phase will refine layouts, interactions, animations, editing workflows, and overall user experience.
 
 ---
 
 # Wedding Planning OS Roadmap
 
 ## Phase 1 — Foundation ✅
-Status: Foundation Completed
+
+Status: Completed
+
+Completed
 - ✅ Application Layout
 - ✅ Sidebar Navigation
 - ✅ Top Navigation
@@ -21,150 +24,173 @@ Status: Foundation Completed
 - ✅ UI State Components
 
 Goal
-Build a reusable UI foundation that all business modules can share.
+
+Build a reusable UI foundation shared by all business modules.
 
 ---
 
 ## Phase 2 — Core Business Modules
 
-### Module 1 - Wedding Profile
+Develop every module using placeholder data and reusable components only.
+
+No Firebase.
+No CRUD.
+No Business Logic.
+
+---
+
+### ✅ Module 1 — Wedding Profile
+
 Status: Foundation Completed
+
 - ✅ Wedding Profile Card
 - ✅ Wedding Information Form
 - ✅ Wedding Information View
 - ✅ Wedding Statistics
-- ✅ Reusable Components
 
-Future
-- Business Logic
-- Firebase Integration
-- View / Edit Mode
-- Media Upload
-- Validation
+---
 
-### ✅ Module 2 - Guest Management
+### ✅ Module 2 — Guest Management
+
 Status: Foundation Completed
-- ✅ Part 1 - Guest List
-- ✅ Part 2 - Guest Form
-- ✅ Part 3 - Guest Detail
-- ✅ Part 4 - Guest Statistics
 
-Future
-- Search
-- Filter
-- CRUD
-- Pagination
-- Import / Export
-- Firebase Integration
+- ✅ Guest Overview
+- ✅ Guest Form
+- ✅ Guest Detail
+- ✅ Guest Statistics
 
-### ✅ Module 3 - RSVP Management
+---
+
+### ✅ Module 3 — RSVP Management
+
 Status: Foundation Completed
-- ✅ Part 1 — RSVP Dashboard
-- ✅ Part 2 — RSVP Form
-- ✅ Part 3 — RSVP Detail
-- ✅ Part 4 — RSVP Statistics
 
-Future
-- Send Invitation Flow
-- RSVP Response Logic
-- Search
-- Filter
-- CRUD
-- Firebase Integration
+- ✅ RSVP Overview
+- ✅ RSVP Form
+- ✅ RSVP Detail
+- ✅ RSVP Statistics
+
+---
+
+### ✅ Module 4 — Budget Management
+
+Status: Foundation Completed
+
+- ✅ Budget Overview
+- ✅ Budget Form
+- ✅ Budget Detail
+- ✅ Budget Filters
+
+Architecture
+
+- Shared Vendor Database Ready
+
+---
+
+### 🔄 Module 5 — Vendor Management
 
 Status: Foundation In Progress
 
-### ✅ Module 4 - Budget Management
-Status: Foundation Completed
-- ✅ Part 1 - Budget Overview
-- ✅ Part 2 - Budget Form
-- ✅ Part 3 - Budget Detail
-- ✅ Part 4 - Budget Filter
+- ⏳ Vendor Overview
+- ⏳ Vendor Form
+- ⏳ Vendor Detail
+- ⏳ Vendor Statistics
 
-### Module 5 - Vendor Management
-Foundation
-- Vendor List
-- Vendor Form
-- Vendor Details
-- Vendor Statistics
+Architecture
 
-### Module 6 - Task Management
-Foundation
-- Task Board
-- Task Detail
-- Task Form
-- Task Statistics
-
-### Module 7 - Timeline Management
-Foundation
-- Timeline Overview
-- Event Detail
-- Timeline Form
-- Timeline Statistics
-
-Goal
-Build every business module using:
-- Placeholder Data
-- Reusable Components
-- Responsive Layouts
-- Consistent UI Architecture
-No backend or business logic in this phase.
+- Shared Vendor Database
+- Budget Integration Ready
 
 ---
+
+### ⏳ Module 6 — Task Management
+
+Foundation
+
+- Task Board
+- Task Form
+- Task Detail
+- Task Statistics
+
+---
+
+### ⏳ Module 7 — Timeline Management
+
+Foundation
+
+Wedding Day Timeline
+
+- Timeline Overview
+- Timeline Form
+- Event Detail
+- Timeline Statistics
+
+---
+
+Goal
+
+Every module should include:
+
+- Placeholder Data
+- Responsive Layout
+- Reusable Components
+- Consistent Design System
+
+No business logic during this phase.
+
+---
+
 ## Phase 3 — Business Logic & Backend
-Business Logic
+
+After ALL modules are completed.
+
+### Business Logic
+
 - Search
 - Filter
 - Sorting
 - Pagination
+- CRUD
 - Form Validation
 - State Management
 
-Backend
+### Backend
+
 - Firebase Authentication
 - Firestore Database
+- File Storage
 - CRUD Operations
 - Real-time Dashboard
-- File Uploads
 
-Goal:
-Replace placeholder data with real application data and working business logic.
+Goal
+
+Replace placeholder data with fully functional application logic.
 
 ---
+
 ## Phase 4 — UI / UX Polish
 
-Improve the overall experience after every module is functional
+After all modules are functional.
 
-### Dashboard Polish
-- Better spacing
-- Responsive improvements
-- Consistent cards
-- Micro animations
+### Improvements
 
-### Wedding Module Polish
-- Introduce View Mode
-- Introduce Edit Mode
-- Inline editing
-- Better visual hierarchy
-
-### Guest Module
-- List → Detail flow
-- Detail → Edit flow
-- Better statistics layout
-
-### Global UI Improvements
-- Design consistency
+- View / Edit Mode
+- Better User Flow
+- Responsive Optimization
 - Typography
 - Icons
-- Loading
+- Loading States
 - Empty States
 - Error States
 - Toast Notifications
 - Modal Dialogs
-- Accessibility improvements
+- Accessibility
+- Micro Animations
+- Consistent Spacing
 
-Goal:
-Transform the project from a development prototype into a polished SaaS application
+Goal
+
+Transform the prototype into a polished SaaS application.
 
 ---
 
@@ -177,41 +203,51 @@ Transform the project from a development prototype into a polished SaaS applicat
 - Testing
 - Bug Fixes
 - Mobile Optimization
-- Accessibility
 - Deployment (Vercel)
 
-Goal:
-Prepare Wedding Planning OS for public release.
+Goal
 
+Prepare Wedding Planning OS for production release.
 
-## Development Principles
+---
 
-For every module, development follows the same sequence:
+# Development Principles
 
-1. Foundation
-   - Page Structure
-   - Reusable Components
-   - Placeholder Data
+Every module follows the same workflow.
 
-2. Business Logic
-   - Search
-   - Filter
-   - CRUD
-   - Validation
-   - State Management
+## Part 1 — Foundation
 
-3. Backend
-   - Firebase
-   - Firestore
-   - Authentication
+- Page Structure
+- Reusable Components
+- Placeholder Data
 
-4. Polish
-   - UX Improvements
-   - Animations
-   - Responsive Design
-   - Accessibility
+## Part 2 — Business Logic
 
-Each completed Part should follow this workflow:
+- Search
+- Filter
+- CRUD
+- Validation
+- State Management
+
+## Part 3 — Backend
+
+- Firebase
+- Firestore
+- Authentication
+- File Storage
+
+## Part 4 — Polish
+
+- UX Improvements
+- Responsive Design
+- Accessibility
+- Animations
+
+---
+
+# Development Workflow
+
+Every completed Part follows this checklist:
 
 1. npm run build
 2. git status
@@ -221,3 +257,69 @@ Each completed Part should follow this workflow:
 6. Update DEVLOG.md
 7. Update ROADMAP.md
 
+# Architecture Principles
+
+## Shared Data Architecture
+
+Wedding Profile
+├── Guest Management
+├── RSVP Management
+├── Budget Management
+├── Vendor Management
+├── Task Management
+└── Timeline Management
+
+Budget Management ↔ Vendor Management
+
+- Shared Vendor Database
+- Budget references Vendor records
+- Vendor information is maintained in one place only
+
+Package Details and Payment Information belong to Budget records and are not stored in the Vendor database.
+
+---
+
+# Shared Architecture
+
+## Shared Vendor Database
+
+Budget Management and Vendor Management share the same Vendor database.
+
+Vendor information should only be maintained in one place.
+
+Shared Vendor Fields
+
+- Category
+- Vendor Name
+- Vendor Website
+- Vendor Facebook
+- Vendor Instagram
+- Vendor PIC Name
+- Vendor PIC Contact
+
+Budget-specific Fields
+
+- Expense Name
+- Package Details
+- Payment Information
+- Invoice Number
+- Receipt
+- Notes
+
+Goal
+
+Budget records reference Vendor records instead of duplicating vendor information.
+
+---
+
+# Demo Data Standard
+
+All placeholder data across the project should use the same demo dataset.
+
+Do not create duplicate vendor names unless necessary.
+
+If a sample vendor already exists, reuse it throughout the project.
+
+Refer to:
+
+docs/DemoData.md
