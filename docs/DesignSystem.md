@@ -91,3 +91,41 @@ Mobile
 Tablet
 
 Desktop
+
+## Vendor Information Standard
+
+Vendor Management (Full Information)
+
+Category
+
+Vendor Name                     Vendor Website
+
+Vendor Facebook                 Vendor Instagram
+
+Vendor PIC Name                 Vendor PIC Contact
+
+Default Package Details
+
+Notes
+
+---
+
+Modules Referencing Vendor Information
+(Budget, Task, Live Rundown, etc.)
+
+Vendor Name                     Vendor Website
+
+Vendor Facebook                 Vendor Instagram
+
+Vendor PIC Name                 Vendor PIC Contact
+
+(Module-specific Fields)
+
+Notes (if applicable)
+
+Rules
+
+- Vendor Category is displayed only in Vendor Management.
+- Other modules use their own Category when applicable.
+- Vendor information should maintain a consistent layout across the application.
+- Module-specific fields remain owned by their respective modules.

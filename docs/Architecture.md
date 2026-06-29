@@ -125,3 +125,15 @@ Future capabilities
 - Coordinate vendors and crew
 - Display live event status
 
+
+## Task Management & Live Rundown
+
+Task Management and Live Rundown are independent modules.
+
+Task Management focuses on wedding preparation before the event.
+
+Live Rundown focuses on real-time operations during the wedding day.
+
+No direct relationship is planned during the Foundation phase.
+
+Any future integration should be evaluated during the Business Logic phase based on real user workflows.
