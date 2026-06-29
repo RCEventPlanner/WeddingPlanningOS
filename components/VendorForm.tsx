@@ -16,11 +16,34 @@ export function VendorForm() {
               <label className="mb-2 block text-sm font-medium text-slate-700">Category *</label>
               <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="Venue">
                 <option>Venue</option>
-                <option>Photographer</option>
                 <option>Makeup Artist</option>
+                <option>Photographer</option>
+                <option>Videographer</option>
+                <option>Photographer & Videographer</option>
+                <option>Wedding Planner</option>
+                <option>Wedding Coordinator</option>
+                <option>Pre Wedding Shooting</option>
                 <option>Decoration</option>
+                <option>Special Effect</option>
+                <option>Emcee</option>
+                <option>Live Band</option>
+                <option>Sound System / Lighting</option>
+                <option>Instant Photobooth</option>
+                <option>Caterer</option>
+                <option>Snack Booth</option>
+                <option>Wedding Cake</option>
+                <option>Door Gift</option>
                 <option>Entertainment</option>
-                <option>Other</option>
+                <option>Live Drawing Artist</option>
+                <option>Handmade Booth</option>
+                <option>Chaperon / Daikam</option>
+                <option>Betrothal</option>
+                <option>Wine Supplier</option>
+                <option>Attire Rental</option>
+                <option>Car Rental</option>
+                <option>Bridal Bouquet & etc</option>
+                <option>Airbnb Rental</option>
+                <option>Others</option>
               </select>
             </div>
 

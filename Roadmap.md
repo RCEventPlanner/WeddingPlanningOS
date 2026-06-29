@@ -76,16 +76,16 @@ Status: Foundation In Progress
 
 ### ✅ Module 4 - Budget Management
 Status: Foundation Completed
-- ✅ Part 1 - Budget Dashboard
+- ✅ Part 1 - Budget Overview
 - ✅ Part 2 - Budget Form
 - ✅ Part 3 - Budget Detail
-- ✅ Part 4 - Budget Statistics
+- ✅ Part 4 - Budget Filter
 
 ### Module 5 - Vendor Management
 Foundation
 - Vendor List
-- Vendor Profile
 - Vendor Form
+- Vendor Details
 - Vendor Statistics
 
 ### Module 6 - Task Management
