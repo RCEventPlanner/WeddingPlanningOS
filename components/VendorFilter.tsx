@@ -5,7 +5,7 @@ export function VendorFilter() {
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-slate-900">Search Vendors</h2>
+        <h2 className="text-lg font-semibold text-slate-900">Search & Filters</h2>
         <p className="mt-1 text-sm text-slate-600">
           Search and filter the vendor directory using the fields below.
         </p>
