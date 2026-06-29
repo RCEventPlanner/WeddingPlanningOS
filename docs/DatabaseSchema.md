@@ -1,4 +1,4 @@
-Vendor
+#Vendor
 
 - id
 - category
@@ -11,7 +11,7 @@ Vendor
 - packageDetails
 - notes
 
-Budget
+#Budget
 
 - id
 - vendorId
@@ -21,4 +21,17 @@ Budget
 - totalAmount
 - depositRequired
 - paymentStatus
+
+# Task
+
+- id
+- category
+- taskName
+- assignedTo
+- dueDate
+- priority
+- status
+- relatedVendorId (optional)
+- description
+- notes
 

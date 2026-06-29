@@ -537,3 +537,208 @@ Foundation Status:
 #### Module 4 - Budget Management Foundation Completed ✅
 
 ---
+
+# DEVLOG
+
+## DAY 3 - 2026-06-29
+
+#### Module 4 - Budget Management Foundation Refinement
+
+##### Budget Form
+- Reorganized Expense Information layout for better user workflow.
+- Reordered Vendor Information fields:
+  - Vendor Website
+  - Vendor Facebook
+  - Vendor Instagram
+  - Vendor PIC Name
+  - Vendor PIC Contact
+- Redesigned Payment Summary layout.
+- Improved Payment Schedule presentation.
+- Optimized overall form hierarchy and spacing.
+
+##### Budget Detail
+- Updated Budget Detail Card to match the new Budget Form layout.
+- Reorganized Expense Information, Payment Summary, Payment Schedule and Payment Information sections.
+- Improved information consistency across all Budget pages.
+
+##### Budget Overview
+- Updated overview layout to align with the redesigned Budget module.
+- Improved table information hierarchy.
+- Maintained consistent data presentation.
+
+##### Budget Filters
+- Merged Search and Filter into a single filter card.
+- Removed duplicate standalone search bar.
+- Reorganized filter layout:
+  - Category
+  - Expense Name
+  - Vendor Name
+  - Payment Status
+  - Deposit Required
+  - Payment Method
+- Improved dashboard usability and page balance.
+
+##### Architecture Decisions
+- Finalized the shared Vendor Database architecture.
+- Budget Management and Vendor Management will reference the same Vendor records.
+- Vendor information will be shared across both modules.
+- Vendor Name will become a dropdown sourced from the Vendor database in Phase 3.
+- Vendor Website, PIC, Contact, Facebook and Instagram will auto-populate after Vendor selection.
+- Package Details and Payment Information remain Budget-specific data.
+
+##### Status
+✅ Budget Management Foundation Completed
+#### Module 4 - Budget Management Foundation Completed ✅
+
+---
+
+#### Module 5 - Vendor Management
+
+##### Part 1 - Vendor Overview
+
+Completed:
+- Created Vendor Management overview page
+- Added Total Vendors summary card
+- Created Search & Filters card
+- Added Vendor table
+- Added Add Vendor button
+- Displayed placeholder vendor data
+
+##### Part 2 - Vendor Form
+
+Completed:
+- Created reusable VendorForm component
+- Added Vendor Information section
+- Added Social Media section
+- Added Contact Information section
+- Added Additional Information section
+- Added complete Vendor Category dropdown
+- Added Save Vendor and Cancel actions
+- Matched the Budget Management design system
+- Prepared the form for future CRUD and Firebase integration
+
+##### Part 3 - Vendor Detail
+
+Completed:
+- Created reusable VendorDetailCard component
+- Added Vendor Information section
+- Added Social Media section
+- Added Contact Information section
+- Added Additional Information section
+- Added Edit Vendor button
+- Used placeholder vendor data
+- Matched the Budget Management design system
+
+##### Part 4 - Vendor Management Foundation
+
+Completed:
+- Standardized Vendor Overview, Vendor Form and Vendor Detail layouts
+- Unified section hierarchy across all Vendor components
+- Improved spacing, typography and responsive layout
+- Standardized button styles and card layouts
+- Verified required and optional field presentation
+- Prepared the shared Vendor Database structure for future Budget integration
+
+##### Status
+✅ Vendor Management Foundation Completed
+
+###### Project Documentation Update
+
+Completed:
+- Updated ROADMAP.md to reflect the latest development strategy.
+- Adopted Feature-first development workflow.
+- Defined the five development phases:
+  - Foundation
+  - Core Business Modules
+  - Business Logic & Backend
+  - UI / UX Polish
+  - Production Ready
+- Added Shared Vendor Database architecture documentation.
+- Added Demo Data Standard reference.
+
+Created documentation files:
+- docs/Architecture.md
+- docs/DemoData.md
+- docs/DesignSystem.md
+- docs/CodingStandards.md
+- docs/FirebasePlan.md
+
+Documentation Goals:
+- Standardize project architecture.
+- Standardize placeholder demo data.
+- Standardize UI and component design.
+- Standardize coding conventions.
+- Prepare Firebase implementation guidelines.
+
+#### Module 6 - Budget × Vendor Integration
+
+##### Part 1 - Vendor Selection UI
+
+Completed:
+- Replaced Vendor Name input with a dropdown.
+- Added placeholder shared Vendor list.
+- Prepared Budget Management for shared Vendor Database integration.
+- Displayed placeholder Vendor information after selection.
+- Kept Category independent from Vendor.
+- Kept Package Details as Budget-specific information.
+- Maintained consistent UI with Vendor Management.
+
+##### Part 2 - Vendor Information Layout Standardization
+
+Completed:
+- Standardized the Vendor Information layout across Vendor Management and Budget Management.
+- Updated Vendor Details to use a consistent information hierarchy.
+- Removed Vendor Category from the Budget Form Vendor Information section.
+- Reused the Vendor Details presentation style inside the Budget Form.
+- Kept Budget Category independent as the Expense Category selector.
+- Preserved Package Details as Budget-specific information.
+- Improved visual consistency between shared Vendor data and Budget records.
+
+Status:
+✅ Part 2 Completed
+
+#### Module 6 - Budget × Vendor Integration
+
+Status: Foundation Completed
+
+##### Completed
+
+- Integrated Budget Management with the shared Vendor UI.
+- Replaced Vendor Name with a shared Vendor dropdown.
+- Standardized Vendor Information layout across Budget and Vendor modules.
+- Removed Vendor Category from the Budget Form to avoid duplication with Expense Category.
+- Displayed Vendor Website, Facebook, Instagram, PIC Name and PIC Contact using a consistent layout.
+- Kept Package Details as Budget-specific information.
+- Prepared the UI foundation for a shared Vendor database.
+
+Result
+
+Budget Management and Vendor Management now share a consistent Vendor presentation, preparing the project for future CRUD operations and Firebase integration.
+
+##### Project Planning Update
+
+Completed
+
+- Defined Module 7 — Task Management architecture.
+- Defined Task data structure.
+- Confirmed Task Management is an independent module during the Foundation phase.
+- Confirmed Related Vendor is optional.
+- Confirmed Live Rundown will remain a separate module with no direct dependency on Task Management.
+- Updated project architecture documentation for future implementation.
+
+#### Module 7 - Task Management
+
+##### Part 1 - Task Overview
+
+Completed
+
+- Created Task Overview page.
+- Added Task search and filter section.
+- Added Total Tasks statistics card.
+- Added responsive Task table.
+- Added placeholder task records.
+- Reused existing dashboard layout and table components.
+- Followed the shared Design System.
+
+
+

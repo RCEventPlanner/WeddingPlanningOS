@@ -49,6 +49,14 @@ export function TaskFilter() {
             </select>
           </div>
           <div>
+            <label className="mb-2 block text-sm font-medium text-slate-700">Status</label>
+            <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="All">
+              {statusOptions.map((option) => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
+          </div>
+          <div>
             <label className="mb-2 block text-sm font-medium text-slate-700">Priority</label>
             <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="All">
               {priorityOptions.map((option) => (
@@ -56,13 +64,12 @@ export function TaskFilter() {
               ))}
             </select>
           </div>
-          <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-medium text-slate-700">Status</label>
-            <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="All">
-              {statusOptions.map((option) => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-700">Due Date</label>
+            <input
+              type="date"
+              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
+            />
           </div>
         </div>
 

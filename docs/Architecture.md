@@ -126,14 +126,61 @@ Future capabilities
 - Display live event status
 
 
+## Task Management
+
+Task Management is designed for wedding preparation before the event.
+
+Responsibilities
+
+- Planning tasks
+- Task assignment
+- Progress tracking
+- Due dates
+- Priority
+- Status
+
+Task Structure
+
+Task
+├── Category
+├── Task Name
+├── Assigned To
+├── Due Date
+├── Priority
+├── Status
+├── Related Vendor (Optional)
+├── Description
+└── Notes
+
+Related Vendor is optional and references the shared Vendor database.
+
+Task data remains independent from Budget Management.
+
+---
+
+## Live Rundown
+
+Live Rundown is a separate module designed for wedding day operations.
+
+Responsibilities
+
+- Wedding day schedule
+- Ceremony flow
+- Banquet flow
+- Real-time adjustments
+- Live event progress
+
+---
+
 ## Task Management & Live Rundown
 
 Task Management and Live Rundown are independent modules.
 
-Task Management focuses on wedding preparation before the event.
+Task Management focuses on wedding preparation.
 
-Live Rundown focuses on real-time operations during the wedding day.
+Live Rundown focuses on wedding day execution.
 
-No direct relationship is planned during the Foundation phase.
+No direct relationship will be implemented during the Foundation phase.
 
-Any future integration should be evaluated during the Business Logic phase based on real user workflows.
+Future integration, if required, will be evaluated during the Business Logic phase based on real user workflows.
+
