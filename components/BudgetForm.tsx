@@ -128,38 +128,49 @@ export function BudgetForm({
             </div>
 
             <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-slate-700">Vendor Information</label>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div>
-                    <p className="text-xs text-slate-500">Website</p>
-                    <p className="mt-1 text-sm text-slate-900">https://www.rceventplanner.com.my</p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-slate-500">Facebook</p>
-                    <p className="mt-1 text-sm text-slate-900">RC Event Planner</p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-slate-500">Instagram</p>
-                    <p className="mt-1 text-sm text-slate-900">@rc_event_planner.25</p>
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900">Vendor Information</h3>
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    <div>
+                      <p className="text-sm text-slate-500">Vendor Name</p>
+                      <p className="mt-1 font-medium text-slate-900">{vendorName}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-slate-500">Vendor Website (Optional)</p>
+                      <p className="mt-1 font-medium text-slate-900">https://www.rceventplanner.com.my</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-4 grid gap-4 md:grid-cols-2">
-                  <div>
-                    <p className="text-xs text-slate-500">PIC Name</p>
-                    <p className="mt-1 text-sm text-slate-900">Rachel Chong</p>
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900">Social Media</h3>
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    <div>
+                      <p className="text-sm text-slate-500">Vendor Facebook (Optional)</p>
+                      <p className="mt-1 font-medium text-slate-900">RC Event Planner</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-slate-500">Vendor Instagram (Optional)</p>
+                      <p className="mt-1 font-medium text-slate-900">@rc_event_planner.25</p>
+                    </div>
                   </div>
+                </div>
 
-                  <div>
-                    <p className="text-xs text-slate-500">PIC Contact</p>
-                    <p className="mt-1 text-sm text-slate-900">+60 19-2691475</p>
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900">Contact Information</h3>
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    <div>
+                      <p className="text-sm text-slate-500">Vendor PIC Name</p>
+                      <p className="mt-1 font-medium text-slate-900">Rachel Chong</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-slate-500">Vendor PIC Contact</p>
+                      <p className="mt-1 font-medium text-slate-900">+60 19-2691475</p>
+                    </div>
                   </div>
                 </div>
               </div>
-              <p className="mt-2 text-xs text-slate-500">Read-only vendor details — UI placeholder only.</p>
             </div>
 
             <div className="md:col-span-2">
