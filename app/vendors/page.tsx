@@ -1,7 +1,7 @@
 import { VendorSummary } from "../../components/VendorSummary";
 import { VendorFilter } from "../../components/VendorFilter";
 import { VendorTable } from "../../components/VendorTable";
-import { VendorForm } from "../../components/VendorForm";
+import { VendorDetailCard } from "../../components/VendorDetailCard";
 
 export default function VendorsPage() {
   return (
@@ -22,7 +22,7 @@ export default function VendorsPage() {
       <VendorSummary />
       <VendorFilter />
       <VendorTable />
-      <VendorForm />
+      <VendorDetailCard />
     </div>
   );
 }
