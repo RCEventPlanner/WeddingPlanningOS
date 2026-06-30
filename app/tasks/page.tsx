@@ -1,6 +1,7 @@
 import { TaskSummary } from "../../components/TaskSummary";
 import { TaskFilter } from "../../components/TaskFilter";
 import { TaskTable } from "../../components/TaskTable";
+import { TaskDetailCard } from "../../components/TaskDetailCard";
 
 export default function TasksPage() {
   return (
@@ -17,6 +18,7 @@ export default function TasksPage() {
       <TaskSummary />
       <TaskFilter />
       <TaskTable />
+      <TaskDetailCard />
     </div>
   );
 }
