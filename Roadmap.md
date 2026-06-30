@@ -1,10 +1,55 @@
-# Wedding Planning OS Roadmap
+# Wedding Planning OS Roadmap 30/06/2026
 
-## Phase 1 — Foundation ✅
+---
 
-Status: Completed
+# Vision
 
-Completed
+Wedding Planning OS is an all-in-one wedding planning and wedding-day operation platform.
+
+The system supports the complete wedding lifecycle, from planning and preparation to live wedding-day execution.
+
+The development strategy is to build reusable foundations first, then deliver a production-ready Live Rundown MVP before completing the remaining business logic.
+
+---
+
+# Development Strategy
+
+The project follows a feature-first development approach.
+
+Every business module is first developed as a reusable UI foundation using placeholder data.
+
+Business logic, backend integration, and production features are implemented only after the UI foundation is complete.
+
+After all foundation modules are completed, development priority shifts to the Live Rundown MVP, which is the first production-ready feature of Wedding Planning OS.
+
+---
+
+# Phase 1 — UI Foundation
+
+**Status:** In Progress
+
+## Goal
+
+Build reusable UI foundations shared across all business modules.
+
+Current phase includes:
+
+- Placeholder Data
+- Reusable Components
+- Responsive Layout
+- Shared Design System
+
+No Firebase.
+
+No CRUD.
+
+No Business Logic.
+
+---
+
+## Foundation Completed
+
+### Application Foundation
 
 - ✅ Application Layout
 - ✅ Sidebar Navigation
@@ -12,64 +57,52 @@ Completed
 - ✅ Dashboard
 - ✅ Reusable Components
 - ✅ UI State Components
-
-Goal
-
-Build a reusable UI foundation shared by all business modules.
+- ✅ Shared Design System
 
 ---
 
-## Phase 2 — Core Business Modules
+### Core Modules
 
-Develop every module using placeholder data and reusable components only.
+#### ✅ Module 1 — Wedding Profile
 
-No Firebase.
-No CRUD.
-No Business Logic.
+Completed
 
----
-
-### ✅ Module 1 — Wedding Profile
-
-Status: Foundation Completed
-
-- ✅ Wedding Profile Card
-- ✅ Wedding Information Form
-- ✅ Wedding Information View
-- ✅ Wedding Statistics
+- Wedding Information
+- Wedding Details
+- Wedding Statistics
 
 ---
 
-### ✅ Module 2 — Guest Management
+#### ✅ Module 2 — Guest Management
 
-Status: Foundation Completed
+Completed
 
-- ✅ Guest Overview
-- ✅ Guest Form
-- ✅ Guest Detail
-- ✅ Guest Statistics
-
----
-
-### ✅ Module 3 — RSVP Management
-
-Status: Foundation Completed
-
-- ✅ RSVP Overview
-- ✅ RSVP Form
-- ✅ RSVP Detail
-- ✅ RSVP Statistics
+- Guest Overview
+- Guest Form
+- Guest Detail
+- Guest Statistics
 
 ---
 
-### ✅ Module 4 — Budget Management
+#### ✅ Module 3 — RSVP Management
 
-Status: Foundation Completed
+Completed
 
-- ✅ Budget Overview
-- ✅ Budget Form
-- ✅ Budget Detail
-- ✅ Budget Filters
+- RSVP Overview
+- RSVP Form
+- RSVP Detail
+- RSVP Statistics
+
+---
+
+#### ✅ Module 4 — Budget Management
+
+Completed
+
+- Budget Overview
+- Budget Form
+- Budget Detail
+- Budget Filters
 
 Architecture
 
@@ -77,14 +110,14 @@ Architecture
 
 ---
 
-### ✅ Module 5 — Vendor Management
+#### ✅ Module 5 — Vendor Management
 
-Status: Foundation Completed
+Completed
 
-- ✅ Vendor Overview
-- ✅ Vendor Form
-- ✅ Vendor Detail
-- ✅ Vendor Statistics
+- Vendor Overview
+- Vendor Form
+- Vendor Detail
+- Vendor Statistics
 
 Architecture
 
@@ -93,172 +126,78 @@ Architecture
 
 ---
 
-### ✅ Module 6 — Budget × Vendor Integration
-
-Status: Foundation Completed
+#### ✅ Module 6 — Budget × Vendor Integration
 
 Completed
 
-- ✅ Shared Vendor Selection
-- ✅ Shared Vendor Information
-- ✅ Shared Vendor UI Standardization
-- ✅ Shared Vendor Architecture (UI Foundation)
+- Shared Vendor Selection
+- Shared Vendor Information
+- Shared Vendor UI Standardization
+- Shared Vendor Architecture
 
 Goal Achieved
 
-Budget Management and Vendor Management now share a unified Vendor UI and data structure.
-
-Scope
-
-- Shared Vendor Dropdown
-- Shared Vendor Information
-- Shared Vendor Architecture
-- UI Foundation Only
-
-No Firebase.
-No CRUD.
-No business logic has been implemented in this phase.
+Budget Management and Vendor Management now share a unified Vendor data structure and UI foundation.
 
 ---
 
-### ✅ Module 7 — Task Management
-
-Foundation
-
-Status: Foundation Completed
+#### ✅ Module 7 — Task Management
 
 Completed
 
-- ✅ Task Overview
-- ✅ Task Form
-- ✅ Task Detail
-- ✅ Task Statistics
+- Task Overview
+- Task Form
+- Task Detail
+- Task Statistics
 
 Architecture
 
-- Independent module
-- Optional Vendor reference
-- No dependency on Live Rundown
-- UI Foundation only
-
-Goal Achieved
-
-Task Management Foundation is complete and follows the shared Design System, reusable components, and placeholder data architecture.
+- Independent Module
+- Optional Vendor Reference
+- Shared Design System
+- UI Foundation Only
 
 ---
 
-### Module 8 — Live Rundown Management
+#### 🔄 Module 8 — Live Rundown Management
+
+Status: In Progress
 
 Foundation
 
-- Live Rundown Overview
-- Rundown Schedule
-- Rundown Event Detail
+- Live Rundown Board
+- Event Form
+- Event Detail
 - Rundown Statistics
 
 Goal
 
-Provide a real-time wedding day rundown for planners and coordinators.
-
-Features (Future)
-
-- Live event timeline
-- Real-time schedule adjustments
-- Drag-and-drop event reordering
-- Delay tracking
-- Instant time recalculation
-- Staff assignments
-- Vendor coordination
-- Ceremony & banquet flow
-- Progress tracking
-- Mobile-friendly interface
+Replace the traditional Excel wedding rundown with a real-time collaborative wedding operation system.
 
 Architecture
 
 - Linked to Wedding Profile
 - Linked to Vendor Management
-- Linked to Task Management
-- Shared event schedule
-- Designed for real-time operation on the wedding day
+- Independent from Task Management
+- Designed for real-time wedding-day operations
 
 ---
 
-Goal
+# Phase 2 — Production MVP (Highest Priority)
 
-Every module should include
+**Goal**
 
-- Placeholder Data
-- Responsive Layout
-- Reusable Components
-- Consistent Design System
+Deliver the first production-ready version of Wedding Planning OS that can be used during real weddings.
 
-No business logic during this phase.
-
-# Wedding Planning OS Roadmap Update 30/06/2026
-
-## Vision
-
-Wedding Planning OS is an all-in-one wedding planning and live operation platform.
-
-The system supports the complete wedding lifecycle, from planning to wedding-day execution.
-
-Development follows a feature-first approach.
-
-Foundation is completed before Business Logic and Backend implementation.
+The MVP focuses on wedding-day collaboration rather than completing every planning module.
 
 ---
 
-## Phase 1 — Foundation ✅
+## 2.1 Authentication
 
-Status: In Progress
+Implement secure login.
 
-Goal
-
-Build reusable UI foundations using placeholder data only.
-
-No Firebase.
-
-No CRUD.
-
-No Business Logic.
-
-Completed
-
-- ✅ Application Layout
-- ✅ Sidebar Navigation
-- ✅ Top Navigation
-- ✅ Dashboard
-- ✅ Reusable Components
-- ✅ Design System
-
-Core Modules
-
-- ✅ Module 1 — Wedding Profile
-- ✅ Module 2 — Guest Management
-- ✅ Module 3 — RSVP Management
-- ✅ Module 4 — Budget Management
-- ✅ Module 5 — Vendor Management
-- ✅ Module 6 — Budget × Vendor Integration
-- ✅ Module 7 — Task Management
-- 🔄 Module 8 — Live Rundown
-
----
-
-## Phase 2 — Live Rundown MVP (Highest Priority)
-
-Goal
-
-Deliver the first production-ready feature that can be used during real weddings.
-
-This phase has the highest development priority after Foundation.
-
----
-
-### 2.1 Authentication
-
-Support secure login.
-
-User Types
+Supported User Types
 
 - Planner
 - Coordinator
@@ -267,27 +206,33 @@ User Types
 
 ---
 
-### 2.2 Wedding Workspace
+## 2.2 Wedding Workspace
 
 Each wedding is an independent workspace.
 
 Example
 
 RC Event Planner
-↓
-Jason & Emily Wedding
-↓
-Wedding Dashboard
-↓
-Modules
 
-Each user only accesses weddings they are assigned to.
+↓
+
+Jason & Emily Wedding
+
+↓
+
+Wedding Dashboard
+
+↓
+
+Wedding Modules
+
+Each user can only access weddings they are assigned to.
 
 ---
 
-### 2.3 User Management
+## 2.3 User Management
 
-Manage wedding members.
+Manage all wedding members.
 
 Examples
 
@@ -301,7 +246,9 @@ Planner manages all members.
 
 ---
 
-### 2.4 Role Management
+## 2.4 Permission Management
+
+Role-based permissions with per-user customization.
 
 Default Roles
 
@@ -310,17 +257,9 @@ Default Roles
 - Couple
 - Vendor
 
-Roles define default permissions.
+Permissions are configurable and should never be hardcoded.
 
----
-
-### 2.5 Permission Management
-
-Permissions are configurable.
-
-Permissions should NOT be hardcoded.
-
-Planner can customize permissions for every member.
+Planner can customize permissions for every member individually.
 
 Example
 
@@ -332,16 +271,15 @@ Coordinator A
 
 Coordinator B
 
-- View Live Rundown
-- No Edit Permission
+- View Live Rundown Only
 
 Vendor User
 
-- View Live Rundown only
+- View Live Rundown Only
 
 ---
 
-### Permission Matrix (Default)
+### Default Permission Matrix
 
 | Module | Planner | Coordinator | Couple | Vendor |
 |----------|:-------:|:-----------:|:------:|:------:|
@@ -354,153 +292,51 @@ Vendor User
 | Task | Edit | View | Edit | No Access |
 | Live Rundown | Edit | View* | View | View |
 
-*Edit permission for Coordinators is configurable.
+\* Coordinator edit permission is configurable.
 
 ---
 
-### 2.6 Live Rundown
+## 2.5 Live Rundown MVP
 
 Highest Priority Feature
 
-The Live Rundown replaces the traditional Excel rundown sheet.
+The Live Rundown is the first production-ready feature of Wedding Planning OS.
 
 Purpose
 
-Support real-time wedding day operations.
+Provide a real-time wedding-day operation platform for planners, coordinators, couples, and vendors.
 
-Foundation Structure
+Core Features
 
-- Time
-- Program
-- Used Time
-- Food Serving
-- Song
-- Screen
-- Remarks
+- Shared Full Rundown
+- My Rundown (Optional Role Filter)
 - Responsible Roles
-- Coordinator
-- Status
-- Sequence
+- Current Event Marker
+- Real-time Schedule Updates
+- Mobile-first Experience
+- Live Synchronization
+
+Only Planner and authorized Coordinators can edit the event schedule.
+
+All users immediately receive updated rundown information.
 
 ---
 
-### Live Rundown Principles
+## 2.6 Real-time Collaboration
 
-#### One Shared Live Rundown
+Implement:
 
-Every participant can access the complete rundown.
-
-The Full Rundown is the primary operational view.
-
----
-
-#### My Rundown (Optional)
-
-Users may switch to:
-
-My Rundown
-
-This filters events based on Responsible Roles.
-
-This is a convenience feature.
-
-It does NOT restrict access to the Full Rundown.
-
----
-
-#### Responsible Roles
-
-Each event may have multiple Responsible Roles.
-
-Examples
-
-- Planner
-- Coordinator
-- MC
-- DJ
-- Photographer
-- Videographer
-- Makeup Artist
-- Banquet Captain
-- Reception
-- Couple
-- Family
-
----
-
-#### Coordinator
-
-Coordinator represents the primary person responsible for coordinating that event.
-
----
-
-#### Editing Principle
-
-Only authorized users may edit the Live Rundown.
-
-Default
-
-Planner
-
-Coordinator (if granted permission)
-
-Editable Fields
-
-- Time
-- Used Time
-- Status
-- Remarks
-- Event Order
-
-Every update is synchronized immediately.
-
----
-
-#### Real-time Synchronization
-
-Changes made by authorized users are reflected instantly.
-
-Every connected user sees the latest rundown.
-
----
-
-#### Current Event Marker
-
-Future Feature
-
-Highlight
-
-✔ Completed
-
-▶ Current Event
-
-○ Upcoming
-
-Purpose
-
-Help everyone immediately understand the current wedding progress.
-
-Dependencies
-
-- Live Status
 - Real-time Synchronization
+- Live Status Updates
+- Shared Wedding Timeline
+- Current Event Marker
+- Instant Schedule Refresh
 
 ---
 
-#### Mobile-first Design
+# Phase 3 — Planning Module Business Logic
 
-Live Rundown is primarily designed for:
-
-- Mobile Phones
-- Tablets
-
-Desktop remains fully supported.
-
----
-
-## Phase 3 — Core Business Logic
-
-After Live Rundown MVP is stable.
+Begin after the Live Rundown MVP is production-ready.
 
 Modules
 
@@ -519,95 +355,187 @@ Business Logic
 - Sorting
 - Pagination
 - Validation
+- State Management
 
 ---
 
-## Phase 4 — Firebase & Backend
+# Phase 4 — Firebase & Backend
+
+Implement backend infrastructure.
 
 Authentication
 
-Firestore
+- Firebase Authentication
+
+Database
+
+- Firestore
 
 Storage
 
-Realtime Database
+- Firebase Storage
 
-Cloud Functions (Future)
+Realtime
+
+- Firestore Realtime
+- Live Synchronization
+
+Future
+
+- Cloud Functions
 
 Features
 
+- Authentication
 - CRUD
 - File Upload
-- Real-time Sync
 - Wedding Workspace
 - User Permissions
+- Real-time Collaboration
 
 ---
 
-## Phase 5 — UI / UX Polish
+# Phase 5 — UI / UX Polish
 
-Improve
+Improve overall user experience.
 
-- Responsive Layout
-- Animations
-- Empty States
-- Loading
-- Error States
-- Accessibility
-- Toast Notifications
+Includes
+
+- Responsive Optimization
 - Better User Flow
+- Loading States
+- Empty States
+- Error States
+- Toast Notifications
+- Accessibility
+- Typography
+- Icons
+- Micro Animations
+- Consistent Spacing
 
 ---
 
-## Phase 6 — Production Release
+# Phase 6 — Production Release
 
-Production Ready
+Prepare Wedding Planning OS for production deployment.
+
+Includes
 
 - Security
-- Performance
+- Performance Optimization
 - Testing
 - Bug Fixes
 - Mobile Optimization
-- Vercel Deployment
 - Monitoring
+- Deployment (Vercel)
 
 ---
 
-## Development Principles
+# Current Development Priority
 
-Every module follows the same workflow.
+Priority 1
 
-### Part 1 — Foundation
+Complete Module 8 — Live Rundown Foundation
+
+↓
+
+Priority 2
+
+Authentication
+
+↓
+
+Priority 3
+
+Wedding Workspace
+
+↓
+
+Priority 4
+
+User & Permission Management
+
+↓
+
+Priority 5
+
+Live Rundown Realtime Collaboration
+
+↓
+
+Priority 6
+
+Business Logic for Planning Modules
+
+↓
+
+Priority 7
+
+Production Release
+
+---
+
+# MVP Definition
+
+The first public release of Wedding Planning OS focuses on real wedding-day operations.
+
+The MVP includes:
+
+- Authentication
+- Wedding Workspace
+- User Management
+- Permission Management
+- Live Rundown
+- Real-time Synchronization
+
+Planning modules such as Guest, RSVP, Budget, Vendor, and Task will continue to evolve after the MVP has been released.
+
+---
+
+# Development Principles
+
+Every module follows the same development workflow.
+
+## Part 1 — Foundation
 
 - UI Structure
 - Reusable Components
 - Placeholder Data
 
-### Part 2 — Business Logic
+---
+
+## Part 2 — Business Logic
 
 - CRUD
 - Search
 - Filter
+- Sorting
 - Validation
+- State Management
 
-### Part 3 — Backend
+---
 
-- Firebase
+## Part 3 — Backend
+
+- Firebase Authentication
 - Firestore
-- Authentication
+- File Storage
+- Real-time Database
 
-### Part 4 — Polish
+---
 
-- UX
-- Responsive
+## Part 4 — Polish
+
+- UX Improvements
+- Responsive Design
 - Accessibility
 - Animations
 
 ---
 
-## Development Workflow
+# Development Workflow
 
-For every completed Part
+For every completed development part:
 
 1. npm run build
 2. git status
@@ -619,13 +547,16 @@ For every completed Part
 
 ---
 
-## Long-term Architecture Principles
+# Long-term Architecture Principles
 
-- One Wedding = One Workspace
-- Full Rundown is always available to every wedding member.
-- My Rundown is an optional filtered view.
-- Permissions are configurable per user.
+- One Company can manage multiple Weddings.
+- One Wedding is one independent Workspace.
+- Every Wedding has its own Members, Vendors, Guests, Budgets, Tasks, and Live Rundown.
+- Full Rundown is always available to every assigned wedding member.
+- My Rundown is an optional filtered view based on Responsible Roles.
 - Roles provide default permissions only.
+- Permissions are configurable per user.
 - Planner manages members and permissions.
-- Live Rundown is the first production-ready feature.
-- Other planning modules continue evolving after the MVP is deployed.
+- Only authorized users may edit the Live Rundown schedule.
+- Live Rundown is the core feature and first production-ready module of Wedding Planning OS.
+- Remaining planning modules continue to evolve after the MVP is deployed.

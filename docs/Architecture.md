@@ -1,89 +1,116 @@
 # Wedding Planning OS Architecture
 
-## Development Strategy
+---
 
-Feature-first Development
+# Vision
 
-1. Foundation
+Wedding Planning OS is designed as an all-in-one wedding planning and wedding-day operation platform.
+
+The architecture separates planning workflows from live event execution while keeping all data within a single Wedding Workspace.
+
+The system is built using a feature-first architecture, allowing reusable UI foundations to be completed before business logic and backend implementation.
+
+---
+
+# Development Strategy
+
+The project follows a feature-first development approach.
+
+Development order:
+
+1. UI Foundation
 2. Business Logic
-3. Backend
+3. Backend Integration
 4. UI / UX Polish
 
+Each module follows the same lifecycle before moving to the next stage.
+
 ---
 
-# Application Architecture
+# Overall System Architecture
 
-Wedding Profile
+```
+Company
 │
-├── Guest Management
-├── RSVP Management
-├── Budget Management
-├── Vendor Management
-├── Task Management
-└── Timeline Management
+└── Wedding Workspace
+    │
+    ├── Wedding Profile
+    ├── Guest Management
+    ├── RSVP Management
+    ├── Budget Management
+    ├── Vendor Management
+    ├── Task Management
+    └── Live Rundown
+```
 
----
+A company can manage multiple weddings.
 
-# Shared Data Architecture
+Each Wedding Workspace is completely independent.
 
-Vendor Management
-        │
-        │ Shared Vendor Database
-        │
-Budget Management
+Every workspace owns its own:
 
-Vendor data should only exist in one place.
+- Wedding Profile
+- Guests
+- RSVP Records
+- Budget
+- Vendors
+- Tasks
+- Live Rundown
+- Members
+- Permissions
 
-Budget references Vendor records instead of duplicating vendor information.
+No data is shared between different weddings unless explicitly designed in the future.
 
 ---
 
 # Module Relationship
 
+```
 Wedding Profile
-    ↓
-Guest
-    ↓
-RSVP
+        │
+        ├──────── Guest Management
+        │
+        ├──────── RSVP Management
+        │
+        ├──────── Budget Management
+        │               │
+        │               │
+        │        Shared Vendor Database
+        │               │
+        ├──────── Vendor Management
+        │
+        ├──────── Task Management
+        │
+        └──────── Live Rundown
+```
 
-Vendor
-    ↔
-Budget
+Wedding Profile is the central module.
 
-Task
-Timeline
+Every business module belongs to a Wedding Workspace.
+
+Task Management and Live Rundown are intentionally separated because they serve different operational purposes.
 
 ---
 
-# Future Backend
+# Shared Vendor Architecture
 
-Firebase Authentication
+Vendor Management is the single source of truth for vendor information.
 
-Firestore
+Budget Management references Vendor records instead of duplicating vendor data.
 
-Storage
+```
+Vendor Management
+        │
+        │ Shared Vendor Database
+        │
+Budget Management
+```
 
-Cloud Functions (Future)
+Vendor information should only exist in one place.
 
-# Architecture Principles
+---
 
-## Shared Data Architecture
-
-Wedding Profile
-├── Guest Management
-├── RSVP Management
-├── Budget Management
-├── Vendor Management
-├── Task Management
-└── Timeline Management
-
-Budget Management ↔ Vendor Management
-
-- Shared Vendor Database
-- Budget references Vendor records
-- Vendor information is maintained in one place only.
-
-Vendor owns:
+## Vendor owns
 
 - Category
 - Vendor Name
@@ -95,9 +122,12 @@ Vendor owns:
 - Default Package Details
 - Notes
 
-Budget owns:
+---
+
+## Budget owns
 
 - Expense Name
+- Selected Vendor
 - Package Details
 - Payment Information
 - Invoice Number
@@ -105,42 +135,30 @@ Budget owns:
 - Payment Status
 - Notes
 
-## Live Rundown Management
+Package Details inside Budget are specific to that wedding and should never overwrite the Vendor default package.
 
-The Live Rundown module is designed for wedding day operations.
+---
 
-Unlike a traditional timeline, the Live Rundown is intended to be updated in real time during the event.
+# Task Management
 
-Primary users
+Task Management is designed for wedding preparation.
 
-- Wedding Planner
-- Wedding Coordinator
-- Event Crew
-
-Future capabilities
-
-- Adjust event timings during the wedding
-- Automatically shift subsequent events
-- Track current event progress
-- Coordinate vendors and crew
-- Display live event status
-
-
-## Task Management
-
-Task Management is designed for wedding preparation before the event.
+Its purpose is to help planners complete all planning work before the wedding day.
 
 Responsibilities
 
-- Planning tasks
-- Task assignment
-- Progress tracking
-- Due dates
+- Planning Tasks
+- Internal Checklist
+- Assignment
+- Due Dates
 - Priority
-- Status
+- Progress Tracking
 
-Task Structure
+---
 
+## Task Structure
+
+```
 Task
 ├── Category
 ├── Task Name
@@ -151,53 +169,32 @@ Task
 ├── Related Vendor (Optional)
 ├── Description
 └── Notes
+```
 
-Related Vendor is optional and references the shared Vendor database.
+Related Vendor is optional.
 
-Task data remains independent from Budget Management.
+Tasks may reference Vendor records but remain independent from Budget Management.
 
----
-
-## Live Rundown
-
-Live Rundown is a separate module designed for wedding day operations.
-
-Responsibilities
-
-- Wedding day schedule
-- Ceremony flow
-- Banquet flow
-- Real-time adjustments
-- Live event progress
+Task Management does not control the Live Rundown.
 
 ---
 
-## Task Management & Live Rundown
+# Live Rundown
 
-Task Management and Live Rundown are independent modules.
+Live Rundown is a dedicated operational module for the actual wedding day.
 
-Task Management focuses on wedding preparation.
+It replaces the traditional Excel Rundown while maintaining the familiar workflow used by wedding planners and coordinators.
 
-Live Rundown focuses on wedding day execution.
-
-No direct relationship will be implemented during the Foundation phase.
-
-Future integration, if required, will be evaluated during the Business Logic phase based on real user workflows.
-
-# Module 8 — Live Rundown
-
-Purpose
-
-Manage real-time wedding day operations.
-
-The Live Rundown replaces the traditional Excel rundown sheet while maintaining the same operational workflow used by wedding planners.
-
-It is designed for live execution instead of planning.
+Unlike Task Management, Live Rundown is intended for real-time execution instead of planning.
 
 ---
 
-Core Event Structure
+## Core Event Structure
 
+Each Live Rundown event contains:
+
+- Sequence
+- Status
 - Time
 - Program
 - Used Time
@@ -205,16 +202,92 @@ Core Event Structure
 - Song
 - Screen
 - Remarks
-- Responsible Roles (Multiple)
+- Responsible Roles
 - Coordinator
-- Status
-- Sequence
+
+This structure mirrors the existing Excel rundown format currently used by RC Event Planner.
 
 ---
 
-Role-based Viewing
+# Relationship Between Task Management and Live Rundown
 
-Each rundown event can be assigned to one or more Responsible Roles.
+Task Management
+
+↓
+
+Wedding Preparation
+
+↓
+
+Live Rundown
+
+↓
+
+Wedding Day Execution
+
+Task Management and Live Rundown are independent modules.
+
+Tasks are not automatically converted into Live Rundown events.
+
+Future integration may be considered after observing real user workflows.
+
+---
+
+# Live Rundown Viewing
+
+Every wedding member has access to the Full Rundown.
+
+The Full Rundown is always the primary operational view.
+
+Future versions may optionally provide a filtered "My Rundown" view.
+
+---
+
+## Full Rundown
+
+Displays every event for every participant.
+
+Purpose
+
+Provide a shared operational timeline during the wedding.
+
+---
+
+## My Rundown (Optional)
+
+Users may switch to:
+
+My Rundown
+
+This view filters events using Responsible Roles.
+
+Examples
+
+Planner
+
+Displays every event.
+
+DJ
+
+Displays only events assigned to DJ.
+
+Photographer
+
+Displays photography-related events.
+
+Reception
+
+Displays reception duties.
+
+This feature improves convenience.
+
+It does **not** replace or restrict the Full Rundown.
+
+---
+
+# Responsible Roles
+
+Each Live Rundown event may contain multiple Responsible Roles.
 
 Examples
 
@@ -230,99 +303,169 @@ Examples
 - Couple
 - Family
 
-Future Business Logic
+Responsible Roles are used for filtering and communication.
 
-Users may switch between:
-
-- Full Rundown
-- My Rundown
-
-My Rundown displays only the events assigned to the selected role.
-
-Example
-
-Role: DJ
-
-Displays only events requiring DJ attention.
-
-Role: Photographer
-
-Displays only photography-related events.
-
-Role: Coordinator
-
-Displays the complete rundown.
+They are not permissions.
 
 ---
 
-Foundation Phase
+# Coordinator
 
-UI only
+Coordinator represents the primary person responsible for coordinating that event.
 
-- Rundown Overview
-- Rundown Form
-- Event Detail
-- Statistics
+Each event should have one Coordinator assigned.
 
-No real-time synchronization.
-No notifications.
-No business logic.
-
-## Current Time Marker (Current Event)
-
-Purpose
-
-Provide all users with a clear indication of the current event during live wedding operations.
-
-The Current Time Marker helps every participant immediately understand:
-
-- Which event is currently in progress.
-- Which event is next.
-- Which events have already been completed.
-
-This feature improves communication and reduces the need for verbal updates during the event.
+The Coordinator is responsible for monitoring the execution of that specific event.
 
 ---
+
+# Live Editing
+
+Only authorized users may edit the Live Rundown.
+
+Default editable roles
+
+- Planner
+- Coordinator (with Edit permission)
+
+Editable fields
+
+- Time
+- Used Time
+- Status
+- Remarks
+- Event Order
+
+Changes are reflected immediately for all connected users once real-time synchronization is implemented.
+
+---
+
+# Current Event Marker
+
+One event is highlighted as the current event.
 
 Display States
 
-✔ Completed
+- ✔ Completed
+- ▶ Current Event
+- ○ Upcoming
 
-▶ Current Event
+Purpose
 
-○ Upcoming
+Allow every participant to instantly understand:
 
-Example
+- Current event
+- Upcoming event
+- Completed events
 
-✔ 6:50 PM  Guest Registration
-
-✔ 7:00 PM  Couple Arrival
-
-▶ 7:10 PM  First March In
-
-○ 7:20 PM  Opening Speech
-
-○ 7:30 PM  First Course
+This significantly improves communication during live wedding operations.
 
 ---
 
-Behavior
+# Real-time Synchronization
 
-The Current Event is updated by the Planner or Coordinator.
+Future implementation
 
-Any change is synchronized to all connected users in real time.
+Planner or authorized Coordinator updates the schedule.
 
-When the event schedule is adjusted, the Current Time Marker automatically reflects the updated sequence.
+↓
+
+Live Rundown recalculates event timing.
+
+↓
+
+Current Event updates.
+
+↓
+
+Every connected user immediately receives the latest rundown.
+
+No manual refresh should be required.
 
 ---
 
-Implementation Phase
+# User & Permission Architecture
 
-Phase 3 — Business Logic
+Users belong to a Wedding Workspace.
 
-Dependencies
+Each user has:
 
+- Role
+- Permissions
+- Assigned Weddings
+
+Default Roles
+
+- Planner
+- Coordinator
+- Couple
+- Vendor User
+
+Roles provide default permissions.
+
+Permissions can be customized per user.
+
+Permissions should never be hardcoded.
+
+Planner manages all members and permissions.
+
+---
+
+# Workspace Architecture
+
+```
+RC Event Planner
+        │
+        ├── Jason & Emily Wedding
+        │
+        ├── Ryan & Chloe Wedding
+        │
+        └── Aaron & Michelle Wedding
+```
+
+Each Wedding Workspace contains its own:
+
+- Members
+- Permissions
+- Guests
+- RSVP
+- Budget
+- Vendors
+- Tasks
 - Live Rundown
-- Real-time synchronization
-- Event Status
 
+Users only access weddings they are assigned to.
+
+---
+
+# Future Backend
+
+Backend implementation will use Firebase.
+
+Components
+
+- Firebase Authentication
+- Firestore Database
+- Firebase Storage
+- Firestore Realtime
+- Cloud Functions (Future)
+
+---
+
+# Architecture Principles
+
+- One Company can manage multiple Weddings.
+- One Wedding equals one independent Workspace.
+- Wedding Profile is the center of every Workspace.
+- Vendor information is maintained in one place only.
+- Budget references Vendor records instead of duplicating data.
+- Task Management focuses on wedding preparation.
+- Live Rundown focuses on wedding-day execution.
+- Full Rundown is always available to every assigned wedding member.
+- My Rundown is an optional filtered view.
+- Responsible Roles are for filtering, not permissions.
+- Roles define default permissions.
+- Permissions are configurable per user.
+- Planner manages users and permissions.
+- Only authorized users can edit the Live Rundown.
+- Live Rundown is designed as the first production-ready feature of Wedding Planning OS.
