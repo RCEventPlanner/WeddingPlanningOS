@@ -1,5 +1,5 @@
 export function TaskSummary() {
-  const totalTasks = 24;
+  const totalTasks = "24 Tasks";
 
   return (
     <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">

@@ -19,18 +19,34 @@ users
 
 weddings
 
-vendors
+members
 
-budgets
+vendors
 
 guests
 
 rsvps
 
+budgets
+
 tasks
 
-timelineEvents
+liveRundownEvents
 
+---
+Wedding
+
+↓
+
+Members
+
+↓
+
+Permissions
+
+↓
+
+Live Rundown
 ---
 
 ## Storage
@@ -56,3 +72,4 @@ Indexes
 Cloud Functions
 
 Offline Support
+

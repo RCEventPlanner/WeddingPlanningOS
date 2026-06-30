@@ -129,3 +129,11 @@ Rules
 - Other modules use their own Category when applicable.
 - Vendor information should maintain a consistent layout across the application.
 - Module-specific fields remain owned by their respective modules.
+
+## Live Rundown Design Principle
+
+The Full Rundown is always the primary operational view.
+
+Role-based filtering is an optional productivity feature.
+
+Users are never restricted from viewing the complete wedding rundown unless future permission settings explicitly require it.
