@@ -352,12 +352,13 @@ Goal
 
 Manage all members inside a Wedding Workspace.
 
-Planned Features
+Completed Features
 
 - Wedding Members List
 - Invite Member UI
-- Member Role
-- Member Status
+- Member Detail Preview
+- Role Badges
+- Status Badges
 - Placeholder Data
 - Responsive Layout
 

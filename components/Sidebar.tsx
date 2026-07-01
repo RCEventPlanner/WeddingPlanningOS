@@ -12,6 +12,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/", icon: "🏠" },
   { label: "Workspace", href: "/workspace", icon: "🏢" },
+  { label: "Members", href: "/members", icon: "👥" },
   { label: "Wedding Profile", href: "/wedding", icon: "💍" },
   { label: "Guests", href: "/guests", icon: "👥" },
   { label: "RSVP", href: "/rsvp", icon: "📨" },
