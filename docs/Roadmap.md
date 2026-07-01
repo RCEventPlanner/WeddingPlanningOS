@@ -177,7 +177,7 @@ Part 5
 Timeline Shift UI ✅
 
 Part 6
-My Rundown
+Timeline Shift Logic ✅
 
 Part 7
 Realtime Sync

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 type RundownRow = {
   status: "Completed" | "Current" | "Upcoming" | "Delayed" | "Skipped" | "Cancelled";
@@ -10,6 +10,7 @@ type RundownRow = {
   expectedDuration: string;
   actualDuration: string;
   delay: string;
+  shiftedTime?: string;
   program: string;
   usedTime: string;
   foodServing: string;
@@ -143,11 +144,108 @@ const statusIcons: Record<RundownRow["status"], string> = {
   Cancelled: "✖",
 };
 
+const parseClockTime = (value: string): number => {
+  const match = value.match(/^(\d{1,2}):(\d{2})\s*([AP]M)$/i);
+
+  if (!match) {
+    return Number.NaN;
+  }
+
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  const period = match[3].toUpperCase();
+  let totalMinutes = hours * 60 + minutes;
+
+  if (period === "PM" && hours !== 12) {
+    totalMinutes += 720;
+  }
+
+  if (period === "AM" && hours === 12) {
+    totalMinutes -= 720;
+  }
+
+  return totalMinutes;
+};
+
+const formatClockTime = (minutes: number): string => {
+  const normalized = ((minutes % 1440) + 1440) % 1440;
+  const hours = Math.floor(normalized / 60);
+  const minutesPart = normalized % 60;
+  const period = hours >= 12 ? "PM" : "AM";
+  const displayHours = hours % 12 === 0 ? 12 : hours % 12;
+
+  return `${displayHours}:${minutesPart.toString().padStart(2, "0")} ${period}`;
+};
+
+const parseDurationMinutes = (value: string): number => {
+  const match = value.match(/(\d+)/);
+  return match ? Number(match[1]) : 0;
+};
+
+const getDelayMinutes = (row: RundownRow): number => {
+  const scheduledStart = parseClockTime(row.scheduledTime);
+  const actualStart = parseClockTime(row.actualStartTime);
+  const expectedDuration = parseDurationMinutes(row.expectedDuration);
+  const actualDuration = parseDurationMinutes(row.actualDuration);
+
+  const startDelay = Number.isNaN(scheduledStart) || Number.isNaN(actualStart) ? 0 : actualStart - scheduledStart;
+  const durationDelay = actualDuration - expectedDuration;
+
+  return Math.max(0, startDelay, durationDelay);
+};
+
 export function LiveRundownBoard() {
   const [viewMode, setViewMode] = useState<"Full Rundown" | "My Rundown">("Full Rundown");
   const [menuOpenIndex, setMenuOpenIndex] = useState<number | null>(null);
   const [detailOpenIndex, setDetailOpenIndex] = useState<number | null>(null);
   const [editOpenIndex, setEditOpenIndex] = useState<number | null>(null);
+  const [rundownData, setRundownData] = useState<RundownRow[]>(() =>
+    rundownRows.map((row) => ({ ...row, shiftedTime: row.scheduledTime })),
+  );
+  const [recalculationVersion, setRecalculationVersion] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState("7:05 PM");
+
+  const timelineData = useMemo(() => {
+    let cumulativeDelay = 0;
+
+    const recalculatedRows = rundownData.map((row) => {
+      const isProtected = row.status === "Completed" || row.status === "Skipped" || row.status === "Cancelled";
+      const scheduledStart = parseClockTime(row.scheduledTime);
+      const actualStart = parseClockTime(row.actualStartTime);
+      const delayForCurrentEvent = isProtected ? 0 : getDelayMinutes(row);
+      const usesActualStart =
+        !isProtected && row.actualStartTime !== "—" && Number.isFinite(actualStart) && actualStart !== scheduledStart;
+
+      const shiftedTime = isProtected
+        ? row.scheduledTime
+        : usesActualStart
+          ? formatClockTime(actualStart)
+          : formatClockTime(scheduledStart + cumulativeDelay);
+
+      if (!isProtected) {
+        cumulativeDelay += delayForCurrentEvent;
+      }
+
+      return {
+        ...row,
+        shiftedTime,
+      };
+    });
+
+    const totalDelay = cumulativeDelay;
+    const affectedEvents = recalculatedRows.filter(
+      (row) =>
+        row.status !== "Completed" && row.status !== "Skipped" && row.status !== "Cancelled" && row.shiftedTime !== row.scheduledTime,
+    ).length;
+
+    return {
+      rows: recalculatedRows,
+      totalDelay,
+      affectedEvents,
+      bannerMessage:
+        totalDelay === 0 ? "No timeline changes." : `Wedding is currently delayed by +${totalDelay} minutes.`,
+    };
+  }, [rundownData, recalculationVersion]);
 
   const handleViewDetail = (index: number) => {
     setMenuOpenIndex(null);
@@ -161,6 +259,36 @@ export function LiveRundownBoard() {
     setEditOpenIndex(editOpenIndex === index ? null : index);
   };
 
+  const handleActualStartChange = (index: number, value: string) => {
+    setRundownData((currentRows) =>
+      currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, actualStartTime: value } : row)),
+    );
+    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
+  };
+
+  const handleActualDurationChange = (index: number, value: string) => {
+    setRundownData((currentRows) =>
+      currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, actualDuration: value } : row)),
+    );
+    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
+  };
+
+  const handleStatusChange = (index: number, value: RundownRow["status"]) => {
+    setRundownData((currentRows) =>
+      currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, status: value } : row)),
+    );
+    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
+  };
+
+  const handleRecalculateTimeline = () => {
+    setRecalculationVersion((currentValue) => currentValue + 1);
+    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
+  };
+
+  const previewRows = timelineData.rows.filter(
+    (row) => row.status !== "Completed" && row.status !== "Skipped" && row.status !== "Cancelled",
+  );
+
   return (
     <section className="mt-6 space-y-6">
       <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -172,12 +300,12 @@ export function LiveRundownBoard() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-amber-900">Timeline Shift Status</p>
-            <p className="text-sm text-amber-800">Wedding is currently delayed by +8 minutes.</p>
+            <p className="text-sm text-amber-800">{timelineData.bannerMessage}</p>
           </div>
           <button
             type="button"
-            className="rounded-full border border-amber-200 bg-white px-4 py-2 text-sm font-semibold text-amber-900 disabled:cursor-not-allowed disabled:opacity-70"
-            disabled
+            onClick={handleRecalculateTimeline}
+            className="rounded-full border border-amber-200 bg-white px-4 py-2 text-sm font-semibold text-amber-900 hover:bg-amber-100"
           >
             Recalculate Timeline
           </button>
@@ -187,37 +315,35 @@ export function LiveRundownBoard() {
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Total Delay</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">+8 mins</p>
+          <p className="mt-2 text-2xl font-semibold text-slate-900">
+            {timelineData.totalDelay === 0 ? "0 mins" : `+${timelineData.totalDelay} mins`}
+          </p>
         </div>
         <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Affected Events</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">4</p>
+          <p className="mt-2 text-2xl font-semibold text-slate-900">{timelineData.affectedEvents}</p>
         </div>
         <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Last Updated</p>
-          <p className="mt-2 text-base font-semibold text-slate-900">7:05 PM</p>
+          <p className="mt-2 text-base font-semibold text-slate-900">{lastUpdated}</p>
         </div>
       </div>
 
       <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="mb-3 flex items-center justify-between">
           <p className="text-sm font-semibold text-slate-900">Timeline Preview</p>
-          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500">Demo</span>
+          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500">Live</span>
         </div>
 
         <div className="space-y-3">
-          <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-            <span className="text-sm font-medium text-slate-700">Opening Ceremony</span>
-            <span className="text-sm font-semibold text-slate-900">7:00 PM → 7:08 PM</span>
-          </div>
-          <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-            <span className="text-sm font-medium text-slate-700">Cake Cutting</span>
-            <span className="text-sm font-semibold text-slate-900">8:00 PM → 8:08 PM</span>
-          </div>
-          <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-            <span className="text-sm font-medium text-slate-700">First Dance</span>
-            <span className="text-sm font-semibold text-slate-900">8:30 PM → 8:38 PM</span>
-          </div>
+          {previewRows.slice(0, 3).map((row) => (
+            <div key={`${row.program}-${row.scheduledTime}`} className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+              <span className="text-sm font-medium text-slate-700">{row.program}</span>
+              <span className="text-sm font-semibold text-slate-900">
+                {row.scheduledTime} → {row.shiftedTime}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -299,7 +425,7 @@ export function LiveRundownBoard() {
       </div>
 
       <div className="block lg:hidden space-y-3">
-        {rundownRows.map((row, index) => (
+        {timelineData.rows.map((row, index) => (
           <article key={`${row.time}-${row.program}`} className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[row.status]}`}>
@@ -416,7 +542,7 @@ export function LiveRundownBoard() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Shifted Time</p>
-                    <p className="mt-1 text-sm text-slate-700">{row.scheduledTime}</p>
+                    <p className="mt-1 text-sm text-slate-700">{row.shiftedTime ?? row.scheduledTime}</p>
                   </div>
                 </div>
               </div>
@@ -436,7 +562,11 @@ export function LiveRundownBoard() {
                     <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
                       Status
                     </span>
-                    <select defaultValue={row.status} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400">
+                    <select
+                      value={row.status}
+                      onChange={(event) => handleStatusChange(index, event.target.value as RundownRow["status"])}
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
+                    >
                       <option value="Upcoming">Upcoming</option>
                       <option value="Current">Current</option>
                       <option value="Completed">Completed</option>
@@ -452,7 +582,8 @@ export function LiveRundownBoard() {
                     </span>
                     <input
                       type="text"
-                      defaultValue={row.scheduledTime}
+                      value={row.scheduledTime}
+                      readOnly
                       className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
                     />
                   </label>
@@ -463,7 +594,8 @@ export function LiveRundownBoard() {
                     </span>
                     <input
                       type="text"
-                      defaultValue={row.actualStartTime}
+                      value={row.actualStartTime}
+                      onChange={(event) => handleActualStartChange(index, event.target.value)}
                       className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
                     />
                   </label>
@@ -474,7 +606,8 @@ export function LiveRundownBoard() {
                     </span>
                     <input
                       type="text"
-                      defaultValue={row.expectedDuration}
+                      value={row.expectedDuration}
+                      readOnly
                       className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
                     />
                   </label>
@@ -485,7 +618,8 @@ export function LiveRundownBoard() {
                     </span>
                     <input
                       type="text"
-                      defaultValue={row.actualDuration}
+                      value={row.actualDuration}
+                      onChange={(event) => handleActualDurationChange(index, event.target.value)}
                       className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
                     />
                   </label>
@@ -494,7 +628,7 @@ export function LiveRundownBoard() {
                     <span className="block text-xs font-semibold uppercase tracking-wide text-slate-400">
                       Delay
                     </span>
-                    <span className="mt-1 block text-sm text-slate-700">{row.delay}</span>
+                    <span className="mt-1 block text-sm text-slate-700">{getDelayMinutes(row)} mins</span>
                   </div>
                 </div>
               </div>
@@ -521,7 +655,7 @@ export function LiveRundownBoard() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 bg-white">
-            {rundownRows.map((row) => (
+            {timelineData.rows.map((row) => (
               <tr key={`${row.time}-${row.program}`} className="align-top hover:bg-slate-50">
                 <td className="px-4 py-4">
                   <span
@@ -531,7 +665,7 @@ export function LiveRundownBoard() {
                     <span>{row.status}</span>
                   </span>
                 </td>
-                <td className="px-4 py-4 font-medium text-slate-900">{row.time}</td>
+                <td className="px-4 py-4 font-medium text-slate-900">{row.shiftedTime ?? row.scheduledTime}</td>
                 <td className="px-4 py-4 text-slate-700">{row.program}</td>
                 <td className="px-4 py-4 text-slate-700">{row.usedTime}</td>
                 <td className="px-4 py-4 text-slate-700">{row.foodServing}</td>
