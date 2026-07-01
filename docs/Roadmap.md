@@ -1,4 +1,4 @@
-# Wedding Planning OS Roadmap 30/06/2026
+# Wedding Planning OS Roadmap 01/07/2026
 
 ---
 
@@ -21,6 +21,37 @@ Every business module is first developed as a reusable UI foundation using place
 Business logic, backend integration, and production features are implemented only after the UI foundation is complete.
 
 After all foundation modules are completed, development priority shifts to the Live Rundown MVP, which is the first production-ready feature of Wedding Planning OS.
+
+---
+
+# Milestones
+
+## M1 — Foundation Complete
+
+- Core UI
+- Dashboard
+- Live Rundown Foundation
+- Workspace Foundation
+- Settings Foundation
+
+## M2 — Live Rundown MVP
+
+- Authentication
+- Workspace
+- Members
+- Permissions
+- Live Rundown
+- Realtime Collaboration
+
+## M3 — Planning Modules Business Logic
+
+- Guest
+- RSVP
+- Budget
+- Vendor
+- Task
+
+## M4 — Production Release
 
 ---
 
@@ -54,7 +85,6 @@ No Business Logic.
 - ✅ Application Layout
 - ✅ Sidebar Navigation
 - ✅ Top Navigation
-- ✅ Dashboard
 - ✅ Reusable Components
 - ✅ UI State Components
 - ✅ Shared Design System
@@ -159,38 +189,46 @@ Architecture
 
 ---
 
-#### Module 8 - Live Rundown
+#### ✅ Module 8 — Live Rundown
 
-Part 1
+Completed
+
+Part 1  
 Foundation ✅
 
-Part 2
+Part 2  
 Mobile Responsive Layout ✅
 
-Part 3
+Part 3  
 Time Management UI ✅
 
-Part 4
+Part 4  
 Status Workflow ✅
 
-Part 5
+Part 5  
 Timeline Shift UI ✅
 
-Part 6
+Part 6  
 Timeline Shift Logic ✅
 
-Part 7
+Part 7  
 My Rundown ✅
 
-Part 8
+Part 8  
 Realtime Sync Foundation ✅
-
-Part 9
-Dashboard Refinement ✅
 
 Goal
 
-Replace the traditional Excel wedding rundown with a real-time collaborative wedding operation system.
+Replace the traditional Excel wedding rundown with a mobile-first collaborative wedding operation system.
+
+Completed Foundation includes:
+
+- Mobile Responsive Layout
+- Time Management
+- Status Workflow
+- Timeline Shift
+- My Rundown
+- Realtime Foundation
 
 Architecture
 
@@ -201,19 +239,70 @@ Architecture
 
 ---
 
-# Phase 2 — Production MVP (Highest Priority)
+#### ✅ Module 9 — Dashboard
 
-**Goal**
+Completed
 
-Deliver the first production-ready version of Wedding Planning OS that can be used during real weddings.
+Features
 
-The MVP focuses on wedding-day collaboration rather than completing every planning module.
+- Wedding Dashboard
+- Wedding Overview
+- Statistics Cards
+- Upcoming Tasks
+- Quick Actions
+- Responsive Layout
+
+Product Decision
+
+Dashboard provides a high-level overview only.
+
+Operational workflows belong to Live Rundown.
+
+Duplicate information should be avoided.
 
 ---
 
-## 2.1 Authentication
+#### 🔄 Module 10 — Workspace Foundation
 
-Implement secure login.
+Current
+
+Planned Features
+
+- Wedding Workspace List
+- Create Wedding
+- Archive Wedding
+- Workspace Switcher
+- Workspace Settings
+- Placeholder Data
+- Responsive Layout
+
+---
+
+#### ⬜ Module 11 — Settings Foundation
+
+Planned
+
+Planned Features
+
+- Company Profile
+- Wedding Settings
+- Appearance Settings
+- System Preferences
+- About
+- Placeholder Data
+- Responsive Layout
+
+---
+
+# Phase 2 — Authentication & Permissions
+
+**Status:** Planned
+
+## Module 12 — Authentication Foundation
+
+Goal
+
+Implement secure login and user session foundation.
 
 Supported User Types
 
@@ -222,35 +311,30 @@ Supported User Types
 - Couple
 - Vendor User
 
----
+Planned Features
 
-## 2.2 Wedding Workspace
-
-Each wedding is an independent workspace.
-
-Example
-
-RC Event Planner
-
-↓
-
-Jason & Emily Wedding
-
-↓
-
-Wedding Dashboard
-
-↓
-
-Wedding Modules
-
-Each user can only access weddings they are assigned to.
+- Login
+- Logout
+- User Profile
+- Session Handling
+- Firebase Authentication Preparation
 
 ---
 
-## 2.3 User Management
+## Module 13 — Wedding Members Foundation
 
-Manage all wedding members.
+Goal
+
+Manage all members inside a Wedding Workspace.
+
+Planned Features
+
+- Wedding Members List
+- Invite Member UI
+- Member Role
+- Member Status
+- Placeholder Data
+- Responsive Layout
 
 Examples
 
@@ -258,15 +342,17 @@ Examples
 - Coordinator
 - Bride
 - Groom
-- Vendor Users
+- Vendor User
 
 Planner manages all members.
 
 ---
 
-## 2.4 Permission Management
+## Module 14 — Permission Management Foundation
 
-Role-based permissions with per-user customization.
+Goal
+
+Create a configurable permission system.
 
 Default Roles
 
@@ -314,45 +400,52 @@ Vendor User
 
 ---
 
-## 2.5 Live Rundown MVP
+## Module 15 — Live Rundown Permission Integration
 
-Highest Priority Feature
+Goal
 
-The Live Rundown is the first production-ready feature of Wedding Planning OS.
+Connect permission rules to Live Rundown operations.
 
-Purpose
+Planned Permissions
 
-Provide a real-time wedding-day operation platform for planners, coordinators, couples, and vendors.
+- View Live Rundown
+- Edit Event
+- Edit Status
+- Edit Time
+- Edit Remarks
+- Delete Event
+- Recalculate Timeline
+
+Only Planner and authorized Coordinators can edit the event schedule.
+
+All assigned wedding members can view Full Rundown.
+
+My Rundown remains an optional filtered view based on Responsible Roles.
+
+---
+
+## Module 16 — Live Rundown MVP Realtime Collaboration
+
+Goal
+
+Deliver production-ready Live Rundown collaboration.
 
 Core Features
 
 - Shared Full Rundown
-- My Rundown (Optional Role Filter)
+- My Rundown
 - Responsible Roles
 - Current Event Marker
 - Real-time Schedule Updates
 - Mobile-first Experience
 - Live Synchronization
-
-Only Planner and authorized Coordinators can edit the event schedule.
-
-All users immediately receive updated rundown information.
-
----
-
-## 2.6 Real-time Collaboration
-
-Implement:
-
-- Real-time Synchronization
-- Live Status Updates
-- Shared Wedding Timeline
-- Current Event Marker
 - Instant Schedule Refresh
 
 ---
 
 # Phase 3 — Planning Module Business Logic
+
+**Status:** Planned
 
 Begin after the Live Rundown MVP is production-ready.
 
@@ -378,6 +471,8 @@ Business Logic
 ---
 
 # Phase 4 — Firebase & Backend
+
+**Status:** Planned
 
 Implement backend infrastructure.
 
@@ -415,6 +510,8 @@ Features
 
 # Phase 5 — UI / UX Polish
 
+**Status:** Planned
+
 Improve overall user experience.
 
 Includes
@@ -435,6 +532,8 @@ Includes
 
 # Phase 6 — Production Release
 
+**Status:** Planned
+
 Prepare Wedding Planning OS for production deployment.
 
 Includes
@@ -445,7 +544,7 @@ Includes
 - Bug Fixes
 - Mobile Optimization
 - Monitoring
-- Deployment (Vercel)
+- Deployment
 
 ---
 
@@ -453,41 +552,53 @@ Includes
 
 Priority 1
 
-Complete Module 8 — Live Rundown Foundation
+Module 10 — Workspace Foundation
 
 ↓
 
 Priority 2
 
-Authentication
+Module 11 — Settings Foundation
 
 ↓
 
 Priority 3
 
-Wedding Workspace
+Module 12 — Authentication Foundation
 
 ↓
 
 Priority 4
 
-User & Permission Management
+Module 13 — Wedding Members Foundation
 
 ↓
 
 Priority 5
 
-Live Rundown Realtime Collaboration
+Module 14 — Permission Management Foundation
 
 ↓
 
 Priority 6
 
-Business Logic for Planning Modules
+Module 15 — Live Rundown Permission Integration
 
 ↓
 
 Priority 7
+
+Module 16 — Live Rundown Realtime Collaboration
+
+↓
+
+Priority 8
+
+Business Logic for Planning Modules
+
+↓
+
+Priority 9
 
 Production Release
 
@@ -505,6 +616,10 @@ The MVP includes:
 - Permission Management
 - Live Rundown
 - Real-time Synchronization
+
+Dashboard is included as the project overview entry point.
+
+Live Rundown remains the primary operational module.
 
 Planning modules such as Guest, RSVP, Budget, Vendor, and Task will continue to evolve after the MVP has been released.
 
@@ -563,6 +678,10 @@ For every completed development part:
 6. Update DEVLOG.md
 7. Update ROADMAP.md
 
+Copilot should not update DEVLOG.md.
+
+DEVLOG.md is updated manually by the project owner.
+
 ---
 
 # Long-term Architecture Principles
@@ -578,3 +697,8 @@ For every completed development part:
 - Only authorized users may edit the Live Rundown schedule.
 - Live Rundown is the core feature and first production-ready module of Wedding Planning OS.
 - Remaining planning modules continue to evolve after the MVP is deployed.
+- Dashboard provides project overview only.
+- Operational workflows belong to Live Rundown.
+- Avoid duplicated information across modules.
+- Every piece of information should have a single source of truth.
+- Mobile-first experience is required for Live Rundown.
