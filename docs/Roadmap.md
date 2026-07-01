@@ -174,7 +174,7 @@ Part 4
 Status Workflow ✅
 
 Part 5
-Timeline Shift Logic
+Timeline Shift UI ✅
 
 Part 6
 My Rundown

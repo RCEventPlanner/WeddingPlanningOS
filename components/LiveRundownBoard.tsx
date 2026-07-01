@@ -168,6 +168,59 @@ export function LiveRundownBoard() {
         <p className="mt-3 text-2xl font-semibold text-slate-900">First March In</p>
       </div>
 
+      <div className="rounded-3xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-amber-900">Timeline Shift Status</p>
+            <p className="text-sm text-amber-800">Wedding is currently delayed by +8 minutes.</p>
+          </div>
+          <button
+            type="button"
+            className="rounded-full border border-amber-200 bg-white px-4 py-2 text-sm font-semibold text-amber-900 disabled:cursor-not-allowed disabled:opacity-70"
+            disabled
+          >
+            Recalculate Timeline
+          </button>
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Total Delay</p>
+          <p className="mt-2 text-2xl font-semibold text-slate-900">+8 mins</p>
+        </div>
+        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Affected Events</p>
+          <p className="mt-2 text-2xl font-semibold text-slate-900">4</p>
+        </div>
+        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Last Updated</p>
+          <p className="mt-2 text-base font-semibold text-slate-900">7:05 PM</p>
+        </div>
+      </div>
+
+      <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="mb-3 flex items-center justify-between">
+          <p className="text-sm font-semibold text-slate-900">Timeline Preview</p>
+          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500">Demo</span>
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+            <span className="text-sm font-medium text-slate-700">Opening Ceremony</span>
+            <span className="text-sm font-semibold text-slate-900">7:00 PM → 7:08 PM</span>
+          </div>
+          <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+            <span className="text-sm font-medium text-slate-700">Cake Cutting</span>
+            <span className="text-sm font-semibold text-slate-900">8:00 PM → 8:08 PM</span>
+          </div>
+          <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+            <span className="text-sm font-medium text-slate-700">First Dance</span>
+            <span className="text-sm font-semibold text-slate-900">8:30 PM → 8:38 PM</span>
+          </div>
+        </div>
+      </div>
+
       <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex flex-1 flex-col gap-3 md:flex-row">
@@ -357,9 +410,13 @@ export function LiveRundownBoard() {
                     <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Actual Duration</p>
                     <p className="mt-1 text-sm text-slate-700">{row.actualDuration}</p>
                   </div>
-                  <div className="col-span-2">
+                  <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Delay</p>
                     <p className="mt-1 text-sm text-slate-700">{row.delay}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Shifted Time</p>
+                    <p className="mt-1 text-sm text-slate-700">{row.scheduledTime}</p>
                   </div>
                 </div>
               </div>
