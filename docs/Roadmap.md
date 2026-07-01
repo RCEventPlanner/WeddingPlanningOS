@@ -332,12 +332,16 @@ Supported User Types
 - Couple
 - Vendor User
 
-Planned Features
+Completed Features
 
-- Login
-- Logout
-- User Profile
-- Session Handling
+- Login UI
+- Register UI
+- Forgot Password UI
+- Shared Authentication Layout
+- Auth Context Structure
+- Protected Route Structure
+- Public Route Structure
+- Placeholder Authentication State
 - Firebase Authentication Preparation
 
 ---
