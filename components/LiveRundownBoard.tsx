@@ -53,7 +53,7 @@ const rundownRows: RundownRow[] = [
     song: "Canon in D",
     screen: "Opening Animation",
     remarks: "Standby all teams",
-    responsibleRoles: ["Planner", "MC", "DJ", "Photographer", "Videographer"],
+    responsibleRoles: ["Planner", "Emcee", "DJ", "Photographer", "Videographer"],
     coordinator: "Rachel Chong",
   },
   {
@@ -69,8 +69,8 @@ const rundownRows: RundownRow[] = [
     foodServing: "-",
     song: "Speech Music",
     screen: "Couple Introduction",
-    remarks: "MC standby",
-    responsibleRoles: ["MC"],
+    remarks: "Emcee standby",
+    responsibleRoles: ["Emcee"],
     coordinator: "Rachel Chong",
   },
   {
@@ -384,7 +384,7 @@ export function LiveRundownBoard() {
                 <option value="All Roles">All Roles</option>
                 <option value="Reception">Reception</option>
                 <option value="Planner">Planner</option>
-                <option value="MC">MC</option>
+                <option value="Emcee">Emcee</option>
                 <option value="DJ">DJ</option>
                 <option value="Photographer">Photographer</option>
                 <option value="Videographer">Videographer</option>

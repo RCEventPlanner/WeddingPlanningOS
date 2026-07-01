@@ -82,7 +82,7 @@ export default function Home() {
             <div className="space-y-3">
               <div className="rounded-2xl border border-slate-200 px-4 py-3">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="text-sm font-semibold text-slate-900">Finalize MC script</span>
+                  <span className="text-sm font-semibold text-slate-900">Finalize Emcee script</span>
                   <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700">
                     Due Today
                   </span>

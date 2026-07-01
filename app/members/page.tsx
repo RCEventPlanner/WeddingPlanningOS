@@ -12,6 +12,7 @@ const members = [
     workspace: "Aurora & Noah Wedding",
     lastActive: "2 min ago",
     access: ["Dashboard", "Wedding Profile", "Guests", "Budget", "Live Rundown"],
+    positions: ["Planner", "Coordinator", "Emcee"],
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ const members = [
     workspace: "Aurora & Noah Wedding",
     lastActive: "Awaiting invite",
     access: ["Live Rundown", "Tasks", "Guests"],
+    positions: ["Photographer", "Videographer"],
   },
   {
     id: 3,
@@ -32,6 +34,7 @@ const members = [
     workspace: "Solstice Celebration",
     lastActive: "15 min ago",
     access: ["Wedding Profile", "RSVP", "Budget", "Vendor"],
+    positions: ["Couple", "Family"],
   },
   {
     id: 4,
@@ -42,6 +45,7 @@ const members = [
     workspace: "Evermore Wedding",
     lastActive: "Invitation sent",
     access: ["Live Rundown"],
+    positions: ["Vendor", "Banquet Captain"],
   },
 ];
 
@@ -101,6 +105,13 @@ export default function MembersPage() {
                           </span>
                         </div>
                         <p className="mt-1 text-sm text-slate-500">{member.email}</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {member.positions.map((position) => (
+                            <span key={position} className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold text-slate-600">
+                              {position}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                       <div className="text-left sm:text-right">
                         <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Assigned Workspace</p>
@@ -143,6 +154,27 @@ export default function MembersPage() {
                     <option>Couple</option>
                     <option>Vendor User</option>
                   </select>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-600">Assigned Positions</label>
+                  <select
+                    multiple
+                    className="min-h-32 w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                  >
+                    <option>Planner</option>
+                    <option>Coordinator</option>
+                    <option>Emcee</option>
+                    <option>DJ</option>
+                    <option>Photographer</option>
+                    <option>Videographer</option>
+                    <option>Banquet Captain</option>
+                    <option>Reception</option>
+                    <option>Family</option>
+                    <option>Couple</option>
+                    <option>Vendor</option>
+                  </select>
+                  <p className="mt-2 text-xs text-slate-400">Used for My Rundown filtering in Live Rundown.</p>
                 </div>
 
                 <div>
@@ -192,6 +224,18 @@ export default function MembersPage() {
                   <span className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold ${roleStyles[selectedMember.role]}`}>
                     {selectedMember.role}
                   </span>
+                </div>
+
+                <div className="rounded-2xl bg-slate-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Assigned Positions</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {selectedMember.positions.map((position) => (
+                      <span key={position} className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm">
+                        {position}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-xs text-slate-400">Used for My Rundown filtering in Live Rundown.</p>
                 </div>
 
                 <div className="rounded-2xl bg-slate-50 p-4">
