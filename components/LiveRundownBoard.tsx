@@ -146,6 +146,20 @@ const statusIcons: Record<RundownRow["status"], string> = {
 export function LiveRundownBoard() {
   const [viewMode, setViewMode] = useState<"Full Rundown" | "My Rundown">("Full Rundown");
   const [menuOpenIndex, setMenuOpenIndex] = useState<number | null>(null);
+  const [detailOpenIndex, setDetailOpenIndex] = useState<number | null>(null);
+  const [editOpenIndex, setEditOpenIndex] = useState<number | null>(null);
+
+  const handleViewDetail = (index: number) => {
+    setMenuOpenIndex(null);
+    setDetailOpenIndex(detailOpenIndex === index ? null : index);
+    setEditOpenIndex(null);
+  };
+
+  const handleEdit = (index: number) => {
+    setMenuOpenIndex(null);
+    setDetailOpenIndex(null);
+    setEditOpenIndex(editOpenIndex === index ? null : index);
+  };
 
   return (
     <section className="mt-6 space-y-6">
@@ -237,10 +251,18 @@ export function LiveRundownBoard() {
 
                 {menuOpenIndex === index && (
                   <div className="absolute right-0 z-10 mt-2 w-40 rounded-2xl border border-slate-200 bg-white p-1 shadow-lg">
-                    <button type="button" className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+                    <button
+                      type="button"
+                      onClick={() => handleViewDetail(index)}
+                      className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    >
                       View Detail
                     </button>
-                    <button type="button" className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+                    <button
+                      type="button"
+                      onClick={() => handleEdit(index)}
+                      className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    >
                       Edit
                     </button>
                     <button type="button" className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
@@ -263,20 +285,12 @@ export function LiveRundownBoard() {
 
             <div className="mt-4 grid grid-cols-2 gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Actual Start</p>
-                <p className="mt-1 text-sm text-slate-700">{row.actualStartTime}</p>
-              </div>
-              <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Expected Duration</p>
                 <p className="mt-1 text-sm text-slate-700">{row.expectedDuration}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Actual Duration</p>
-                <p className="mt-1 text-sm text-slate-700">{row.actualDuration}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Delay</p>
-                <p className="mt-1 text-sm text-slate-700">{row.delay}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Coordinator</p>
+                <p className="mt-1 text-sm text-slate-700">{row.coordinator}</p>
               </div>
             </div>
 
@@ -291,16 +305,108 @@ export function LiveRundownBoard() {
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Coordinator</p>
-                <p className="mt-1 text-sm text-slate-700">{row.coordinator}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Remarks</p>
-                <p className="mt-1 text-sm text-slate-700">{row.remarks}</p>
-              </div>
+            <div className="mt-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Remarks</p>
+              <p className="mt-1 text-sm text-slate-700">{row.remarks}</p>
             </div>
+
+            {detailOpenIndex === index && (
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-semibold text-slate-900">Time Management</p>
+                  <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-500">
+                    Detail
+                  </span>
+                </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Scheduled Time</p>
+                    <p className="mt-1 text-sm text-slate-700">{row.scheduledTime}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Actual Start Time</p>
+                    <p className="mt-1 text-sm text-slate-700">{row.actualStartTime}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Expected Duration</p>
+                    <p className="mt-1 text-sm text-slate-700">{row.expectedDuration}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Actual Duration</p>
+                    <p className="mt-1 text-sm text-slate-700">{row.actualDuration}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Delay</p>
+                    <p className="mt-1 text-sm text-slate-700">{row.delay}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {editOpenIndex === index && (
+              <div className="mt-4 rounded-2xl border border-rose-100 bg-rose-50/60 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-semibold text-slate-900">Edit Time Management</p>
+                  <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-500">
+                    Demo
+                  </span>
+                </div>
+
+                <div className="mt-3 space-y-3">
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                      Scheduled Time
+                    </span>
+                    <input
+                      type="text"
+                      defaultValue={row.scheduledTime}
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                      Actual Start Time
+                    </span>
+                    <input
+                      type="text"
+                      defaultValue={row.actualStartTime}
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                      Expected Duration
+                    </span>
+                    <input
+                      type="text"
+                      defaultValue={row.expectedDuration}
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                      Actual Duration
+                    </span>
+                    <input
+                      type="text"
+                      defaultValue={row.actualDuration}
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
+                    />
+                  </label>
+
+                  <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                    <span className="block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                      Delay
+                    </span>
+                    <span className="mt-1 block text-sm text-slate-700">{row.delay}</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </article>
         ))}
       </div>
