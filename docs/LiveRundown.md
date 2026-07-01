@@ -85,3 +85,13 @@ Optimized for wedding-day operations.
 - Push Notifications
 - Offline Mode
 - Activity Log
+
+# Live Rundown v1.1
+- Board Layout
+- Mobile Layout
+- Status Workflow
+- Time Management
+- Automatic Timeline Shift
+- My Rundown
+- Time Shift Banner
+- Recalculate Timeline

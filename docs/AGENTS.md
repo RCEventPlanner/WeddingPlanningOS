@@ -73,3 +73,17 @@ If any documentation conflicts, stop implementation and request clarification.
 Do not infer, invent, or extend product features beyond what is documented.
 
 Never add undocumented future features into summaries or implementations.
+
+# Documentation Authority
+
+ChatHistory.md is the authoritative record of all product decisions.
+
+ROADMAP.md defines development order.
+
+Architecture.md defines system architecture.
+
+If any documentation conflicts, stop implementation and request clarification.
+
+Do not infer, invent, or extend product features beyond what is documented.
+
+Never add undocumented future features into summaries or implementations.

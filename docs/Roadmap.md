@@ -159,16 +159,28 @@ Architecture
 
 ---
 
-#### 🔄 Module 8 — Live Rundown Management
+#### Module 8 - Live Rundown
 
-Status: In Progress
+Part 1
+Foundation ✅
 
-Foundation
+Part 2
+Mobile Responsive Layout ✅
 
-- Live Rundown Board
-- Event Form
-- Event Detail
-- Rundown Statistics
+Part 3
+Time Management UI
+
+Part 4
+Status Workflow
+
+Part 5
+Timeline Shift Logic
+
+Part 6
+My Rundown
+
+Part 7
+Realtime Sync
 
 Goal
 
