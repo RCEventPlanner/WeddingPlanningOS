@@ -183,7 +183,7 @@ Part 7
 My Rundown ✅
 
 Part 8
-Realtime Sync
+Realtime Sync Foundation ✅
 
 Goal
 

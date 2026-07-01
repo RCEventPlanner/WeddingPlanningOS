@@ -822,6 +822,43 @@ Result
 
 Task Management Foundation is complete and ready for future Business Logic and Firebase integration.
 
+### Module 8 — Live Rundown Foundation
+
+#### Part 1 — Live Rundown Overview
+
+**Status:** ✅ Completed
+
+---
+
+##### Objective
+
+Established the UI foundation for the Live Rundown module, providing a centralized overview of the wedding day schedule based on the traditional wedding rundown workflow.
+
+This implementation focuses on layout consistency, reusable components, and placeholder data only. No business logic or backend integration has been introduced.
+
+---
+
+##### Completed
+
+- ✅ Created the **Live Rundown Overview** page.
+- ✅ Added summary statistic cards for quick schedule insights.
+- ✅ Implemented the main rundown table using placeholder data.
+- ✅ Displayed the core rundown structure based on the existing wedding operation workflow:
+  - Time
+  - Program
+  - Used Time
+  - Food Serving
+  - Song
+  - Screen
+  - Remarks
+  - Responsible Roles
+  - Coordinator
+  - Status
+- ✅ Added placeholder action buttons and filter controls.
+- ✅ Applied the shared Design System for consistent spacing, typography, cards, tables, and responsive layout.
+- ✅ Ensured the module follows the same architecture as all previous business modules.
+
+---
 
 ## Day 5 - 2026-07-01
 ### Decision Update
@@ -835,4 +872,120 @@ Added:
 - Automatic Timeline Recalculation
 - My Rundown
 - Time Shift Banner
+
+--- 
+### Module 8 — Live Rundown Foundation
+
+#### Part 2 - Live Rundown Mobile Responsive Layout
+
+Status: Completed
+
+Summary
+- Implemented mobile responsive layout for Live Rundown.
+- Added mobile card layout while preserving desktop table layout.
+- Added Full / My Rundown UI toggle (UI only).
+- Added new status badges:
+  - Upcoming
+  - Current
+  - Completed
+  - Delayed
+  - Skipped
+  - Cancelled
+- Added placeholder UI for:
+  - Scheduled Time
+  - Actual Start Time
+  - Expected Duration
+  - Actual Duration
+  - Delay
+- Improved mobile spacing, touch targets and typography.
+- No business logic implemented.
+- Build passed successfully.
+
+#### Part 3 - Time Management UI
+
+Status: Completed
+
+Summary
+- Added Time Management UI to Live Rundown.
+- Added Scheduled Time field.
+- Added Actual Start Time field.
+- Added Expected Duration field.
+- Added Actual Duration field.
+- Added Delay placeholder field (read-only).
+- Updated Event Form and Event Detail layouts.
+- Improved responsive display for time-related information.
+- No business logic implemented.
+- Build passed successfully.
+
+#### Part 4 - Status Workflow UI
+Status: Completed
+
+Summary
+- Implemented the Live Rundown Status Workflow UI.
+- Added six supported event statuses:
+  - Upcoming
+  - Current
+  - Completed
+  - Delayed
+  - Skipped
+  - Cancelled
+- Updated the Event Form with the new status dropdown.
+- Displayed status badges consistently in Board and Event Detail views.
+- Prepared the UI for future status filtering.
+- Improved responsive display across mobile, tablet, and desktop.
+- No business logic implemented.
+- Build passed successfully.
+
+#### Part 5 - Timeline Shift UI
+Status: Completed
+
+Summary
+- Implemented Timeline Shift UI foundation.
+- Added Time Shift Banner with placeholder states.
+- Added Delay Summary Card.
+- Added Recalculate Timeline button (UI only).
+- Added Timeline Preview using demo data.
+- Reserved Timeline Shift section in Event Detail.
+- Improved responsive layout for all new components.
+- No business logic implemented.
+- Build passed successfully.
+
+#### Part 6: My Rundown UI
+Status: Completed
+
+Summary
+- Implemented Timeline Shift business logic.
+- Automatically recalculated subsequent event times based on Actual Start Time and Actual Duration.
+- Updated Timeline Shift Banner dynamically.
+- Updated Delay Summary after recalculation.
+- Implemented Recalculate Timeline functionality.
+- Excluded completed, skipped and cancelled events from timeline adjustments where applicable.
+- Build passed successfully.
+
+#### Part 7: My Rundown
+Status: Completed
+
+Summary
+- Implemented My Rundown view.
+- Added Full Rundown / My Rundown toggle.
+- Added filtering using demo Responsible Roles data.
+- Added summary statistics for assigned events.
+- Added empty state for users with no assigned events.
+- Ensured responsive support across desktop, tablet and mobile.
+- No authentication or backend integration implemented.
+- Build passed successfully.
+
+#### Part 8: Realtime Sync
+Status: Completed
+
+Summary
+- Added Realtime Sync foundation for Live Rundown.
+- Prepared Firebase / Firestore structure for Live Rundown events.
+- Added reusable data service/helper structure.
+- Prepared realtime listener foundation.
+- Preserved existing demo UI and placeholder data.
+- Did not implement permissions or notifications.
+- Build passed successfully.
+
+#### Part 9: Live Rundown Permission Foundation
 
