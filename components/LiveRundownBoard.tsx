@@ -126,11 +126,11 @@ const rundownRows: RundownRow[] = [
 ];
 
 const statusStyles: Record<RundownRow["status"], string> = {
+  Upcoming: "bg-slate-200 text-slate-700",
+  Current: "bg-blue-100 text-blue-700",
   Completed: "bg-emerald-100 text-emerald-700",
-  Current: "bg-amber-100 text-amber-700",
-  Upcoming: "bg-sky-100 text-sky-700",
-  Delayed: "bg-rose-100 text-rose-700",
-  Skipped: "bg-slate-200 text-slate-700",
+  Delayed: "bg-orange-100 text-orange-700",
+  Skipped: "bg-violet-100 text-violet-700",
   Cancelled: "bg-red-100 text-red-700",
 };
 
@@ -194,6 +194,21 @@ export function LiveRundownBoard() {
                 <option value="DJ">DJ</option>
                 <option value="Photographer">Photographer</option>
                 <option value="Videographer">Videographer</option>
+              </select>
+            </div>
+
+            <div className="md:w-64">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Filter by Status (Optional)
+              </label>
+              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="All Statuses">
+                <option value="All Statuses">All Statuses</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Current">Current</option>
+                <option value="Completed">Completed</option>
+                <option value="Delayed">Delayed</option>
+                <option value="Skipped">Skipped</option>
+                <option value="Cancelled">Cancelled</option>
               </select>
             </div>
           </div>
@@ -312,8 +327,14 @@ export function LiveRundownBoard() {
 
             {detailOpenIndex === index && (
               <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-slate-900">Time Management</p>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Time Management</p>
+                    <span className="mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-white text-slate-700 border border-slate-200">
+                      <span>{statusIcons[row.status]}</span>
+                      <span>{row.status}</span>
+                    </span>
+                  </div>
                   <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-500">
                     Detail
                   </span>
@@ -354,6 +375,20 @@ export function LiveRundownBoard() {
                 </div>
 
                 <div className="mt-3 space-y-3">
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                      Status
+                    </span>
+                    <select defaultValue={row.status} className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400">
+                      <option value="Upcoming">Upcoming</option>
+                      <option value="Current">Current</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Delayed">Delayed</option>
+                      <option value="Skipped">Skipped</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </label>
+
                   <label className="block">
                     <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
                       Scheduled Time
