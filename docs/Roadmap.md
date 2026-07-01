@@ -268,6 +268,7 @@ Features
 
 - Wedding Workspace List
 - Create Wedding UI
+- Internal Remarks Field
 - Workspace Switcher
 - Workspace Settings Preview
 - Archive Wedding UI
@@ -279,30 +280,6 @@ Architecture
 - Placeholder Data Only
 - No Business Logic
 - No Firebase Integration
-
----
-
-#### ✅ Module 10 — Workspace Foundation
-
-Completed
-
-Features
-
-- Wedding Workspace List
-- Create Wedding UI
-- Workspace Switcher
-- Workspace Settings Preview
-- Archive Wedding UI
-- Responsive Workspace Layout
-
-Architecture
-
-- UI Foundation Only
-- Placeholder Data Only
-- No Business Logic
-- No Firebase Integration
-
-Duplicate information should be avoided.
 
 ---
 

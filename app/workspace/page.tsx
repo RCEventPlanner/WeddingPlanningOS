@@ -182,6 +182,16 @@ export default function WorkspacePage() {
                   />
                 </div>
 
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-600">Remarks (Internal)</label>
+                  <textarea
+                    rows={4}
+                    placeholder="Add internal planning notes or reminders"
+                    className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                  />
+                  <p className="mt-2 text-xs text-slate-400">Visible only to Planner and Master Account.</p>
+                </div>
+
                 <div className="rounded-2xl bg-slate-50 px-4 py-3">
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Workspace preview</p>
                   <p className="mt-1 text-sm text-slate-600">A new wedding workspace will appear here after creation.</p>
