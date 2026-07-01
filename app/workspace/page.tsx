@@ -69,10 +69,17 @@ export default function WorkspacePage() {
                   const isSelected = selectedWorkspaceId === workspace.id;
 
                   return (
-                    <button
+                    <div
                       key={workspace.id}
-                      type="button"
+                      role="button"
+                      tabIndex={0}
                       onClick={() => setSelectedWorkspaceId(workspace.id)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          setSelectedWorkspaceId(workspace.id);
+                        }
+                      }}
                       className={`w-full rounded-2xl border p-4 text-left transition ${
                         isSelected
                           ? "border-rose-300 bg-rose-50 shadow-sm"
@@ -123,7 +130,7 @@ export default function WorkspacePage() {
                           Archive
                         </button>
                       </div>
-                    </button>
+                    </div>
                   );
                 })}
               </div>
