@@ -180,6 +180,9 @@ Part 6
 Timeline Shift Logic ✅
 
 Part 7
+My Rundown ✅
+
+Part 8
 Realtime Sync
 
 Goal

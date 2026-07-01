@@ -144,6 +144,8 @@ const statusIcons: Record<RundownRow["status"], string> = {
   Cancelled: "✖",
 };
 
+const currentUserRoles = ["Planner", "Coordinator"];
+
 const parseClockTime = (value: string): number => {
   const match = value.match(/^(\d{1,2}):(\d{2})\s*([AP]M)$/i);
 
@@ -285,9 +287,20 @@ export function LiveRundownBoard() {
     setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
   };
 
-  const previewRows = timelineData.rows.filter(
+  const visibleRows = viewMode === "My Rundown"
+    ? timelineData.rows.filter((row) => row.responsibleRoles.some((role) => currentUserRoles.includes(role)))
+    : timelineData.rows;
+
+  const previewRows = visibleRows.filter(
     (row) => row.status !== "Completed" && row.status !== "Skipped" && row.status !== "Cancelled",
   );
+
+  const myRundownStats = {
+    myEvents: visibleRows.length,
+    completed: visibleRows.filter((row) => row.status === "Completed").length,
+    upcoming: visibleRows.filter((row) => row.status === "Upcoming").length,
+    delayed: visibleRows.filter((row) => row.status === "Delayed").length,
+  };
 
   return (
     <section className="mt-6 space-y-6">
@@ -312,20 +325,22 @@ export function LiveRundownBoard() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-4">
         <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Total Delay</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">
-            {timelineData.totalDelay === 0 ? "0 mins" : `+${timelineData.totalDelay} mins`}
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">My Events</p>
+          <p className="mt-2 text-2xl font-semibold text-slate-900">{myRundownStats.myEvents}</p>
         </div>
         <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Affected Events</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">{timelineData.affectedEvents}</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Completed</p>
+          <p className="mt-2 text-2xl font-semibold text-slate-900">{myRundownStats.completed}</p>
         </div>
         <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Last Updated</p>
-          <p className="mt-2 text-base font-semibold text-slate-900">{lastUpdated}</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Upcoming</p>
+          <p className="mt-2 text-2xl font-semibold text-slate-900">{myRundownStats.upcoming}</p>
+        </div>
+        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Delayed</p>
+          <p className="mt-2 text-2xl font-semibold text-slate-900">{myRundownStats.delayed}</p>
         </div>
       </div>
 
@@ -424,8 +439,21 @@ export function LiveRundownBoard() {
         </p>
       </div>
 
+      {viewMode === "My Rundown" && visibleRows.length === 0 && (
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+          <p className="text-base font-semibold text-slate-900">No assigned events.</p>
+          <button
+            type="button"
+            onClick={() => setViewMode("Full Rundown")}
+            className="mt-4 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
+          >
+            Switch to Full Rundown
+          </button>
+        </div>
+      )}
+
       <div className="block lg:hidden space-y-3">
-        {timelineData.rows.map((row, index) => (
+        {visibleRows.map((row, index) => (
           <article key={`${row.time}-${row.program}`} className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[row.status]}`}>
@@ -655,7 +683,7 @@ export function LiveRundownBoard() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 bg-white">
-            {timelineData.rows.map((row) => (
+            {visibleRows.map((row) => (
               <tr key={`${row.time}-${row.program}`} className="align-top hover:bg-slate-50">
                 <td className="px-4 py-4">
                   <span
