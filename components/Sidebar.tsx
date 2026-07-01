@@ -11,13 +11,13 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/", icon: "🏠" },
-  { label: "Wedding", href: "/wedding", icon: "💍" },
+  { label: "Wedding Profile", href: "/wedding", icon: "💍" },
   { label: "Guests", href: "/guests", icon: "👥" },
   { label: "RSVP", href: "/rsvp", icon: "📨" },
   { label: "Budget", href: "/budget", icon: "💰" },
   { label: "Vendors", href: "/vendors", icon: "🤝" },
   { label: "Tasks", href: "/tasks", icon: "✅" },
-  { label: "Timeline", href: "/timeline", icon: "🕒" },
+  { label: "Live Rundown", href: "/timeline", icon: "🕒" },
   { label: "Settings", href: "/settings", icon: "⚙️" },
 ];
 
@@ -32,7 +32,7 @@ export function Sidebar() {
             Wedding Planning OS
           </p>
           <h2 className="mt-2 text-xl font-semibold text-slate-900">
-            Planning Hub
+            Wedding Planning OS
           </h2>
           <p className="mt-2 text-sm text-slate-500">
             Keep everything organized in one calm place.
