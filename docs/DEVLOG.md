@@ -1027,6 +1027,161 @@ Summary
 - No business logic, authentication or Firebase integration implemented.
 - Build passed successfully.
 
+---
+
+## DAY 6 - 2026-07-03
+
+### Module 11 – Settings Foundation
+Status: Completed
+
+Summary
+- Completed the Settings Foundation UI.
+- Added Company Profile settings.
+- Added Account Settings placeholders.
+- Added Notification Settings placeholders.
+- Added System Preferences placeholders.
+- Standardized Settings page layout.
+- Build passed successfully.
+
+---
+
+### Module 12 – Authentication Foundation
+Status: Completed
+
+Summary
+- Added Login page.
+- Added Register page.
+- Added Forgot Password page.
+- Added Authentication Layout.
+- Added Protected Route foundation.
+- Implemented mock authentication flow only.
+- No Firebase authentication implemented.
+- Build passed successfully.
+
+---
+
+### Module 13 – Wedding Members Foundation
+Status: Completed
+
+Summary
+- Created Members Management module.
+- Added Member List.
+- Added Invite Member UI.
+- Added Member Detail panel.
+- Added Wedding Position assignment.
+- Added System Role assignment.
+- Added placeholder Workspace assignment.
+- Added reusable member management components.
+- Build passed successfully.
+
+Product Decisions
+- System Role controls permissions.
+- Wedding Position controls My Rundown.
+- Position and Role are completely independent.
+
+---
+
+### Module 14 – Permission Management Foundation
+Status: Completed
+
+Summary
+- Implemented Permission Matrix foundation.
+- Added Module + Action permission model.
+- Supported four permission levels:
+  - No Access
+  - View
+  - Edit
+  - Manage
+- Added User Override foundation.
+- Added Permission Profile foundation.
+- Added editable custom Permission Profiles.
+- Preserved System Default Profiles.
+- Build passed successfully.
+
+Product Decisions
+- Permission is based on Module + Action.
+- Planner owns full permissions by default.
+- User Override always has higher priority than profile defaults.
+- Default Permission Profiles can be customized by Planner.
+
+---
+
+### Module 15 – Live Rundown Permission Foundation
+Status: Completed
+
+Summary
+- Integrated permission checks into Live Rundown foundation.
+- Defined visibility rules for actions.
+- Hidden actions when user has insufficient permission.
+- Restricted Timeline Recalculation to Planner and authorized Coordinators.
+- Reserved Public Remarks / Internal Remarks architecture.
+- Prepared permission integration for future Firebase implementation.
+- Build passed successfully.
+
+---
+
+### Module 15.5 – Navigation & Workspace Experience Foundation
+Status: Completed
+
+Summary
+- Redesigned overall navigation architecture.
+- Introduced Global Navigation and Workspace Navigation separation.
+- Added collapsible Sidebar.
+- Added icon-only Sidebar in collapsed mode.
+- Standardized Top Header layout.
+- Improved Workspace switching experience.
+- Reorganized Workspace module order:
+  - Dashboard
+  - Wedding Profile
+  - Budget
+  - Vendors
+  - Tasks
+  - Guests
+  - RSVP
+  - Live Rundown
+- Added Workspace Details panel.
+- Improved responsive behavior across desktop, tablet and mobile.
+- Build passed successfully.
+
+Product Decisions
+- Global Navigation only appears outside a Workspace.
+- Workspace Navigation only appears after entering a Workspace.
+- Vendor enters directly into Live Rundown.
+- Planner, Coordinator and Couple share the same workspace navigation structure.
+
+---
+
+### Guest Table Assignment Foundation
+Status: Completed
+
+Summary
+- Planned Guest Table Assignment module.
+- Reserved architecture for future seating management.
+- Prepared Guest to Table relationship.
+- Prepared future banquet reporting support.
+- No CRUD logic implemented.
+
+---
+
+### Editable Permission Profiles Foundation
+Status: Completed
+
+Summary
+- Added editable Permission Profile foundation.
+- Added Duplicate Profile support.
+- Added Rename Profile support.
+- Added Set Default Profile support.
+- Added Edit Permission UI.
+- Maintained System Default Profiles.
+- Build passed successfully.
+
+Product Decisions
+- Planner can customize default permission profiles.
+- System Default Profiles remain baseline templates.
+- User Override remains available for individual users.
+
+---
+
 ## DAY 6 - 2026-07-03
 
 ### Workspace Naming Standardization

@@ -119,6 +119,14 @@ Completed
 - Unassigned Guests State
 - Simple Table Assignment UI
 
+Completed
+
+- Table Assignment
+- Assigned Table Field
+- Table List
+- Unassigned Guests
+- Table Assignment UI Foundation
+
 ---
 
 #### ✅ Module 3 — RSVP Management
@@ -298,15 +306,22 @@ Current
 Planned Features
 
 - Wedding Workspace List (Sorted by Wedding Date)
-- Service Badge Per Workspace
-- Days Remaining Status (Upcoming, Today, Completed)
-- Create Wedding Form (Service + Internal Remarks)
-- Workspace Details (Wedding Information + Team Summary)
-- Access Mode Summary (Active, Read Only, Archived)
-- Assigned Planner + Lead Coordinator Placeholder
-- Responsive Two-Column Workspace Control Center Layout
-- Workspace Name as Single Source of Truth Across Workspace UI
-- Workspace Name Synchronization with Wedding Profile (UI State)
+- Wedding Date Display
+- Service Type (Full Planning / Half Planning / Coordination / Website Only)
+- Internal Remarks
+- Service Badge
+- Days Remaining Badge
+- Workspace Details Panel
+- Wedding Overview
+- Workspace Name as Single Source of Truth
+- Planner Assignment Placeholder
+- Responsive Workspace Layout
+
+Architecture
+
+- Workspace expires 2 months after Wedding Day.
+- Expired Workspace becomes Read Only.
+- Planner retains full access.
 
 ---
 
@@ -431,6 +446,18 @@ Completed Features
 - Member Permission Preview UI
 - UI Foundation Only (No Enforcement, No Firebase)
 
+- Editable Default Permission Profiles
+- Custom Role Template Editing
+- Permission Profile Persistence (Firebase Phase)
+
+## Product Decision
+Planner can modify the default permission profile at any time.
+
+Role templates are starting points only.
+
+Every member can still receive individual permission overrides.
+
+
 ---
 
 ### Default Permission Matrix
@@ -494,19 +521,70 @@ Refine the overall navigation and workspace experience before Firebase integrati
 
 Completed Features
 
-- Global Navigation foundation for Planner / Master Account
-- Workspace-only navigation experience for Couple and Vendor
-- Fixed Workspace Navigation order
-- Responsive Sidebar with collapse / expand behavior
-- Mobile Drawer sidebar behavior
-- Sidebar header branding without workspace name
-- Workspace-aware top bar with current workspace information
-- Search placeholder, notification placeholder, and user menu
-- User menu actions: My Profile, Switch Workspace, Settings, Logout
-- Workspace List preview and double-click enter flow
-- Workspace access mode placeholders: Active, Read Only, Archived
-- Read Only UI behavior foundation for hidden edit/delete/invite/timeline actions
-- UI-only navigation architecture with no backend or Firebase integration
+- Global Navigation for Planner
+- Workspace Navigation
+- Role-based Navigation
+- Workspace-aware Layout
+- Workspace Switch Flow
+- Responsive Sidebar
+- Sidebar Collapse
+- Mobile Drawer
+- Icon-only Workspace Sidebar
+- Persistent Sidebar Layout
+- Embedded Workspace Pages (Dashboard, Budget, Vendors, Guests, RSVP, Tasks)
+- Live Rundown as standalone operational page
+- Unified Top Header
+- Search
+- Notifications
+- User Menu
+- Workspace Overview
+- Responsive Top Header
+- Workspace Name synchronization
+
+
+Planner Login
+
+Workspace
+Members
+Settings
+
+Coordinator Login
+
+Workspace
+
+Couple Login
+
+Dashboard
+Wedding Profile
+Budget
+Vendors
+Tasks
+Guests
+RSVP
+Live Rundown
+
+Vendor Login
+
+Workspace List
+↓
+
+Live Rundown
+
+---
+
+### M1.5 — UI Freeze
+
+Navigation finalized
+
+Workspace architecture finalized
+
+Permission model finalized
+
+Responsive layout finalized
+
+Design system finalized
+
+Ready for Firebase implementation
 
 ---
 
@@ -695,19 +773,28 @@ Production Release
 The first public release of Wedding Planning OS focuses on real wedding-day operations.
 
 The MVP includes:
-
 - Authentication
-- Wedding Workspace
-- User Management
+- Workspace Management
+- Member Management
 - Permission Management
+- Navigation System
 - Live Rundown
-- Real-time Synchronization
+- Realtime Collaboration
 
 Dashboard is included as the project overview entry point.
 
 Live Rundown remains the primary operational module.
 
-Planning modules such as Guest, RSVP, Budget, Vendor, and Task will continue to evolve after the MVP has been released.
+Planning Modules：
+
+Dashboard
+Wedding Profile
+Guests
+RSVP
+Budget
+Vendor
+Task
+
 
 ---
 
@@ -788,3 +875,26 @@ DEVLOG.md is updated manually by the project owner.
 - Avoid duplicated information across modules.
 - Every piece of information should have a single source of truth.
 - Mobile-first experience is required for Live Rundown.
+- One Email / Username represents one system user.
+- One user can belong to multiple Wedding Workspaces.
+- Vendor users may access multiple assigned Workspaces.
+- Couple only accesses assigned Workspace.
+- Coordinator accesses assigned Workspaces.
+- Planner manages every Workspace.
+
+Workspace Lifecycle
+
+Active
+↓
+
+Wedding Day
+
+↓
+
+Read Only (2 Months)
+
+↓
+
+Archive (Future)
+
+
