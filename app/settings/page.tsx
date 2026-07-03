@@ -7,7 +7,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-slate-50 lg:flex">
       <Sidebar />
 
-      <main className="flex-1 p-6 sm:p-8 lg:ml-72 lg:p-10">
+      <main className="flex-1 p-6 sm:p-8 lg:ml-[var(--sidebar-width)] lg:p-10">
         <TopNav title="Settings" />
         <WeddingHeader />
 

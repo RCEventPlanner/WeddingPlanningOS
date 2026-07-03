@@ -32,6 +32,8 @@ const workspaceNavItems: NavItem[] = [
   { label: "Live Rundown", href: "/timeline", icon: "🕒" },
 ];
 
+const vendorWorkspaceNavItems: NavItem[] = [{ label: "Live Rundown", href: "/timeline", icon: "🕒" }];
+
 const globalNavItems: Record<Exclude<SidebarMode, "couple" | "vendor">, NavItem[]> = {
   planner: [
     { label: "Workspace", href: "/workspace", icon: "🏢" },
@@ -74,7 +76,25 @@ export function Sidebar({
   }, [resolvedCollapsed]);
 
   const showGlobalNav = pathname === "/workspace" || pathname === "/members" || pathname === "/settings";
-  const navItems = useMemo(() => (showGlobalNav ? globalNavItems[mode === "coordinator" ? "coordinator" : "planner"] : workspaceNavItems), [mode, showGlobalNav]);
+  const workspaceNavByMode: Record<SidebarMode, NavItem[]> = useMemo(
+    () => ({
+      planner: workspaceNavItems,
+      coordinator: workspaceNavItems,
+      couple: workspaceNavItems,
+      vendor: vendorWorkspaceNavItems,
+    }),
+    [],
+  );
+  const globalNavMode = mode === "planner" || mode === "coordinator" ? mode : null;
+  const navItems = useMemo(
+    () =>
+      showGlobalNav
+        ? globalNavMode
+          ? globalNavItems[globalNavMode]
+          : []
+        : workspaceNavByMode[mode],
+    [globalNavMode, mode, showGlobalNav, workspaceNavByMode],
+  );
 
   const collapsedShell = resolvedCollapsed ? "lg:px-2 lg:py-4" : "";
   const navLinkClasses = `flex items-center rounded-xl py-3 text-sm font-medium transition ${
@@ -175,9 +195,11 @@ export function Sidebar({
             </div>
           ) : null}
 
-          <div className="mb-3">
-            <p className={`mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-slate-400 ${resolvedCollapsed ? "lg:hidden" : ""}`}>Workspace Navigation</p>
-          </div>
+          {!showGlobalNav ? (
+            <div className="mb-3">
+              <p className={`mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-slate-400 ${resolvedCollapsed ? "lg:hidden" : ""}`}>Workspace Navigation</p>
+            </div>
+          ) : null}
 
           <nav className="space-y-1">
             {!showGlobalNav
