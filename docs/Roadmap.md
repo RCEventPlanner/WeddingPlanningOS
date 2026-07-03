@@ -374,7 +374,7 @@ Planner manages all members.
 
 ---
 
-## Module 14 — Permission Management Foundation
+## ✅ Module 14 — Permission Management Foundation
 
 Goal
 
@@ -406,6 +406,19 @@ Coordinator B
 Vendor User
 
 - View Live Rundown Only
+
+Completed Features
+
+- Permission Levels: No Access, View, Edit, Manage
+- Module + Action Permission Structure
+- Role Default Permissions (Planner, Coordinator, Couple, Vendor)
+- User Override Permissions per Member
+- Permission Matrix UI
+- Role Templates UI
+- User Override Panel UI
+- Permission Summary UI
+- Member Permission Preview UI
+- UI Foundation Only (No Enforcement, No Firebase)
 
 ---
 
