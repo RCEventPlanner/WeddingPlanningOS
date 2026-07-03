@@ -186,7 +186,7 @@ const initialGuests: Guest[] = [
   },
 ];
 
-const sharedWorkspaceName = "Jason & Emily Wedding";
+const sharedWorkspaceName = "Rachel & Kiser Wedding";
 
 export const workspaceModuleMeta: Record<WorkspaceModuleKey, WorkspaceModuleMeta> = {
   dashboard: { title: "Dashboard", workspaceName: sharedWorkspaceName, accessMode: "Active" },

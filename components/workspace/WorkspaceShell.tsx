@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { Sidebar } from "../Sidebar";
 import { TopNav } from "../TopNav";
+import { useWorkspaceProfile } from "./WorkspaceContext";
 import {
   DashboardModuleView,
   LiveRundownModuleView,
@@ -36,6 +37,7 @@ const workspaceModuleViews = {
 export function WorkspaceShell({ defaultModule, children }: WorkspaceShellProps) {
   const [activeModule, setActiveModule] = useState<WorkspaceModuleKey>(defaultModule);
   const [collapsed, setCollapsed] = useState(false);
+  const { workspaceProfile } = useWorkspaceProfile();
 
   const activeView = workspaceModuleViews[activeModule];
   const ActiveModuleView = activeView;
@@ -64,11 +66,7 @@ export function WorkspaceShell({ defaultModule, children }: WorkspaceShellProps)
       />
 
       <main className="flex-1 p-6 sm:p-8 lg:ml-[var(--sidebar-width)] lg:p-10">
-        <TopNav
-          title={activeMeta.title}
-          workspaceName={activeMeta.workspaceName ?? defaultMeta.workspaceName}
-          accessMode={activeMeta.accessMode ?? defaultMeta.accessMode}
-        />
+        <TopNav title={workspaceProfile.workspaceName || activeMeta.workspaceName || defaultMeta.workspaceName || activeMeta.title} />
         {content}
       </main>
     </div>

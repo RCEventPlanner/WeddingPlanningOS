@@ -1027,6 +1027,34 @@ Summary
 - No business logic, authentication or Firebase integration implemented.
 - Build passed successfully.
 
-### Module 11 – Settings Foundation
+## DAY 6 - 2026-07-03
+
+### Workspace Naming Standardization
+Status: Completed
+
+Summary
+- Standardized Workspace Name as the single source of truth across the application.
+- Added a dedicated Workspace Name field to the Wedding Profile foundation.
+- Separated Workspace Name from Couple information.
+- Updated Top Header inside Workspace to display the Workspace Name.
+- Updated Wedding Overview to use the Workspace Name consistently.
+- Updated Workspace List to display the Workspace Name consistently.
+- Updated Workspace Details to display Workspace Name alongside Couple information.
+- Established a unified naming convention for future Firebase integration.
+- Build passed successfully.
+
+Product Decisions
+- Workspace Name is the primary display name throughout the system.
+- Couple names remain wedding profile information and are no longer used as the workspace title.
+- Future updates to Workspace Name should automatically be reflected in:
+  - Top Header
+  - Workspace List
+  - Wedding Overview
+  - Workspace Details
+  - Future Workspace Switcher
+
+Next
+- Continue full UI/UX review.
+- Finalize UI Freeze before starting Module 16 – Firebase Foundation.
 
 

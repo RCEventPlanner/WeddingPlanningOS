@@ -100,6 +100,8 @@ Completed
 - Wedding Information
 - Wedding Details
 - Wedding Statistics
+- Workspace Name Field (Primary Display Name)
+- Separate Couple 1 / Couple 2 Profile Fields
 
 ---
 
@@ -274,9 +276,10 @@ Features
 - Wedding Workspace List
 - Create Wedding UI
 - Internal Remarks Field
-- Workspace Switcher
-- Workspace Settings Preview
-- Archive Wedding UI
+- Service Package Badge
+- Days Remaining Countdown (Mock)
+- Workspace Details Panel
+- Planner Assignment Placeholder
 - Responsive Workspace Layout
 
 Architecture
@@ -294,13 +297,16 @@ Current
 
 Planned Features
 
-- Wedding Workspace List
-- Create Wedding
-- Archive Wedding
-- Workspace Switcher
-- Workspace Settings
-- Placeholder Data
-- Responsive Layout
+- Wedding Workspace List (Sorted by Wedding Date)
+- Service Badge Per Workspace
+- Days Remaining Status (Upcoming, Today, Completed)
+- Create Wedding Form (Service + Internal Remarks)
+- Workspace Details (Wedding Information + Team Summary)
+- Access Mode Summary (Active, Read Only, Archived)
+- Assigned Planner + Lead Coordinator Placeholder
+- Responsive Two-Column Workspace Control Center Layout
+- Workspace Name as Single Source of Truth Across Workspace UI
+- Workspace Name Synchronization with Wedding Profile (UI State)
 
 ---
 
@@ -429,16 +435,16 @@ Completed Features
 
 ### Default Permission Matrix
 
-| Module | Planner | Coordinator | Couple | Vendor |
-|----------|:-------:|:-----------:|:------:|:------:|
-| Dashboard | Edit | View | View | View |
-| Wedding Profile | Edit | View | Edit | No Access |
-| Guest | Edit | View | Edit | No Access |
-| RSVP | Edit | View | Edit | No Access |
-| Budget | Edit | View | Edit | No Access |
-| Vendor | Edit | View | Edit | No Access |
-| Task | Edit | View | Edit | No Access |
-| Live Rundown | Edit | View* | View | View |
+| Module          | Planner | Coordinator | Couple |  Vendor   |
+| --------------- | :-----: | :---------: | :----: | :-------: |
+| Dashboard       |  Edit   |    View     |  View  |   View    |
+| Wedding Profile |  Edit   |    View     |  Edit  | No Access |
+| Guest           |  Edit   |    View     |  Edit  | No Access |
+| RSVP            |  Edit   |    View     |  Edit  | No Access |
+| Budget          |  Edit   |    View     |  Edit  | No Access |
+| Vendor          |  Edit   |    View     |  Edit  | No Access |
+| Task            |  Edit   |    View     |  Edit  | No Access |
+| Live Rundown    |  Edit   |   View\*    |  View  |   View    |
 
 \* Coordinator edit permission is configurable.
 

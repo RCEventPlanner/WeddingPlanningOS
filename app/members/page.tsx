@@ -481,7 +481,7 @@ export default function MembersPage() {
       <Sidebar mode="planner" />
 
       <main className="flex-1 p-6 sm:p-8 lg:ml-[var(--sidebar-width)] lg:p-10">
-        <TopNav title="Members / User Management" workspaceName="Workspace Management" accessMode="Active" />
+        <TopNav title="Members / User Management" />
         <WeddingHeader />
 
         <div className="mt-6 space-y-6">

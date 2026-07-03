@@ -1,4 +1,10 @@
+"use client";
+
+import { useWorkspaceProfile } from "./workspace/WorkspaceContext";
+
 export function WeddingInfoForm() {
+  const { workspaceProfile, setWorkspaceProfile } = useWorkspaceProfile();
+
   return (
     <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <div className="mb-6">
@@ -12,32 +18,35 @@ export function WeddingInfoForm() {
         <div className="space-y-4">
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-700">
-              Wedding Name
+              Workspace Name *
             </label>
             <input
               className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-              defaultValue="Rachel & Kiser Wedding"
+              value={workspaceProfile.workspaceName}
+              onChange={(event) => setWorkspaceProfile({ workspaceName: event.target.value })}
             />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
-                Bride Name
+                Couple 1
               </label>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="Rachel"
+                value={workspaceProfile.coupleOne}
+                onChange={(event) => setWorkspaceProfile({ coupleOne: event.target.value })}
               />
             </div>
 
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">
-                Groom Name
+                Couple 2
               </label>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="Kiser"
+                value={workspaceProfile.coupleTwo}
+                onChange={(event) => setWorkspaceProfile({ coupleTwo: event.target.value })}
               />
             </div>
           </div>
@@ -49,7 +58,8 @@ export function WeddingInfoForm() {
               </label>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="2026-12-20"
+                value={workspaceProfile.weddingDate}
+                onChange={(event) => setWorkspaceProfile({ weddingDate: event.target.value })}
                 type="date"
               />
             </div>
@@ -60,7 +70,8 @@ export function WeddingInfoForm() {
               </label>
               <input
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="Grand Ballroom Kuala Lumpur"
+                value={workspaceProfile.venue}
+                onChange={(event) => setWorkspaceProfile({ venue: event.target.value })}
               />
             </div>
           </div>
@@ -111,13 +122,18 @@ export function WeddingInfoForm() {
 
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-700">
-              Wedding Status
+              Workspace Status
             </label>
-            <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400">
-              <option selected>Planning</option>
-              <option>Confirmed</option>
-              <option>Booked</option>
-              <option>Completed</option>
+            <select
+              value={workspaceProfile.status}
+              onChange={(event) =>
+                setWorkspaceProfile({ status: event.target.value as "Active" | "Read Only" | "Archived" })
+              }
+              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
+            >
+              <option>Active</option>
+              <option>Read Only</option>
+              <option>Archived</option>
             </select>
           </div>
         </div>

@@ -1,7 +1,8 @@
+"use client";
+
+import { useWorkspaceProfile } from "./workspace/WorkspaceContext";
+
 type WeddingProfileCardProps = {
-  weddingName?: string;
-  brideName?: string;
-  groomName?: string;
   weddingDate?: string;
   venue?: string;
   theme?: string;
@@ -12,49 +13,48 @@ type WeddingProfileCardProps = {
 };
 
 export function WeddingProfileCard({
-  weddingName = "Rachel & Kiser Wedding",
-  brideName = "Rachel",
-  groomName = "Kiser",
   weddingDate = "20 December 2026",
   venue = "Grand Ballroom Kuala Lumpur",
   theme = "Modern Elegant",
-  status = "Planning",
+  status = "Active",
   countdown = "177 Days",
   guestTarget = "300 Guests",
   budgetTarget = "RM 25,000",
 }: WeddingProfileCardProps) {
+  const { workspaceProfile } = useWorkspaceProfile();
+
   return (
     <div className="space-y-4">
       <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-sm font-medium text-rose-500">Wedding Information</p>
-            <h2 className="mt-2 text-2xl font-semibold text-slate-900">{weddingName}</h2>
+            <p className="text-sm font-medium text-rose-500">Workspace Name</p>
+            <h2 className="mt-2 text-2xl font-semibold text-slate-900">{workspaceProfile.workspaceName}</h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <div>
-                <p className="text-sm text-slate-500">Bride</p>
-                <p className="font-medium text-slate-900">{brideName}</p>
+                <p className="text-sm text-slate-500">Couple 1</p>
+                <p className="font-medium text-slate-900">{workspaceProfile.coupleOne}</p>
               </div>
               <div>
-                <p className="text-sm text-slate-500">Groom</p>
-                <p className="font-medium text-slate-900">{groomName}</p>
+                <p className="text-sm text-slate-500">Couple 2</p>
+                <p className="font-medium text-slate-900">{workspaceProfile.coupleTwo}</p>
               </div>
               <div>
                 <p className="text-sm text-slate-500">Wedding Date</p>
-                <p className="font-medium text-slate-900">{weddingDate}</p>
+                <p className="font-medium text-slate-900">{workspaceProfile.weddingDate || weddingDate}</p>
               </div>
               <div>
                 <p className="text-sm text-slate-500">Venue</p>
-                <p className="font-medium text-slate-900">{venue}</p>
+                <p className="font-medium text-slate-900">{workspaceProfile.venue || venue}</p>
               </div>
               <div>
                 <p className="text-sm text-slate-500">Theme</p>
                 <p className="font-medium text-slate-900">{theme}</p>
               </div>
               <div>
-                <p className="text-sm text-slate-500">Status</p>
+                <p className="text-sm text-slate-500">Workspace Status</p>
                 <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-700">
-                  {status}
+                  {workspaceProfile.status || status}
                 </span>
               </div>
             </div>
