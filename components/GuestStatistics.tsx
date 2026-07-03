@@ -5,16 +5,27 @@ type StatCard = {
   icon: string;
 };
 
-const stats: StatCard[] = [
-  { title: "Total Guests", value: "320", subtitle: "All invited guests", icon: "👥" },
-  { title: "Confirmed", value: "185", subtitle: "Guests confirmed", icon: "✅" },
-  { title: "Pending", value: "95", subtitle: "Awaiting response", icon: "⏳" },
-  { title: "Declined", value: "40", subtitle: "Guests declined", icon: "✕" },
-  { title: "Adults", value: "260", subtitle: "Adult guests", icon: "🧑" },
-  { title: "Children", value: "60", subtitle: "Children guests", icon: "🧒" },
-];
+type GuestStatisticsProps = {
+  totalGuests?: number;
+  assignedGuests?: number;
+  unassignedGuests?: number;
+  tableCount?: number;
+};
 
-export function GuestStatistics() {
+export function GuestStatistics({
+  totalGuests = 320,
+  assignedGuests = 280,
+  unassignedGuests = 40,
+  tableCount = 24,
+}: GuestStatisticsProps) {
+  const stats: StatCard[] = [
+    { title: "Total Guests", value: String(totalGuests), subtitle: "All invited guests", icon: "👥" },
+    { title: "Assigned Guests", value: String(assignedGuests), subtitle: "Guests placed at tables", icon: "🪑" },
+    { title: "Unassigned Guests", value: String(unassignedGuests), subtitle: "Guests without a table", icon: "⏳" },
+    { title: "Tables", value: String(tableCount), subtitle: "Placeholder seating inventory", icon: "🏷️" },
+    { title: "Confirmed", value: "185", subtitle: "Guests confirmed", icon: "✅" },
+    { title: "Pending", value: "95", subtitle: "Awaiting response", icon: "⌛" },
+  ];
   return (
     <section className="mt-6">
       <div className="mb-4">

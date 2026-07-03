@@ -1,4 +1,25 @@
 type GuestDetailCardProps = {
+  guest?: {
+    id: number;
+    name: string;
+    group: string;
+    guestCount: number;
+    status: "Confirmed" | "Pending" | "Declined";
+    phone: string;
+    assignedTable: string | null;
+    emailAddress?: string;
+    preferredName?: string;
+    guestFrom?: string;
+    adults?: number;
+    children?: number;
+    normalMeals?: number;
+    vegetarianMeals?: number;
+    halalMeals?: number;
+    specialRequests?: string;
+    notes?: string;
+  };
+  tableOptions?: { id: string; label: string; capacity: number }[];
+  onAssignTable?: (guestId: number, nextTable: string) => void;
   guestName?: string;
   preferredName?: string;
   phoneNumber?: string;
@@ -22,20 +43,27 @@ const statusStyles: Record<NonNullable<GuestDetailCardProps["rsvpStatus"]>, stri
 };
 
 export function GuestDetailCard({
-  guestName = "Rachel Tan",
-  preferredName = "Rachel",
-  phoneNumber = "012-3456789",
-  emailAddress = "rachel@example.com",
-  guestFrom = "Bride's Side",
-  guestGroup = "Family",
-  adults = 2,
-  children = 1,
-  rsvpStatus = "Confirmed",
-  normalMeals = 3,
-  vegetarianMeals = 1,
-  halalMeals = 0,
-  specialRequests,
-  notes,
+  guest,
+  tableOptions = [
+    { id: "table-1", label: "Table 1", capacity: 8 },
+    { id: "table-2", label: "Table 2", capacity: 8 },
+    { id: "table-3", label: "Table 3", capacity: 10 },
+  ],
+  onAssignTable,
+  guestName = guest?.name ?? "Rachel Tan",
+  preferredName = guest?.preferredName ?? "Rachel",
+  phoneNumber = guest?.phone ?? "012-3456789",
+  emailAddress = guest?.emailAddress ?? "rachel@example.com",
+  guestFrom = guest?.guestFrom ?? "Bride's Side",
+  guestGroup = guest?.group ?? "Family",
+  adults = guest?.adults ?? 2,
+  children = guest?.children ?? 1,
+  rsvpStatus = guest?.status ?? "Confirmed",
+  normalMeals = guest?.normalMeals ?? 3,
+  vegetarianMeals = guest?.vegetarianMeals ?? 1,
+  halalMeals = guest?.halalMeals ?? 0,
+  specialRequests = guest?.specialRequests,
+  notes = guest?.notes,
 }: GuestDetailCardProps) {
   return (
     <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
@@ -79,6 +107,28 @@ export function GuestDetailCard({
             <div>
               <p className="text-sm text-slate-500">Guest Group</p>
               <p className="mt-1 font-medium text-slate-900">{guestGroup}</p>
+            </div>
+            <div>
+              <p className="text-sm text-slate-500">Assigned Table</p>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
+                <span className={`rounded-full px-3 py-1 text-sm font-medium ${guest?.assignedTable ? "bg-sky-100 text-sky-700" : "bg-amber-100 text-amber-700"}`}>
+                  {guest?.assignedTable ?? "Unassigned"}
+                </span>
+                {guest?.id && onAssignTable ? (
+                  <select
+                    value={guest.assignedTable ?? "Unassigned"}
+                    onChange={(event) => onAssignTable(guest.id, event.target.value)}
+                    className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 outline-none focus:border-rose-400"
+                  >
+                    <option value="Unassigned">Unassigned</option>
+                    {tableOptions.map((table) => (
+                      <option key={table.id} value={table.label}>
+                        {table.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
@@ -143,6 +193,9 @@ export function GuestDetailCard({
       <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
         <button className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300">
           Edit Guest
+        </button>
+        <button className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300">
+          Change Table
         </button>
         <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
           Back to Guest List

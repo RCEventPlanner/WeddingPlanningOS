@@ -1,4 +1,14 @@
-export function GuestForm() {
+type GuestFormProps = {
+  guest?: {
+    id: number;
+    name: string;
+    assignedTable: string | null;
+  };
+  tableOptions?: { id: string; label: string; capacity: number }[];
+  onAssignTable?: (guestId: number, nextTable: string) => void;
+};
+
+export function GuestForm({ guest, tableOptions = [], onAssignTable }: GuestFormProps) {
   return (
     <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <div className="mb-6">
@@ -129,6 +139,29 @@ export function GuestForm() {
         <div>
           <h3 className="text-lg font-semibold text-slate-900">Additional Information</h3>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="md:col-span-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Assigned Table
+              </label>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <select
+                  value={guest?.assignedTable ?? "Unassigned"}
+                  onChange={(event) => guest && onAssignTable?.(guest.id, event.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400 sm:max-w-xs"
+                >
+                  <option value="Unassigned">Unassigned</option>
+                  {tableOptions.map((table) => (
+                    <option key={table.id} value={table.label}>
+                      {table.label}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-slate-500">
+                  Use this foundation field to move a guest between tables or keep them unassigned.
+                </p>
+              </div>
+            </div>
+
             <div className="md:col-span-2 rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
               <label className="mb-4 block text-sm font-medium text-slate-700">
                 Meal Preferences
@@ -174,6 +207,14 @@ export function GuestForm() {
               />
             </div>
           </div>
+        </div>
+
+        <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+          {guest?.assignedTable ? (
+            <span>Current assignment: {guest.assignedTable}</span>
+          ) : (
+            <span>Guest is currently unassigned and can be placed on any available table.</span>
+          )}
         </div>
       </div>
 

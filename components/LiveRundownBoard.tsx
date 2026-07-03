@@ -16,10 +16,23 @@ type RundownRow = {
   foodServing: string;
   song: string;
   screen: string;
-  remarks: string;
+  publicRemarks: string;
+  internalRemarks: string;
   responsibleRoles: string[];
   coordinator: string;
 };
+
+type PermissionLevel = "No Access" | "View" | "Edit" | "Manage";
+type PreviewUserRole = "Planner" | "Coordinator" | "Couple" | "Vendor User";
+type LiveRundownPermissionKey =
+  | "View"
+  | "Edit Event"
+  | "Delete Event"
+  | "Edit Status"
+  | "Edit Time"
+  | "Edit Remarks"
+  | "Recalculate Timeline"
+  | "View Internal Remarks";
 
 const rundownRows: RundownRow[] = [
   {
@@ -35,7 +48,8 @@ const rundownRows: RundownRow[] = [
     foodServing: "-",
     song: "Background Playlist",
     screen: "Welcome Slide",
-    remarks: "Reception ready",
+    publicRemarks: "Reception ready",
+    internalRemarks: "Planner note: confirm VIP entry path.",
     responsibleRoles: ["Reception"],
     coordinator: "Rachel Chong",
   },
@@ -52,7 +66,8 @@ const rundownRows: RundownRow[] = [
     foodServing: "1st Course",
     song: "Canon in D",
     screen: "Opening Animation",
-    remarks: "Standby all teams",
+    publicRemarks: "Standby all teams",
+    internalRemarks: "Coordinator note: sync cue with DJ at T-2 mins.",
     responsibleRoles: ["Planner", "Emcee", "DJ", "Photographer", "Videographer"],
     coordinator: "Rachel Chong",
   },
@@ -69,7 +84,8 @@ const rundownRows: RundownRow[] = [
     foodServing: "-",
     song: "Speech Music",
     screen: "Couple Introduction",
-    remarks: "Emcee standby",
+    publicRemarks: "Emcee standby",
+    internalRemarks: "Internal: mic backup on stage-left.",
     responsibleRoles: ["Emcee"],
     coordinator: "Rachel Chong",
   },
@@ -86,7 +102,8 @@ const rundownRows: RundownRow[] = [
     foodServing: "2nd Course",
     song: "Soft Piano",
     screen: "Dinner Slide",
-    remarks: "Kitchen delayed",
+    publicRemarks: "Kitchen delayed",
+    internalRemarks: "Internal: hold next sequence until catering greenlight.",
     responsibleRoles: ["Coordinator", "Catering"],
     coordinator: "Rachel Chong",
   },
@@ -103,7 +120,8 @@ const rundownRows: RundownRow[] = [
     foodServing: "-",
     song: "Photo Music",
     screen: "Family Photo",
-    remarks: "Photography team on hold",
+    publicRemarks: "Photography team on hold",
+    internalRemarks: "Internal: move family lineup to after toast.",
     responsibleRoles: ["Photographer", "Videographer"],
     coordinator: "Rachel Chong",
   },
@@ -120,7 +138,8 @@ const rundownRows: RundownRow[] = [
     foodServing: "Dessert",
     song: "Wedding March",
     screen: "Cake Slide",
-    remarks: "Cancelled due to venue change",
+    publicRemarks: "Cancelled due to venue change",
+    internalRemarks: "Internal: notify banquet captain and AV team.",
     responsibleRoles: ["Planner", "Coordinator"],
     coordinator: "Rachel Chong",
   },
@@ -144,7 +163,77 @@ const statusIcons: Record<RundownRow["status"], string> = {
   Cancelled: "✖",
 };
 
-const currentUserRoles = ["Planner", "Coordinator"];
+const permissionRank: Record<PermissionLevel, number> = {
+  "No Access": 0,
+  View: 1,
+  Edit: 2,
+  Manage: 3,
+};
+
+const actionPermissionLabels: LiveRundownPermissionKey[] = [
+  "View",
+  "Edit Event",
+  "Delete Event",
+  "Edit Status",
+  "Edit Time",
+  "Edit Remarks",
+  "Recalculate Timeline",
+  "View Internal Remarks",
+];
+
+const baseRolePermissions: Record<PreviewUserRole, Record<LiveRundownPermissionKey, PermissionLevel>> = {
+  Planner: {
+    View: "Manage",
+    "Edit Event": "Manage",
+    "Delete Event": "Manage",
+    "Edit Status": "Manage",
+    "Edit Time": "Manage",
+    "Edit Remarks": "Manage",
+    "Recalculate Timeline": "Manage",
+    "View Internal Remarks": "Manage",
+  },
+  Coordinator: {
+    View: "View",
+    "Edit Event": "View",
+    "Delete Event": "View",
+    "Edit Status": "View",
+    "Edit Time": "View",
+    "Edit Remarks": "View",
+    "Recalculate Timeline": "View",
+    "View Internal Remarks": "No Access",
+  },
+  Couple: {
+    View: "View",
+    "Edit Event": "No Access",
+    "Delete Event": "No Access",
+    "Edit Status": "No Access",
+    "Edit Time": "No Access",
+    "Edit Remarks": "No Access",
+    "Recalculate Timeline": "No Access",
+    "View Internal Remarks": "No Access",
+  },
+  "Vendor User": {
+    View: "View",
+    "Edit Event": "No Access",
+    "Delete Event": "No Access",
+    "Edit Status": "No Access",
+    "Edit Time": "No Access",
+    "Edit Remarks": "No Access",
+    "Recalculate Timeline": "No Access",
+    "View Internal Remarks": "No Access",
+  },
+};
+
+const previewRoleResponsibleRoles: Record<PreviewUserRole, string[]> = {
+  Planner: ["Planner", "Coordinator", "Emcee", "DJ"],
+  Coordinator: ["Coordinator", "Catering", "Reception"],
+  Couple: ["Couple", "Family"],
+  "Vendor User": ["Vendor", "Photographer", "Videographer", "DJ", "Reception", "Catering"],
+};
+
+const hasMinimumLevel = (current: PermissionLevel, required: PermissionLevel): boolean => {
+  return permissionRank[current] >= permissionRank[required];
+};
 
 const parseClockTime = (value: string): number => {
   const match = value.match(/^(\d{1,2}):(\d{2})\s*([AP]M)$/i);
@@ -197,6 +286,8 @@ const getDelayMinutes = (row: RundownRow): number => {
 };
 
 export function LiveRundownBoard() {
+  const [previewRole, setPreviewRole] = useState<PreviewUserRole>("Planner");
+  const [coordinatorEditBundleGranted, setCoordinatorEditBundleGranted] = useState(false);
   const [viewMode, setViewMode] = useState<"Full Rundown" | "My Rundown">("Full Rundown");
   const [menuOpenIndex, setMenuOpenIndex] = useState<number | null>(null);
   const [detailOpenIndex, setDetailOpenIndex] = useState<number | null>(null);
@@ -206,6 +297,39 @@ export function LiveRundownBoard() {
   );
   const [recalculationVersion, setRecalculationVersion] = useState(0);
   const [lastUpdated, setLastUpdated] = useState("7:05 PM");
+
+  const currentPermissionLevels = useMemo(() => {
+    if (previewRole !== "Coordinator") {
+      return baseRolePermissions[previewRole];
+    }
+
+    const coordinatorPermissions = { ...baseRolePermissions.Coordinator };
+
+    if (coordinatorEditBundleGranted) {
+      coordinatorPermissions["Edit Event"] = "Edit";
+      coordinatorPermissions["Delete Event"] = "Edit";
+      coordinatorPermissions["Edit Status"] = "Edit";
+      coordinatorPermissions["Edit Time"] = "Edit";
+      coordinatorPermissions["Edit Remarks"] = "Edit";
+      coordinatorPermissions["Recalculate Timeline"] = "Manage";
+      coordinatorPermissions["View Internal Remarks"] = "View";
+    }
+
+    return coordinatorPermissions;
+  }, [previewRole, coordinatorEditBundleGranted]);
+
+  const canViewRundown = hasMinimumLevel(currentPermissionLevels.View, "View");
+  const hasEditBundle = hasMinimumLevel(currentPermissionLevels["Edit Event"], "Edit");
+  const canEditEvent = hasEditBundle && hasMinimumLevel(currentPermissionLevels["Edit Event"], "Edit");
+  const canDeleteEvent = hasEditBundle && hasMinimumLevel(currentPermissionLevels["Delete Event"], "Edit");
+  const canEditStatus = hasEditBundle && hasMinimumLevel(currentPermissionLevels["Edit Status"], "Edit");
+  const canEditTime = hasEditBundle && hasMinimumLevel(currentPermissionLevels["Edit Time"], "Edit");
+  const canEditRemarks = hasEditBundle && hasMinimumLevel(currentPermissionLevels["Edit Remarks"], "Edit");
+  const canRecalculateTimeline =
+    hasEditBundle && hasMinimumLevel(currentPermissionLevels["Recalculate Timeline"], "Manage");
+  const canViewInternalRemarks = hasMinimumLevel(currentPermissionLevels["View Internal Remarks"], "View");
+
+  const currentUserRoles = previewRoleResponsibleRoles[previewRole];
 
   const timelineData = useMemo(() => {
     let cumulativeDelay = 0;
@@ -256,12 +380,20 @@ export function LiveRundownBoard() {
   };
 
   const handleEdit = (index: number) => {
+    if (!canEditEvent) {
+      return;
+    }
+
     setMenuOpenIndex(null);
     setDetailOpenIndex(null);
     setEditOpenIndex(editOpenIndex === index ? null : index);
   };
 
   const handleActualStartChange = (index: number, value: string) => {
+    if (!canEditTime) {
+      return;
+    }
+
     setRundownData((currentRows) =>
       currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, actualStartTime: value } : row)),
     );
@@ -269,6 +401,10 @@ export function LiveRundownBoard() {
   };
 
   const handleActualDurationChange = (index: number, value: string) => {
+    if (!canEditTime) {
+      return;
+    }
+
     setRundownData((currentRows) =>
       currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, actualDuration: value } : row)),
     );
@@ -276,20 +412,52 @@ export function LiveRundownBoard() {
   };
 
   const handleStatusChange = (index: number, value: RundownRow["status"]) => {
+    if (!canEditStatus) {
+      return;
+    }
+
     setRundownData((currentRows) =>
       currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, status: value } : row)),
     );
     setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
   };
 
+  const handlePublicRemarksChange = (index: number, value: string) => {
+    if (!canEditRemarks) {
+      return;
+    }
+
+    setRundownData((currentRows) =>
+      currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, publicRemarks: value } : row)),
+    );
+    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
+  };
+
+  const handleInternalRemarksChange = (index: number, value: string) => {
+    if (!canEditRemarks || !canViewInternalRemarks) {
+      return;
+    }
+
+    setRundownData((currentRows) =>
+      currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, internalRemarks: value } : row)),
+    );
+    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
+  };
+
   const handleRecalculateTimeline = () => {
+    if (!canRecalculateTimeline) {
+      return;
+    }
+
     setRecalculationVersion((currentValue) => currentValue + 1);
     setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
   };
 
-  const visibleRows = viewMode === "My Rundown"
-    ? timelineData.rows.filter((row) => row.responsibleRoles.some((role) => currentUserRoles.includes(role)))
-    : timelineData.rows;
+  const visibleRows = !canViewRundown
+    ? []
+    : viewMode === "My Rundown"
+      ? timelineData.rows.filter((row) => row.responsibleRoles.some((role) => currentUserRoles.includes(role)))
+      : timelineData.rows;
 
   const previewRows = visibleRows.filter(
     (row) => row.status !== "Completed" && row.status !== "Skipped" && row.status !== "Cancelled",
@@ -305,6 +473,89 @@ export function LiveRundownBoard() {
   return (
     <section className="mt-6 space-y-6">
       <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <p className="text-sm font-medium text-slate-500">Permission Preview</p>
+            <h2 className="mt-1 text-xl font-semibold text-slate-900">Live Rundown Role Experience</h2>
+            <p className="mt-1 text-sm text-slate-500">UI visibility demo only. No backend enforcement is applied.</p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block">
+              <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Preview As</span>
+              <select
+                value={previewRole}
+                onChange={(event) => {
+                  setPreviewRole(event.target.value as PreviewUserRole);
+                  setMenuOpenIndex(null);
+                  setDetailOpenIndex(null);
+                  setEditOpenIndex(null);
+                }}
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
+              >
+                <option value="Planner">Planner</option>
+                <option value="Coordinator">Coordinator</option>
+                <option value="Couple">Couple</option>
+                <option value="Vendor User">Vendor User</option>
+              </select>
+            </label>
+
+            {previewRole === "Coordinator" ? (
+              <label className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={coordinatorEditBundleGranted}
+                  onChange={(event) => {
+                    setCoordinatorEditBundleGranted(event.target.checked);
+                    setMenuOpenIndex(null);
+                    setEditOpenIndex(null);
+                  }}
+                  className="h-4 w-4 rounded border-slate-300 text-rose-500"
+                />
+                Grant Coordinator Edit Bundle
+              </label>
+            ) : (
+              <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-600">
+                Default role template active
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          {actionPermissionLabels.map((action) => {
+            const level = currentPermissionLevels[action];
+            const visible = action === "View"
+              ? canViewRundown
+              : action === "Edit Event"
+                ? canEditEvent
+                : action === "Delete Event"
+                  ? canDeleteEvent
+                  : action === "Edit Status"
+                    ? canEditStatus
+                    : action === "Edit Time"
+                      ? canEditTime
+                      : action === "Edit Remarks"
+                        ? canEditRemarks
+                        : action === "Recalculate Timeline"
+                          ? canRecalculateTimeline
+                          : canViewInternalRemarks;
+
+            return (
+              <span
+                key={action}
+                className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                  visible ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"
+                }`}
+              >
+                {action}: {visible ? "Visible" : "Hidden"} ({level})
+              </span>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
         <p className="text-sm font-medium text-slate-500">Current Event</p>
         <p className="mt-3 text-2xl font-semibold text-slate-900">First March In</p>
       </div>
@@ -315,13 +566,15 @@ export function LiveRundownBoard() {
             <p className="text-sm font-semibold text-amber-900">Timeline Shift Status</p>
             <p className="text-sm text-amber-800">{timelineData.bannerMessage}</p>
           </div>
-          <button
-            type="button"
-            onClick={handleRecalculateTimeline}
-            className="rounded-full border border-amber-200 bg-white px-4 py-2 text-sm font-semibold text-amber-900 hover:bg-amber-100"
-          >
-            Recalculate Timeline
-          </button>
+          {canRecalculateTimeline ? (
+            <button
+              type="button"
+              onClick={handleRecalculateTimeline}
+              className="rounded-full border border-amber-200 bg-white px-4 py-2 text-sm font-semibold text-amber-900 hover:bg-amber-100"
+            >
+              Recalculate Timeline
+            </button>
+          ) : null}
         </div>
       </div>
 
@@ -452,7 +705,7 @@ export function LiveRundownBoard() {
         </div>
       )}
 
-      <div className="block lg:hidden space-y-3">
+      <div className="block space-y-3 lg:hidden">
         {visibleRows.map((row, index) => (
           <article key={`${row.time}-${row.program}`} className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
@@ -480,16 +733,20 @@ export function LiveRundownBoard() {
                     >
                       View Detail
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => handleEdit(index)}
-                      className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
-                    >
-                      Edit
-                    </button>
-                    <button type="button" className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
-                      Delete
-                    </button>
+                    {canEditEvent ? (
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(index)}
+                        className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
+                      >
+                        Edit Event
+                      </button>
+                    ) : null}
+                    {canDeleteEvent ? (
+                      <button type="button" className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
+                        Delete Event
+                      </button>
+                    ) : null}
                   </div>
                 )}
               </div>
@@ -528,16 +785,23 @@ export function LiveRundownBoard() {
             </div>
 
             <div className="mt-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Remarks</p>
-              <p className="mt-1 text-sm text-slate-700">{row.remarks}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Public Remarks</p>
+              <p className="mt-1 text-sm text-slate-700">{row.publicRemarks}</p>
             </div>
+
+            {canViewInternalRemarks ? (
+              <div className="mt-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Internal Remarks</p>
+                <p className="mt-1 text-sm text-slate-700">{row.internalRemarks}</p>
+              </div>
+            ) : null}
 
             {detailOpenIndex === index && (
               <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-semibold text-slate-900">Time Management</p>
-                    <span className="mt-2 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold bg-white text-slate-700 border border-slate-200">
+                    <span className="mt-2 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
                       <span>{statusIcons[row.status]}</span>
                       <span>{row.status}</span>
                     </span>
@@ -586,23 +850,25 @@ export function LiveRundownBoard() {
                 </div>
 
                 <div className="mt-3 space-y-3">
-                  <label className="block">
-                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-                      Status
-                    </span>
-                    <select
-                      value={row.status}
-                      onChange={(event) => handleStatusChange(index, event.target.value as RundownRow["status"])}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
-                    >
-                      <option value="Upcoming">Upcoming</option>
-                      <option value="Current">Current</option>
-                      <option value="Completed">Completed</option>
-                      <option value="Delayed">Delayed</option>
-                      <option value="Skipped">Skipped</option>
-                      <option value="Cancelled">Cancelled</option>
-                    </select>
-                  </label>
+                  {canEditStatus ? (
+                    <label className="block">
+                      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        Status
+                      </span>
+                      <select
+                        value={row.status}
+                        onChange={(event) => handleStatusChange(index, event.target.value as RundownRow["status"])}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
+                      >
+                        <option value="Upcoming">Upcoming</option>
+                        <option value="Current">Current</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Delayed">Delayed</option>
+                        <option value="Skipped">Skipped</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
+                    </label>
+                  ) : null}
 
                   <label className="block">
                     <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -616,17 +882,19 @@ export function LiveRundownBoard() {
                     />
                   </label>
 
-                  <label className="block">
-                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-                      Actual Start Time
-                    </span>
-                    <input
-                      type="text"
-                      value={row.actualStartTime}
-                      onChange={(event) => handleActualStartChange(index, event.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
-                    />
-                  </label>
+                  {canEditTime ? (
+                    <label className="block">
+                      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        Actual Start Time
+                      </span>
+                      <input
+                        type="text"
+                        value={row.actualStartTime}
+                        onChange={(event) => handleActualStartChange(index, event.target.value)}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
+                      />
+                    </label>
+                  ) : null}
 
                   <label className="block">
                     <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -640,17 +908,47 @@ export function LiveRundownBoard() {
                     />
                   </label>
 
-                  <label className="block">
-                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-                      Actual Duration
-                    </span>
-                    <input
-                      type="text"
-                      value={row.actualDuration}
-                      onChange={(event) => handleActualDurationChange(index, event.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
-                    />
-                  </label>
+                  {canEditTime ? (
+                    <label className="block">
+                      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        Actual Duration
+                      </span>
+                      <input
+                        type="text"
+                        value={row.actualDuration}
+                        onChange={(event) => handleActualDurationChange(index, event.target.value)}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
+                      />
+                    </label>
+                  ) : null}
+
+                  {canEditRemarks ? (
+                    <label className="block">
+                      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        Public Remarks
+                      </span>
+                      <textarea
+                        value={row.publicRemarks}
+                        onChange={(event) => handlePublicRemarksChange(index, event.target.value)}
+                        rows={3}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
+                      />
+                    </label>
+                  ) : null}
+
+                  {canEditRemarks && canViewInternalRemarks ? (
+                    <label className="block">
+                      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+                        Internal Remarks
+                      </span>
+                      <textarea
+                        value={row.internalRemarks}
+                        onChange={(event) => handleInternalRemarksChange(index, event.target.value)}
+                        rows={3}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
+                      />
+                    </label>
+                  ) : null}
 
                   <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
                     <span className="block text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -665,7 +963,7 @@ export function LiveRundownBoard() {
         ))}
       </div>
 
-      <div className="hidden lg:block overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <div className="hidden overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm lg:block">
         <table className="min-w-full divide-y divide-slate-200 text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
             <tr>
@@ -699,7 +997,12 @@ export function LiveRundownBoard() {
                 <td className="px-4 py-4 text-slate-700">{row.foodServing}</td>
                 <td className="px-4 py-4 text-slate-700">{row.song}</td>
                 <td className="px-4 py-4 text-slate-700">{row.screen}</td>
-                <td className="px-4 py-4 text-slate-700">{row.remarks}</td>
+                <td className="px-4 py-4 text-slate-700">
+                  <p>{row.publicRemarks}</p>
+                  {canViewInternalRemarks ? (
+                    <p className="mt-1 text-xs font-medium text-slate-500">Internal: {row.internalRemarks}</p>
+                  ) : null}
+                </td>
                 <td className="px-4 py-4">
                   <div className="flex flex-wrap gap-1">
                     {row.responsibleRoles.map((role) => (
@@ -718,12 +1021,16 @@ export function LiveRundownBoard() {
                     <button className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200">
                       View
                     </button>
-                    <button className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200">
-                      Edit
-                    </button>
-                    <button className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200">
-                      Delete
-                    </button>
+                    {canEditEvent ? (
+                      <button className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200">
+                        Edit Event
+                      </button>
+                    ) : null}
+                    {canDeleteEvent ? (
+                      <button className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200">
+                        Delete Event
+                      </button>
+                    ) : null}
                   </div>
                 </td>
               </tr>
@@ -731,6 +1038,8 @@ export function LiveRundownBoard() {
           </tbody>
         </table>
       </div>
+
+      <p className="text-xs text-slate-400">Last updated: {lastUpdated}</p>
     </section>
   );
 }

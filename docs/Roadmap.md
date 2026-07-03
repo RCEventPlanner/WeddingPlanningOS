@@ -111,6 +111,11 @@ Completed
 - Guest Form
 - Guest Detail
 - Guest Statistics
+- Table Assignment Foundation
+- Assigned Table Field
+- Table List Foundation
+- Unassigned Guests State
+- Simple Table Assignment UI
 
 ---
 
@@ -439,7 +444,7 @@ Completed Features
 
 ---
 
-## Module 15 — Live Rundown Permission Integration
+## ✅ Module 15 — Live Rundown Permission Integration
 
 Goal
 
@@ -460,6 +465,18 @@ Only Planner and authorized Coordinators can edit the event schedule.
 All assigned wedding members can view Full Rundown.
 
 My Rundown remains an optional filtered view based on Responsible Roles.
+
+Completed Features
+
+- Integrated Permission Foundation into Live Rundown UI behavior
+- Added permission visibility rendering for Planner, Coordinator, Couple, and Vendor User preview
+- Added Coordinator edit-bundle preview to demonstrate hidden actions when Edit is not granted
+- Hid unavailable actions instead of disabling buttons (Edit Event, Delete Event, Edit Status, Edit Time, Edit Remarks, Recalculate Timeline)
+- Added Public Remarks and Internal Remarks presentation
+- Internal Remarks visible only to Planner and authorized Coordinator preview
+- Updated mobile and desktop action menus/buttons to follow permission visibility
+- Preserved Full Rundown as default and My Rundown as optional filtered view
+- UI Foundation Only (No Firebase, No backend authorization)
 
 ---
 
