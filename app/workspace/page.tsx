@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Sidebar } from "../../components/Sidebar";
 import { TopNav } from "../../components/TopNav";
 import { WeddingHeader } from "../../components/WeddingHeader";
@@ -22,7 +23,7 @@ const workspaces = [
     date: "08 November 2026",
     couple: "Maya Chen & Ethan Lee",
     venue: "Skyline Pavilion, Penang",
-    status: "Planning",
+    status: "Read Only",
     members: 6,
     access: ["Wedding Profile", "RSVP", "Tasks", "Vendors"],
   },
@@ -39,16 +40,21 @@ const workspaces = [
 ];
 
 export default function WorkspacePage() {
+  const router = useRouter();
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(workspaces[0]?.id ?? "");
   const selectedWorkspace =
     workspaces.find((workspace) => workspace.id === selectedWorkspaceId) ?? workspaces[0];
 
+  const enterWorkspace = () => {
+    router.push("/");
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 lg:flex">
-      <Sidebar />
+      <Sidebar mode="planner" />
 
-      <main className="flex-1 p-6 sm:p-8 lg:ml-72 lg:p-10">
-        <TopNav title="Workspace" />
+      <main className="flex-1 p-6 sm:p-8 lg:ml-[var(--sidebar-width)] lg:p-10">
+        <TopNav title="Workspace List" workspaceName={selectedWorkspace?.name} accessMode={selectedWorkspace?.status === "Archived" ? "Archived" : selectedWorkspace?.status === "Read Only" ? "Read Only" : "Active"} />
         <WeddingHeader />
 
         <div className="mt-6 space-y-6">
@@ -67,6 +73,7 @@ export default function WorkspacePage() {
               <div className="space-y-3">
                 {workspaces.map((workspace) => {
                   const isSelected = selectedWorkspaceId === workspace.id;
+                  const isActiveWorkspace = workspace.status === "Active";
 
                   return (
                     <div
@@ -74,6 +81,10 @@ export default function WorkspacePage() {
                       role="button"
                       tabIndex={0}
                       onClick={() => setSelectedWorkspaceId(workspace.id)}
+                      onDoubleClick={() => {
+                        setSelectedWorkspaceId(workspace.id);
+                        enterWorkspace();
+                      }}
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
                           event.preventDefault();
@@ -87,15 +98,11 @@ export default function WorkspacePage() {
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <h3 className="text-base font-semibold text-slate-900">{workspace.name}</h3>
-                          <p className="mt-1 text-sm text-slate-500">{workspace.date}</p>
-                        </div>
                         <span
                           className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                             workspace.status === "Active"
                               ? "bg-emerald-100 text-emerald-700"
-                              : workspace.status === "Planning"
+                              : workspace.status === "Read Only"
                                 ? "bg-amber-100 text-amber-700"
                                 : "bg-slate-200 text-slate-600"
                           }`}
@@ -123,12 +130,18 @@ export default function WorkspacePage() {
                         <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
                           {workspace.members} members
                         </span>
-                        <button
-                          type="button"
-                          className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:border-slate-300 hover:bg-white"
-                        >
-                          Archive
-                        </button>
+                        {isActiveWorkspace ? (
+                          <button
+                            type="button"
+                            className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:border-slate-300 hover:bg-white"
+                          >
+                            Archive
+                          </button>
+                        ) : (
+                          <span className="rounded-xl bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-500">
+                            {workspace.status}
+                          </span>
+                        )}
                       </div>
                     </div>
                   );
@@ -174,7 +187,7 @@ export default function WorkspacePage() {
                     <label className="mb-1 block text-sm font-medium text-slate-600">Status</label>
                     <select className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100">
                       <option>Active</option>
-                      <option>Planning</option>
+                      <option>Read Only</option>
                       <option>Archived</option>
                     </select>
                   </div>
@@ -204,12 +217,15 @@ export default function WorkspacePage() {
                   <p className="mt-1 text-sm text-slate-600">A new wedding workspace will appear here after creation.</p>
                 </div>
 
-                <button
-                  type="button"
-                  className="w-full rounded-2xl bg-rose-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
-                >
-                  Create Workspace
-                </button>
+                {selectedWorkspace?.status === "Active" ? (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedWorkspaceId(workspaces[0].id)}
+                    className="w-full rounded-2xl bg-rose-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+                  >
+                    Create Workspace
+                  </button>
+                ) : null}
               </div>
             </div>
           </section>
@@ -286,6 +302,22 @@ export default function WorkspacePage() {
                     ))}
                   </div>
                 </div>
+
+                <div className="rounded-2xl bg-slate-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Access mode</p>
+                  <p className="mt-2 text-sm font-semibold text-slate-900">{selectedWorkspace?.status}</p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Read Only mode hides edit, delete, invite, and timeline editing actions.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={enterWorkspace}
+                  className="w-full rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700"
+                >
+                  Enter Workspace
+                </button>
               </div>
             </div>
           </section>

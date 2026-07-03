@@ -480,6 +480,30 @@ Completed Features
 
 ---
 
+## ✅ Module 15.5 — Navigation & Workspace Experience Foundation
+
+Goal
+
+Refine the overall navigation and workspace experience before Firebase integration.
+
+Completed Features
+
+- Global Navigation foundation for Planner / Master Account
+- Workspace-only navigation experience for Couple and Vendor
+- Fixed Workspace Navigation order
+- Responsive Sidebar with collapse / expand behavior
+- Mobile Drawer sidebar behavior
+- Sidebar header branding without workspace name
+- Workspace-aware top bar with current workspace information
+- Search placeholder, notification placeholder, and user menu
+- User menu actions: My Profile, Switch Workspace, Settings, Logout
+- Workspace List preview and double-click enter flow
+- Workspace access mode placeholders: Active, Read Only, Archived
+- Read Only UI behavior foundation for hidden edit/delete/invite/timeline actions
+- UI-only navigation architecture with no backend or Firebase integration
+
+---
+
 ## Module 16 — Live Rundown MVP Realtime Collaboration
 
 Goal

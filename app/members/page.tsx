@@ -20,7 +20,8 @@ type PermissionModuleName =
   | "Live Rundown"
   | "Workspace"
   | "Settings";
-type RoleTemplate = "Planner" | "Coordinator" | "Couple" | "Vendor";
+type RoleTemplate = "Planner" | "Coordinator" | "Couple" | "Vendor User";
+type OperatorRole = "Planner" | "Master Account" | "Coordinator";
 
 type Member = {
   id: number;
@@ -38,6 +39,15 @@ type UserOverride = {
   module: PermissionModuleName;
   action: PermissionAction;
   level: PermissionLevel;
+};
+
+type PermissionProfile = {
+  id: string;
+  name: string;
+  baseRole: RoleTemplate;
+  isSystemDefault: boolean;
+  isDefaultForInvite: boolean;
+  permissions: ModulePermissionMap;
 };
 
 type ModulePermissionMap = Record<PermissionModuleName, Partial<Record<PermissionAction, PermissionLevel>>>;
@@ -138,8 +148,10 @@ const roleDescriptions: Record<RoleTemplate, string> = {
   Planner: "Full operational control across all modules.",
   Coordinator: "Operational visibility with selective editing capabilities.",
   Couple: "Planning collaboration with limited operational controls.",
-  Vendor: "Rundown visibility focused on assigned execution tasks.",
+  "Vendor User": "Rundown visibility focused on assigned execution tasks.",
 };
+
+const currentOperatorRole: OperatorRole = "Planner";
 
 const defaultOverrideAction = {
   module: "Dashboard" as PermissionModuleName,
@@ -202,14 +214,14 @@ const buildRoleTemplates = (): Record<RoleTemplate, ModulePermissionMap> => {
   applyLevel(couple, "Workspace", ["View"], "View");
   applyLevel(couple, "Settings", ["View"], "View");
 
-  const vendor = createNoAccessTemplate();
-  applyLevel(vendor, "Live Rundown", ["View"], "View");
+  const vendorUser = createNoAccessTemplate();
+  applyLevel(vendorUser, "Live Rundown", ["View"], "View");
 
   return {
     Planner: planner,
     Coordinator: coordinator,
     Couple: couple,
-    Vendor: vendor,
+    "Vendor User": vendorUser,
   };
 };
 
@@ -226,11 +238,43 @@ const initialUserOverrides: Record<number, UserOverride[]> = {
 };
 
 const resolveRoleTemplate = (memberRole: Member["role"]): RoleTemplate => {
-  if (memberRole === "Vendor User") {
-    return "Vendor";
-  }
   return memberRole;
 };
+
+const systemDefaultProfiles: PermissionProfile[] = [
+  {
+    id: "system-planner",
+    name: "Planner",
+    baseRole: "Planner",
+    isSystemDefault: true,
+    isDefaultForInvite: false,
+    permissions: cloneTemplate(roleDefaultPermissions.Planner),
+  },
+  {
+    id: "system-coordinator",
+    name: "Coordinator",
+    baseRole: "Coordinator",
+    isSystemDefault: true,
+    isDefaultForInvite: false,
+    permissions: cloneTemplate(roleDefaultPermissions.Coordinator),
+  },
+  {
+    id: "system-couple",
+    name: "Couple",
+    baseRole: "Couple",
+    isSystemDefault: true,
+    isDefaultForInvite: false,
+    permissions: cloneTemplate(roleDefaultPermissions.Couple),
+  },
+  {
+    id: "system-vendor-user",
+    name: "Vendor User",
+    baseRole: "Vendor User",
+    isSystemDefault: true,
+    isDefaultForInvite: false,
+    permissions: cloneTemplate(roleDefaultPermissions["Vendor User"]),
+  },
+];
 
 const getAllowedActionsForModule = (moduleName: PermissionModuleName): PermissionAction[] => {
   return permissionModules.find((moduleConfig) => moduleConfig.name === moduleName)?.actions ?? [];
@@ -241,12 +285,17 @@ const countPendingOrInvited = members.filter((member) => member.status === "Pend
 
 export default function MembersPage() {
   const [selectedMemberId, setSelectedMemberId] = useState<number>(members[0].id);
-  const [selectedTemplateRole, setSelectedTemplateRole] = useState<RoleTemplate>("Planner");
   const [userOverrides, setUserOverrides] = useState<Record<number, UserOverride[]>>(initialUserOverrides);
   const [overrideMemberId, setOverrideMemberId] = useState<number>(members[0].id);
   const [overrideModule, setOverrideModule] = useState<PermissionModuleName>(defaultOverrideAction.module);
   const [overrideAction, setOverrideAction] = useState<PermissionAction>(defaultOverrideAction.action);
   const [overrideLevel, setOverrideLevel] = useState<PermissionLevel>("View");
+  const [customProfiles, setCustomProfiles] = useState<PermissionProfile[]>([]);
+  const [selectedProfileId, setSelectedProfileId] = useState<string>(systemDefaultProfiles[0].id);
+  const [newProfileName, setNewProfileName] = useState<string>("");
+  const [newProfileBaseRole, setNewProfileBaseRole] = useState<RoleTemplate>("Planner");
+  const [renameDraft, setRenameDraft] = useState<string>("");
+  const [nextProfileNumber, setNextProfileNumber] = useState<number>(1);
 
   const selectedMember = useMemo(() => {
     return members.find((member) => member.id === selectedMemberId) ?? members[0];
@@ -254,8 +303,14 @@ export default function MembersPage() {
 
   const selectedMemberTemplateRole = resolveRoleTemplate(selectedMember.role);
   const selectedMemberOverrides = userOverrides[selectedMember.id] ?? [];
-
-  const selectedRoleTemplateMatrix = roleDefaultPermissions[selectedTemplateRole];
+  const canViewPermissionProfiles = currentOperatorRole === "Planner" || currentOperatorRole === "Master Account";
+  const permissionProfiles = useMemo(() => {
+    return [...systemDefaultProfiles, ...customProfiles];
+  }, [customProfiles]);
+  const selectedProfile =
+    permissionProfiles.find((profile) => profile.id === selectedProfileId) ?? permissionProfiles[0];
+  const selectedProfileMatrix = selectedProfile?.permissions ?? cloneTemplate(roleDefaultPermissions.Planner);
+  const selectedProfileIsCustom = selectedProfile ? !selectedProfile.isSystemDefault : false;
 
   const selectedMemberEffectivePermissions = useMemo(() => {
     const defaultTemplate = cloneTemplate(roleDefaultPermissions[selectedMemberTemplateRole]);
@@ -326,12 +381,107 @@ export default function MembersPage() {
     setOverrideAction(firstAction);
   };
 
+  const createCustomProfile = () => {
+    const cleanName = newProfileName.trim();
+    const profileName = cleanName.length > 0 ? cleanName : `${newProfileBaseRole} Custom ${nextProfileNumber}`;
+    const newProfile: PermissionProfile = {
+      id: `custom-${Date.now()}`,
+      name: profileName,
+      baseRole: newProfileBaseRole,
+      isSystemDefault: false,
+      isDefaultForInvite: false,
+      permissions: cloneTemplate(roleDefaultPermissions[newProfileBaseRole]),
+    };
+
+    setCustomProfiles((previous) => [...previous, newProfile]);
+    setSelectedProfileId(newProfile.id);
+    setRenameDraft(profileName);
+    setNewProfileName("");
+    setNextProfileNumber((current) => current + 1);
+  };
+
+  const duplicateSelectedProfile = () => {
+    if (!selectedProfile) {
+      return;
+    }
+
+    const duplicateName = `${selectedProfile.name} Copy`;
+    const duplicateProfile: PermissionProfile = {
+      id: `custom-${Date.now()}-copy`,
+      name: duplicateName,
+      baseRole: selectedProfile.baseRole,
+      isSystemDefault: false,
+      isDefaultForInvite: false,
+      permissions: cloneTemplate(selectedProfile.permissions),
+    };
+
+    setCustomProfiles((previous) => [...previous, duplicateProfile]);
+    setSelectedProfileId(duplicateProfile.id);
+    setRenameDraft(duplicateName);
+  };
+
+  const renameSelectedCustomProfile = () => {
+    const nextName = renameDraft.trim();
+    if (!selectedProfile || selectedProfile.isSystemDefault || nextName.length === 0) {
+      return;
+    }
+
+    setCustomProfiles((previous) =>
+      previous.map((profile) =>
+        profile.id === selectedProfile.id
+          ? {
+              ...profile,
+              name: nextName,
+            }
+          : profile,
+      ),
+    );
+  };
+
+  const updateSelectedCustomPermission = (
+    moduleName: PermissionModuleName,
+    action: PermissionAction,
+    level: PermissionLevel,
+  ) => {
+    if (!selectedProfile || selectedProfile.isSystemDefault) {
+      return;
+    }
+
+    setCustomProfiles((previous) =>
+      previous.map((profile) => {
+        if (profile.id !== selectedProfile.id) {
+          return profile;
+        }
+
+        const nextPermissions = cloneTemplate(profile.permissions);
+        nextPermissions[moduleName][action] = level;
+        return {
+          ...profile,
+          permissions: nextPermissions,
+        };
+      }),
+    );
+  };
+
+  const markProfileAsInviteDefault = () => {
+    if (!selectedProfile || selectedProfile.isSystemDefault) {
+      return;
+    }
+
+    setCustomProfiles((previous) =>
+      previous.map((profile) => ({
+        ...profile,
+        isDefaultForInvite: profile.id === selectedProfile.id,
+      })),
+    );
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 lg:flex">
-      <Sidebar />
+      <Sidebar mode="planner" />
 
-      <main className="flex-1 p-6 sm:p-8 lg:ml-72 lg:p-10">
-        <TopNav title="Members" />
+      <main className="flex-1 p-6 sm:p-8 lg:ml-[var(--sidebar-width)] lg:p-10">
+        <TopNav title="Members / User Management" workspaceName="Workspace Management" accessMode="Active" />
         <WeddingHeader />
 
         <div className="mt-6 space-y-6">
@@ -471,6 +621,14 @@ export default function MembersPage() {
                 >
                   Invite Member
                 </button>
+
+                <div className="rounded-2xl bg-slate-50 p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Default profile for new invites</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-900">
+                    {customProfiles.find((profile) => profile.isDefaultForInvite)?.name ?? "None selected"}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">Set from Permission Profiles panel. UI-only, no backend wiring.</p>
+                </div>
               </div>
             </div>
           </section>
@@ -549,47 +707,148 @@ export default function MembersPage() {
           <section className="grid gap-4 xl:grid-cols-[1.1fr_1.35fr]">
             <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="mb-4">
-                <p className="text-sm font-medium text-slate-500">Role Templates</p>
-                <h2 className="text-xl font-semibold text-slate-900">Default Permission Profiles</h2>
+                <p className="text-sm font-medium text-slate-500">Permission Profiles</p>
+                <h2 className="text-xl font-semibold text-slate-900">Default + Custom Profiles</h2>
               </div>
 
-              <div className="space-y-3">
-                {(Object.keys(roleDefaultPermissions) as RoleTemplate[]).map((role) => {
-                  const isActiveRole = selectedTemplateRole === role;
-                  return (
-                    <button
-                      key={role}
-                      type="button"
-                      onClick={() => setSelectedTemplateRole(role)}
-                      className={`w-full rounded-2xl border p-4 text-left transition ${
-                        isActiveRole
-                          ? "border-rose-300 bg-rose-50/40"
-                          : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                      }`}
-                    >
-                      <p className="text-sm font-semibold text-slate-900">{role}</p>
-                      <p className="mt-1 text-xs text-slate-500">{roleDescriptions[role]}</p>
-                    </button>
-                  );
-                })}
-              </div>
+              {!canViewPermissionProfiles ? (
+                <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+                  Only Planner or Master Account can view and manage default permission profiles.
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-3">
+                    {permissionProfiles.map((profile) => {
+                      const isActiveProfile = selectedProfile?.id === profile.id;
+                      return (
+                        <button
+                          key={profile.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedProfileId(profile.id);
+                            setRenameDraft(profile.name);
+                          }}
+                          className={`w-full rounded-2xl border p-4 text-left transition ${
+                            isActiveProfile
+                              ? "border-rose-300 bg-rose-50/40"
+                              : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="text-sm font-semibold text-slate-900">{profile.name}</p>
+                            <div className="flex items-center gap-2">
+                              {profile.isSystemDefault ? (
+                                <span className="rounded-full bg-slate-200 px-2 py-1 text-[10px] font-semibold text-slate-600">System</span>
+                              ) : (
+                                <span className="rounded-full bg-amber-100 px-2 py-1 text-[10px] font-semibold text-amber-700">Custom</span>
+                              )}
+                              {profile.isDefaultForInvite ? (
+                                <span className="rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-semibold text-emerald-700">Invite Default</span>
+                              ) : null}
+                            </div>
+                          </div>
+                          <p className="mt-1 text-xs text-slate-500">Base role: {profile.baseRole}</p>
+                          <p className="mt-1 text-xs text-slate-500">{roleDescriptions[profile.baseRole]}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-              <div className="mt-4 rounded-2xl bg-slate-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Selected template</p>
-                <p className="mt-2 text-sm font-semibold text-slate-900">{selectedTemplateRole}</p>
-                <p className="mt-1 text-xs text-slate-500">Used by the Permission Matrix panel for default role visualization.</p>
-              </div>
+                  <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Create custom profile from default role</p>
+                    <div className="mt-3 space-y-3">
+                      <div>
+                        <label className="mb-1 block text-sm font-medium text-slate-600">Base role</label>
+                        <select
+                          value={newProfileBaseRole}
+                          onChange={(event) => setNewProfileBaseRole(event.target.value as RoleTemplate)}
+                          className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                        >
+                          {(Object.keys(roleDefaultPermissions) as RoleTemplate[]).map((role) => (
+                            <option key={role} value={role}>{role}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-sm font-medium text-slate-600">Profile name (optional)</label>
+                        <input
+                          value={newProfileName}
+                          onChange={(event) => setNewProfileName(event.target.value)}
+                          placeholder="Example: Coordinator Limited Budget"
+                          className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={createCustomProfile}
+                        className="w-full rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+                      >
+                        Create Custom Profile
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Selected profile actions</p>
+                    <div className="mt-3 space-y-3">
+                      <button
+                        type="button"
+                        onClick={duplicateSelectedProfile}
+                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-rose-300 hover:text-rose-700"
+                      >
+                        Duplicate Profile
+                      </button>
+
+                      <div>
+                        <label className="mb-1 block text-sm font-medium text-slate-600">Rename selected profile</label>
+                        <input
+                          value={renameDraft}
+                          onChange={(event) => setRenameDraft(event.target.value)}
+                          disabled={!selectedProfileIsCustom}
+                          placeholder={selectedProfile?.name ?? "Select profile"}
+                          className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none disabled:bg-slate-100 disabled:text-slate-400"
+                        />
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={renameSelectedCustomProfile}
+                        disabled={!selectedProfileIsCustom}
+                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-rose-300 hover:text-rose-700 disabled:cursor-not-allowed disabled:border-slate-100 disabled:text-slate-400"
+                      >
+                        Rename Profile
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={markProfileAsInviteDefault}
+                        disabled={!selectedProfileIsCustom}
+                        className="w-full rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-slate-300"
+                      >
+                        Mark as Default for New Invited Members
+                      </button>
+                    </div>
+                    <p className="mt-3 text-xs text-slate-500">System profiles are baseline templates and remain read-only.</p>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="mb-4 flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-medium text-slate-500">Permission Matrix</p>
-                  <h2 className="text-xl font-semibold text-slate-900">Module + Action Default Matrix</h2>
+                  <h2 className="text-xl font-semibold text-slate-900">Profile Module + Action Matrix</h2>
                 </div>
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                  Template: {selectedTemplateRole}
+                  Profile: {selectedProfile?.name ?? "Planner"}
                 </span>
+              </div>
+
+              <div className="mb-3 rounded-2xl bg-slate-50 p-3 text-xs text-slate-600">
+                {selectedProfileIsCustom
+                  ? "Custom profile selected. Permission values are editable in this matrix."
+                  : "System default profile selected. Values are baseline and read-only."}
               </div>
 
               <div className="overflow-x-auto">
@@ -612,13 +871,31 @@ export default function MembersPage() {
                         </td>
                         {allActions.map((action) => {
                           const supported = moduleConfig.actions.includes(action);
-                          const level = selectedRoleTemplateMatrix[moduleConfig.name][action] ?? "No Access";
+                          const level = selectedProfileMatrix[moduleConfig.name][action] ?? "No Access";
                           return (
                             <td key={`${moduleConfig.name}-${action}`} className="border border-slate-200 bg-white px-2 py-2">
                               {supported ? (
-                                <span className={`inline-flex rounded-full px-2 py-1 text-[10px] font-semibold ${levelStyles[level]}`}>
-                                  {level}
-                                </span>
+                                selectedProfileIsCustom ? (
+                                  <select
+                                    value={level}
+                                    onChange={(event) =>
+                                      updateSelectedCustomPermission(
+                                        moduleConfig.name,
+                                        action,
+                                        event.target.value as PermissionLevel,
+                                      )
+                                    }
+                                    className="w-full rounded-lg border border-slate-200 px-2 py-1 text-[10px] font-semibold text-slate-700 outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                                  >
+                                    {permissionLevels.map((permissionLevel) => (
+                                      <option key={permissionLevel} value={permissionLevel}>{permissionLevel}</option>
+                                    ))}
+                                  </select>
+                                ) : (
+                                  <span className={`inline-flex rounded-full px-2 py-1 text-[10px] font-semibold ${levelStyles[level]}`}>
+                                    {level}
+                                  </span>
+                                )
                               ) : (
                                 <span className="text-[10px] font-semibold text-slate-300">N/A</span>
                               )}
