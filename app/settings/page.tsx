@@ -1,6 +1,5 @@
 import { Sidebar } from "../../components/Sidebar";
 import { TopNav } from "../../components/TopNav";
-import { WeddingHeader } from "../../components/WeddingHeader";
 
 export default function SettingsPage() {
   return (
@@ -9,7 +8,6 @@ export default function SettingsPage() {
 
       <main className="flex-1 p-6 sm:p-8 lg:ml-[var(--sidebar-width)] lg:p-10">
         <TopNav title="Settings" />
-        <WeddingHeader />
 
         <div className="mt-6 space-y-6">
           <section className="grid gap-4 lg:grid-cols-2">
@@ -79,8 +77,8 @@ export default function SettingsPage() {
 
             <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="mb-4">
-                <p className="text-sm font-medium text-slate-500">Wedding Default Settings</p>
-                <h2 className="text-xl font-semibold text-slate-900">Defaults</h2>
+                <p className="text-sm font-medium text-slate-500">System Settings</p>
+                <h2 className="text-xl font-semibold text-slate-900">Default Configuration</h2>
               </div>
 
               <div className="space-y-4">
@@ -125,8 +123,8 @@ export default function SettingsPage() {
           <section className="grid gap-4 lg:grid-cols-3">
             <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="mb-4">
-                <p className="text-sm font-medium text-slate-500">Appearance</p>
-                <h2 className="text-xl font-semibold text-slate-900">Theme</h2>
+                <p className="text-sm font-medium text-slate-500">Preferences</p>
+                <h2 className="text-xl font-semibold text-slate-900">Appearance</h2>
               </div>
 
               <div className="space-y-4">
@@ -170,7 +168,7 @@ export default function SettingsPage() {
             <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="mb-4">
                 <p className="text-sm font-medium text-slate-500">Notification Settings</p>
-                <h2 className="text-xl font-semibold text-slate-900">Alerts</h2>
+                <h2 className="text-xl font-semibold text-slate-900">System Alerts</h2>
               </div>
 
               <div className="space-y-4">
@@ -197,7 +195,7 @@ export default function SettingsPage() {
 
             <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="mb-4">
-                <p className="text-sm font-medium text-slate-500">System Preferences</p>
+                <p className="text-sm font-medium text-slate-500">Preferences</p>
                 <h2 className="text-xl font-semibold text-slate-900">Behavior</h2>
               </div>
 

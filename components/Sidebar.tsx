@@ -75,7 +75,11 @@ export function Sidebar({
     document.documentElement.style.setProperty("--sidebar-width", sidebarWidth);
   }, [resolvedCollapsed]);
 
-  const showGlobalNav = pathname === "/workspace" || pathname === "/members" || pathname === "/settings";
+  const showGlobalNav =
+    pathname === "/workspace" ||
+    pathname === "/members" ||
+    pathname.startsWith("/members/") ||
+    pathname === "/settings";
   const workspaceNavByMode: Record<SidebarMode, NavItem[]> = useMemo(
     () => ({
       planner: workspaceNavItems,

@@ -163,6 +163,18 @@ function getStatusStyle(status: Workspace["status"]) {
 export default function WorkspacePage() {
   const router = useRouter();
   const { workspaceProfile } = useWorkspaceProfile();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [createForm, setCreateForm] = useState({
+    workspaceName: "",
+    coupleOne: "",
+    coupleTwo: "",
+    weddingDate: "",
+    venue: "",
+    service: "Full Planning" as Workspace["service"],
+    status: "Active" as Workspace["status"],
+    internalRemarks: "",
+  });
 
   const workspaces = useMemo(() => {
     return baseWorkspaces.map((workspace) => {
@@ -191,10 +203,28 @@ export default function WorkspacePage() {
     });
   }, [workspaces]);
 
+  const filteredWorkspaces = useMemo(() => {
+    const normalized = searchQuery.trim().toLowerCase();
+
+    if (!normalized) {
+      return sortedWorkspaces;
+    }
+
+    return sortedWorkspaces.filter((workspace) => {
+      return (
+        workspace.workspaceName.toLowerCase().includes(normalized) ||
+        workspace.coupleOne.toLowerCase().includes(normalized) ||
+        workspace.coupleTwo.toLowerCase().includes(normalized) ||
+        workspace.venue.toLowerCase().includes(normalized)
+      );
+    });
+  }, [searchQuery, sortedWorkspaces]);
+
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(sortedWorkspaces[0]?.id ?? "");
 
   const selectedWorkspace =
-    sortedWorkspaces.find((workspace) => workspace.id === selectedWorkspaceId) ??
+    filteredWorkspaces.find((workspace) => workspace.id === selectedWorkspaceId) ??
+    filteredWorkspaces[0] ??
     sortedWorkspaces[0];
 
   const enterWorkspace = () => {
@@ -206,98 +236,35 @@ export default function WorkspacePage() {
       <Sidebar mode="planner" />
 
       <main className="flex-1 p-6 sm:p-8 lg:ml-[var(--sidebar-width)] lg:p-10">
-        <TopNav title="Workspace List" />
+        <TopNav title="Workspace" />
 
         <div className="mt-4 space-y-4">
           <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="mb-4">
-              <p className="text-sm font-medium text-slate-500">Create Wedding</p>
-              <h2 className="text-xl font-semibold text-slate-900">New Workspace</h2>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
               <div>
-                <label className="mb-1 block text-sm font-medium text-slate-600">Workspace Name</label>
+                <h1 className="text-2xl font-semibold text-slate-900">Workspace</h1>
+                <p className="mt-1 text-sm text-slate-500">
+                  Manage wedding workspaces and review workspace details before entering each planning environment.
+                </p>
+              </div>
+
+              <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center md:justify-end">
                 <input
-                  type="text"
-                  placeholder="Enter workspace name"
-                  className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                  type="search"
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Search workspace"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 sm:min-w-64"
                 />
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-600">Couple 1</label>
-                  <input
-                    type="text"
-                    placeholder="First partner name"
-                    className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-600">Couple 2</label>
-                  <input
-                    type="text"
-                    placeholder="Second partner name"
-                    className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-600">Wedding Date</label>
-                <input
-                  type="date"
-                  className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
-                />
-              </div>
-
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-600">Venue</label>
-                <input
-                  type="text"
-                  placeholder="Venue name"
-                  className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
-                />
-              </div>
-
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-600">Service</label>
-                <select className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100">
-                  <option>Full Planning</option>
-                  <option>Half Planning</option>
-                  <option>Coordination</option>
-                  <option>Website Only</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="mb-1 block text-sm font-medium text-slate-600">Status</label>
-                <select className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100">
-                  <option>Active</option>
-                  <option>Read Only</option>
-                  <option>Archived</option>
-                </select>
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="mb-1 block text-sm font-medium text-slate-600">Internal Remarks</label>
-                <textarea
-                  rows={4}
-                  placeholder="Add internal planning notes or reminders"
-                  className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
-                />
-                <p className="mt-2 text-xs text-slate-400">Visible only to Planner and Master Account.</p>
+                <button
+                  type="button"
+                  onClick={() => setIsCreateModalOpen(true)}
+                  className="rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+                >
+                  Add Workspace
+                </button>
               </div>
             </div>
-
-            <button
-              type="button"
-              className="mt-4 w-full rounded-2xl bg-rose-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
-            >
-              Create Workspace
-            </button>
           </section>
 
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-[1.25fr_0.95fr]">
@@ -305,12 +272,12 @@ export default function WorkspacePage() {
               <div className="mb-4 flex items-center justify-between gap-3">
                 <p className="text-sm font-medium text-slate-500">Wedding Workspace List</p>
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                  {sortedWorkspaces.length} workspaces
+                  {filteredWorkspaces.length} workspaces
                 </span>
               </div>
 
               <div className="space-y-3">
-                {sortedWorkspaces.map((workspace) => {
+                {filteredWorkspaces.map((workspace) => {
                   const isSelected = selectedWorkspaceId === workspace.id;
 
                   return (
@@ -374,6 +341,12 @@ export default function WorkspacePage() {
                     </div>
                   );
                 })}
+
+                {filteredWorkspaces.length === 0 ? (
+                  <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
+                    No workspace matches the current search.
+                  </div>
+                ) : null}
               </div>
             </div>
 
@@ -543,6 +516,148 @@ export default function WorkspacePage() {
             </div>
           </section>
         </div>
+
+        {isCreateModalOpen ? (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Create Wedding Workspace"
+          >
+            <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-slate-200 bg-white p-5 shadow-xl sm:p-6">
+              <div className="mb-4 flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium text-slate-500">Create Wedding Workspace</p>
+                  <h2 className="text-xl font-semibold text-slate-900">New Workspace Form</h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsCreateModalOpen(false)}
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600"
+                >
+                  Close
+                </button>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-600">Workspace Name</label>
+                  <input
+                    type="text"
+                    value={createForm.workspaceName}
+                    onChange={(event) => setCreateForm((prev) => ({ ...prev, workspaceName: event.target.value }))}
+                    placeholder="Enter workspace name"
+                    className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                  />
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-slate-600">Couple 1</label>
+                    <input
+                      type="text"
+                      value={createForm.coupleOne}
+                      onChange={(event) => setCreateForm((prev) => ({ ...prev, coupleOne: event.target.value }))}
+                      placeholder="First partner name"
+                      className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block text-sm font-medium text-slate-600">Couple 2</label>
+                    <input
+                      type="text"
+                      value={createForm.coupleTwo}
+                      onChange={(event) => setCreateForm((prev) => ({ ...prev, coupleTwo: event.target.value }))}
+                      placeholder="Second partner name"
+                      className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-600">Wedding Date</label>
+                  <input
+                    type="date"
+                    value={createForm.weddingDate}
+                    onChange={(event) => setCreateForm((prev) => ({ ...prev, weddingDate: event.target.value }))}
+                    className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-600">Venue</label>
+                  <input
+                    type="text"
+                    value={createForm.venue}
+                    onChange={(event) => setCreateForm((prev) => ({ ...prev, venue: event.target.value }))}
+                    placeholder="Venue name"
+                    className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-600">Service</label>
+                  <select
+                    value={createForm.service}
+                    onChange={(event) =>
+                      setCreateForm((prev) => ({ ...prev, service: event.target.value as Workspace["service"] }))
+                    }
+                    className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                  >
+                    <option value="Full Planning">Full Planning</option>
+                    <option value="Half Planning">Half Planning</option>
+                    <option value="Coordination">Coordination</option>
+                    <option value="Website Only">Website Only</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-600">Status</label>
+                  <select
+                    value={createForm.status}
+                    onChange={(event) =>
+                      setCreateForm((prev) => ({ ...prev, status: event.target.value as Workspace["status"] }))
+                    }
+                    className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Read Only">Read Only</option>
+                    <option value="Archived">Archived</option>
+                  </select>
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="mb-1 block text-sm font-medium text-slate-600">Internal Remarks</label>
+                  <textarea
+                    rows={4}
+                    value={createForm.internalRemarks}
+                    onChange={(event) => setCreateForm((prev) => ({ ...prev, internalRemarks: event.target.value }))}
+                    placeholder="Add internal planning notes or reminders"
+                    className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsCreateModalOpen(false)}
+                  className="rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsCreateModalOpen(false)}
+                  className="rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+                >
+                  Create Workspace
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </main>
     </div>
   );
