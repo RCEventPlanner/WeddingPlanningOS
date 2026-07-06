@@ -1017,199 +1017,374 @@ Summary
 Status: Completed
 
 Summary
-- Created the Workspace Foundation module.
-- Added Wedding Workspace List using placeholder data.
-- Added Create Wedding UI foundation.
-- Added Workspace Switcher UI.
+- Completed the Workspace Foundation module.
+- Added Wedding Workspace List with responsive card layout.
+- Added Create Workspace page with placeholder form.
+- Added Workspace Switcher UI foundation.
 - Added Workspace Settings preview.
-- Added Archive Wedding UI state.
-- Optimized responsive layouts for mobile, tablet and desktop.
-- No business logic, authentication or Firebase integration implemented.
+- Added Archive Workspace UI state.
+- Added Internal Remarks field for workspace management.
+- Internal Remarks are intended for Planner and Master Account only.
+- Optimized layouts for desktop, tablet and mobile.
+- No business logic implemented.
+- No authentication, permission or Firebase integration implemented.
 - Build passed successfully.
 
----
-
-## DAY 6 - 2026-07-03
+Product Decisions
+- One Workspace represents one individual wedding.
+- A company can manage multiple Wedding Workspaces.
+- Internal Remarks belong to the Workspace, not the Wedding Profile.
+- Internal Remarks are visible only to Planner and Master Account.
+- Workspace List should remain concise and must not display internal remarks.
+- Dashboard provides project overview only.
+- Operational workflows remain within Live Rundown.
 
 ### Module 11 – Settings Foundation
+#### Phase 1 – UI Foundation
 Status: Completed
 
 Summary
-- Completed the Settings Foundation UI.
-- Added Company Profile settings.
-- Added Account Settings placeholders.
-- Added Notification Settings placeholders.
-- Added System Preferences placeholders.
-- Standardized Settings page layout.
+- Created the Settings Foundation module.
+- Added Company Settings section.
+- Added Wedding Default Settings section.
+- Added Appearance settings.
+- Added Notification Settings UI.
+- Added System Preferences UI.
+- Added About page with application information.
+- Optimized responsive layouts for desktop, tablet and mobile.
+- No business logic implemented.
+- No authentication, permission or Firebase integration implemented.
 - Build passed successfully.
 
----
+Product Decisions
+- Settings is a system configuration module and should not contain operational data.
+- Company Settings apply across all Wedding Workspaces.
+- Wedding-specific configuration belongs to Wedding Profile or Workspace where appropriate.
+- Settings should remain lightweight and focus on application preferences.
 
 ### Module 12 – Authentication Foundation
 Status: Completed
 
 Summary
+- Created the Authentication Foundation module.
 - Added Login page.
-- Added Register page.
+- Added Register page for Planner / Company Owner.
 - Added Forgot Password page.
-- Added Authentication Layout.
-- Added Protected Route foundation.
-- Implemented mock authentication flow only.
-- No Firebase authentication implemented.
+- Created a shared Authentication Layout.
+- Prepared Auth Context structure.
+- Prepared Protected Route and Public Route structure.
+- Added placeholder authentication flow.
+- Optimized responsive layouts for desktop, tablet and mobile.
+- No Firebase integration implemented.
+- No permission management implemented.
 - Build passed successfully.
 
----
+Product Decisions
+- Every user must authenticate before accessing the system.
+- Planner (Company Owner) is responsible for creating the company account.
+- Coordinator, Couple and Vendor User will join through invitations in later modules.
+- Authentication is independent from Workspace assignment.
 
 ### Module 13 – Wedding Members Foundation
 Status: Completed
 
 Summary
-- Created Members Management module.
-- Added Member List.
+- Created the Wedding Members Foundation module.
+- Added Members List with placeholder data.
 - Added Invite Member UI.
-- Added Member Detail panel.
-- Added Wedding Position assignment.
-- Added System Role assignment.
-- Added placeholder Workspace assignment.
-- Added reusable member management components.
+- Added Member Detail / Preview section.
+- Added role badges for Planner, Coordinator, Couple and Vendor User.
+- Added member status badges for Active, Pending, Invited and Disabled.
+- Added assigned workspace information.
+- Optimized responsive layouts for desktop, tablet and mobile.
+- No Firebase integration implemented.
+- No real authentication or permission logic implemented.
 - Build passed successfully.
 
-Product Decisions
-- System Role controls permissions.
-- Wedding Position controls My Rundown.
-- Position and Role are completely independent.
-
----
+## DAY 6 - 2026-07-03
 
 ### Module 14 – Permission Management Foundation
 Status: Completed
 
 Summary
-- Implemented Permission Matrix foundation.
+- Created Permission Management Foundation.
+- Added permission levels: No Access, View, Edit and Manage.
+- Added Role Default Permission structure.
+- Added User Override Permission UI.
 - Added Module + Action permission model.
-- Supported four permission levels:
-  - No Access
-  - View
-  - Edit
-  - Manage
-- Added User Override foundation.
-- Added Permission Profile foundation.
-- Added editable custom Permission Profiles.
-- Preserved System Default Profiles.
+- Added Permission Matrix.
+- Added Role Templates.
+- Added Member Permission Preview.
+- Added Live Rundown-specific permission actions.
+- No real permission enforcement implemented.
+- No Firebase integration implemented.
 - Build passed successfully.
 
 Product Decisions
-- Permission is based on Module + Action.
-- Planner owns full permissions by default.
-- User Override always has higher priority than profile defaults.
-- Default Permission Profiles can be customized by Planner.
+- Permissions use four levels: No Access, View, Edit, Manage.
+- Roles provide default permissions only.
+- Individual users can have permission overrides.
+- Permission system uses Module + Action structure.
+- Live Rundown requires more granular actions because it is the primary operational module.
 
----
-
-### Module 15 – Live Rundown Permission Foundation
+### Module 15 – Live Rundown Permission Integration
 Status: Completed
 
 Summary
-- Integrated permission checks into Live Rundown foundation.
-- Defined visibility rules for actions.
-- Hidden actions when user has insufficient permission.
-- Restricted Timeline Recalculation to Planner and authorized Coordinators.
-- Reserved Public Remarks / Internal Remarks architecture.
-- Prepared permission integration for future Firebase implementation.
-- Build passed successfully.
-
----
-
-### Module 15.5 – Navigation & Workspace Experience Foundation
-Status: Completed
-
-Summary
-- Redesigned overall navigation architecture.
-- Introduced Global Navigation and Workspace Navigation separation.
-- Added collapsible Sidebar.
-- Added icon-only Sidebar in collapsed mode.
-- Standardized Top Header layout.
-- Improved Workspace switching experience.
-- Reorganized Workspace module order:
-  - Dashboard
-  - Wedding Profile
-  - Budget
-  - Vendors
-  - Tasks
-  - Guests
-  - RSVP
-  - Live Rundown
-- Added Workspace Details panel.
-- Improved responsive behavior across desktop, tablet and mobile.
+- Integrated the Permission Foundation into the Live Rundown module.
+- Updated action visibility based on permission levels.
+- Implemented role-based UI behaviour using placeholder data.
+- Added support for Public Remarks and Internal Remarks.
+- Hidden unauthorized actions instead of disabling them.
+- Added permission preview for Planner, Coordinator, Couple and Vendor User.
+- Maintained responsive layouts across desktop, tablet and mobile.
+- No backend authorization implemented.
+- No Firebase integration implemented.
 - Build passed successfully.
 
 Product Decisions
-- Global Navigation only appears outside a Workspace.
-- Workspace Navigation only appears after entering a Workspace.
-- Vendor enters directly into Live Rundown.
-- Planner, Coordinator and Couple share the same workspace navigation structure.
+- Unauthorized actions are hidden instead of disabled.
+- Planner always has full access.
+- Coordinator permissions depend on assigned permissions.
+- Couple cannot modify the Live Rundown timeline.
+- Vendor defaults to Full Rundown; My Rundown is optional.
+- Remarks are divided into Public Remarks and Internal Remarks.
 
----
+
+## DAY 5 - 2026-07-03
 
 ### Guest Table Assignment Foundation
 Status: Completed
 
 Summary
-- Planned Guest Table Assignment module.
-- Reserved architecture for future seating management.
-- Prepared Guest to Table relationship.
-- Prepared future banquet reporting support.
-- No CRUD logic implemented.
+- Added the Table Assignment Foundation to Guest Management.
+- Added Assigned Table field to Guest data using placeholder data.
+- Created a Table List foundation with:
+  - Table Name / Number
+  - Capacity
+  - Assigned Guests Count
+  - Unassigned Guests Count
+- Displayed Assigned Table in Guest List and Guest Detail.
+- Added a basic Assign / Change Table UI.
+- Added an Unassigned Guests state.
+- Optimized responsive layouts for desktop, tablet and mobile.
+- No drag-and-drop seating implemented.
+- No seating chart or floor plan implemented.
+- No Firebase integration implemented.
+- Build passed successfully.
 
----
+Product Decisions
+- Table Assignment is part of Guest Management.
+- A guest can be assigned to one table at a time.
+- Unassigned guests should be clearly identified.
+- This module establishes the data foundation for future Seating Plan features.
+- Advanced seating features (drag-and-drop, floor plan, table optimization and exports) will be implemented in a future module.
 
 ### Editable Permission Profiles Foundation
 Status: Completed
 
 Summary
-- Added editable Permission Profile foundation.
-- Added Duplicate Profile support.
-- Added Rename Profile support.
-- Added Set Default Profile support.
-- Added Edit Permission UI.
-- Maintained System Default Profiles.
+- Added editable Permission Profiles foundation.
+- Added support for custom permission profiles.
+- Added Duplicate Profile, Rename Profile and Edit Permissions UI.
+- Added ability to mark a custom profile as default for new invited members.
+- Preserved System Default Profiles as baseline templates.
+- Kept User Override permission support.
+- No backend logic implemented.
+- No Firebase integration implemented.
 - Build passed successfully.
 
 Product Decisions
-- Planner can customize default permission profiles.
-- System Default Profiles remain baseline templates.
-- User Override remains available for individual users.
+- System Default Profiles should remain as baseline templates.
+- Planner / Master Account can create and edit custom permission profiles.
+- Default permission profiles should be adjustable without code changes.
+- User Override remains available for individual member customization.
+
+Next
+- Continue Module 15.5 review and finalize navigation / workspace experience.
+
+## Day 6 - 2026-07-06
+
+### UI Review & Refinement
+
+Status: In Progress
+
+Focused on reviewing and refining the overall UI before entering the Firebase implementation phase.
 
 ---
 
-## DAY 6 - 2026-07-03
+### Workspace UI Refinement
 
-### Workspace Naming Standardization
-Status: Completed
+Completed
 
-Summary
-- Standardized Workspace Name as the single source of truth across the application.
-- Added a dedicated Workspace Name field to the Wedding Profile foundation.
-- Separated Workspace Name from Couple information.
-- Updated Top Header inside Workspace to display the Workspace Name.
-- Updated Wedding Overview to use the Workspace Name consistently.
-- Updated Workspace List to display the Workspace Name consistently.
-- Updated Workspace Details to display Workspace Name alongside Couple information.
-- Established a unified naming convention for future Firebase integration.
-- Build passed successfully.
+- Replaced the always-visible Create Wedding card with an Add Workspace button.
+- Added Search and Add Workspace actions to the page header.
+- Implemented Create Wedding as a modal dialog.
+- Simplified the Workspace page layout.
+- Retained the two-column Workspace List and Workspace Details layout.
+- Improved responsive behavior across desktop, tablet, and mobile.
 
-Product Decisions
-- Workspace Name is the primary display name throughout the system.
-- Couple names remain wedding profile information and are no longer used as the workspace title.
-- Future updates to Workspace Name should automatically be reflected in:
-  - Top Header
-  - Workspace List
-  - Wedding Overview
-  - Workspace Details
-  - Future Workspace Switcher
+---
 
-Next
-- Continue full UI/UX review.
-- Finalize UI Freeze before starting Module 16 – Firebase Foundation.
+### Members Management UI Refinement
 
+Completed
 
+- Added page header with Search and Add New Member actions.
+- Replaced the always-visible Invite Member card with a modal dialog.
+- Standardized the page layout to match the Workspace module.
+- Removed the Member Summary card.
+- Kept Member List on the left and Member Details on the right.
+
+Interaction Updates
+
+- Single Click selects a member and updates Member Details.
+- Double Click opens Manage Permissions.
+
+---
+
+### Workspace Assignment
+
+Completed
+
+- Added Assign Workspace support.
+- Members can now be assigned to multiple Wedding Workspaces.
+- Displayed assigned Workspace count.
+- Prepared multi-workspace permission management foundation.
+
+---
+
+### Permission Management Refinement
+
+Completed
+
+- Simplified the Workspace Permission Matrix.
+- Removed duplicated permission badges.
+- Reduced each permission cell to a single colored dropdown.
+- Added Save Changes and Cancel workflow.
+- Unsaved changes are discarded when cancelled or leaving without saving.
+- Added Reset to Role Default action.
+- Improved Override detection logic.
+
+---
+
+### Permission Design System
+
+Established consistent color system.
+
+Permission Colors
+
+- No Access — Red
+- View — Blue
+- Edit — Cyan
+- Manage — Orange-Brown
+
+Role Colors
+
+- Planner — Orange-Brown
+- Coordinator — Brown
+- Couple — Cyan
+- Couple Family / Friend — Teal
+- Vendor — Blue
+
+---
+
+### Role System Expansion
+
+Completed
+
+Added new System Role:
+
+- Couple Family / Friend
+
+Updated related UI:
+
+- Member Invitation
+- Member Details
+- Workspace Permission Matrix
+- Default Permission Profiles
+
+---
+
+### Wedding Position Architecture
+
+Refined Wedding Position categories.
+
+Groups
+
+- Planning Team
+- Couple
+- Couple Family & Friends
+- Vendor Categories
+
+Prepared for future:
+
+- My Rundown
+- Responsible Roles
+- Live Check-in
+- Wedding Day Records
+
+---
+
+### Default Permission Profiles
+
+Refined the permission architecture.
+
+- Established a unified Default Permission Matrix.
+- Ensured Workspace Permission Matrix reads Role defaults correctly.
+- Separated Role Templates from Member-specific Overrides.
+- Prepared the shared permission configuration for future Firebase integration.
+
+---
+
+### Current Status
+
+UI Review continues.
+
+Current focus:
+
+- Final UI consistency review.
+- Navigation consistency.
+- Permission UX.
+- Responsive refinement.
+
+Firebase integration has not started.
+
+### Member Permission Architecture
+
+Completed
+
+- Added support for multiple Workspace assignments per member.
+- Refined the Workspace Permission Matrix workflow.
+- Introduced Role-based default permission templates.
+- Added the new "Couple Family / Friend" System Role.
+- Standardized Role and Permission color system.
+- Added Save / Cancel workflow for permission editing.
+- Added automatic Role Template loading.
+- Added per-module Override detection.
+- Ensured all permission pages share the same default permission source.
+
+Architecture Decisions
+
+- System Role controls system permissions.
+- Wedding Position defines operational responsibilities only.
+- Members can belong to multiple Wedding Workspaces.
+- Each Workspace may have different permissions for the same member.
+- Role Templates provide default permissions.
+- Member permissions may override Role defaults on a per-Workspace basis.
+
+### UI Freeze Progress
+
+Current Status
+
+The project is currently in the UI Review / UI Freeze stage.
+
+Current focus:
+
+- Global Navigation consistency
+- Workspace refinement
+- Members Management refinement
+- Permission UX
+- Responsive improvements
+
+Business logic and Firebase integration will begin after UI Freeze is completed.
