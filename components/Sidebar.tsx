@@ -23,7 +23,6 @@ type SidebarProps = {
 
 const workspaceNavItems: NavItem[] = [
   { label: "Dashboard", href: "/", icon: "🏠" },
-  { label: "Wedding Profile", href: "/wedding", icon: "💍" },
   { label: "Budget", href: "/budget", icon: "💰" },
   { label: "Vendors", href: "/vendors", icon: "🤝" },
   { label: "Tasks", href: "/tasks", icon: "✅" },

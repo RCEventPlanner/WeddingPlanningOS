@@ -158,13 +158,14 @@ export default function MembersPage() {
     initialWorkspaceAssignments,
   );
   const [assignWorkspaceDraftIds, setAssignWorkspaceDraftIds] = useState<string[]>([]);
+  const [isInviteWorkspaceDropdownOpen, setIsInviteWorkspaceDropdownOpen] = useState(false);
   const [inviteForm, setInviteForm] = useState({
     name: "",
     email: "",
     phone: "",
     role: "Planner" as RoleTemplate,
     weddingPosition: "Lead Planner",
-    assignedWorkspace: "Aurora & Noah Wedding",
+    assignedWorkspaces: ["Aurora & Noah Wedding"],
     permissionProfile: DEFAULT_PERMISSION_PROFILE_BY_ROLE.Planner,
   });
 
@@ -192,6 +193,7 @@ export default function MembersPage() {
 
   const selectedMemberAssignments = workspaceAssignmentsByMember[selectedMember.id] ?? [];
   const selectedWorkspaceNames = selectedMemberAssignments.map((assignment) => workspaceNameById[assignment.workspaceId]);
+  const inviteWorkspaceNames = inviteForm.assignedWorkspaces;
 
   const openAssignWorkspaceModal = (memberId: number) => {
     const currentAssignments = workspaceAssignmentsByMember[memberId] ?? [];
@@ -203,6 +205,30 @@ export default function MembersPage() {
     setAssignWorkspaceDraftIds((previous) =>
       previous.includes(workspaceId) ? previous.filter((id) => id !== workspaceId) : [...previous, workspaceId],
     );
+  };
+
+  const toggleInviteWorkspace = (workspaceName: string) => {
+    setInviteForm((previous) => {
+      const nextAssignedWorkspaces = previous.assignedWorkspaces.includes(workspaceName)
+        ? previous.assignedWorkspaces.filter((name) => name !== workspaceName)
+        : [...previous.assignedWorkspaces, workspaceName];
+
+      return {
+        ...previous,
+        assignedWorkspaces: nextAssignedWorkspaces,
+      };
+    });
+  };
+
+  const removeInviteWorkspace = (workspaceName: string) => {
+    setInviteForm((previous) => ({
+      ...previous,
+      assignedWorkspaces: previous.assignedWorkspaces.filter((name) => name !== workspaceName),
+    }));
+  };
+
+  const toggleInviteWorkspaceDropdown = () => {
+    setIsInviteWorkspaceDropdownOpen((previous) => !previous);
   };
 
   const saveWorkspaceAssignment = () => {
@@ -601,37 +627,82 @@ export default function MembersPage() {
                   </select>
                 </div>
 
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-600">Assigned Workspace</label>
-                  <select
-                    value={inviteForm.assignedWorkspace}
-                    onChange={(event) => setInviteForm((prev) => ({ ...prev, assignedWorkspace: event.target.value }))}
-                    className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
-                  >
-                    <option value="Aurora & Noah Wedding">Aurora & Noah Wedding</option>
-                    <option value="Solstice Celebration Wedding">Solstice Celebration Wedding</option>
-                    <option value="Evermore Wedding">Evermore Wedding</option>
-                    <option value="Snowdrop Ceremony Wedding">Snowdrop Ceremony Wedding</option>
-                  </select>
+                <div className="md:col-span-2">
+                  <label className="mb-1 block text-sm font-medium text-slate-600">Assigned Workspaces</label>
+
+                  <div className="relative mt-3">
+                    <button
+                      type="button"
+                      onClick={toggleInviteWorkspaceDropdown}
+                      className="flex min-h-[44px] w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-left text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
+                    >
+                      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+                        {inviteWorkspaceNames.length === 0 ? (
+                          <span className="text-slate-400">Select workspaces</span>
+                        ) : (
+                          inviteWorkspaceNames.map((workspaceName) => (
+                            <span
+                              key={workspaceName}
+                              className="inline-flex items-center gap-2 rounded-full bg-rose-50 px-3 py-1 text-sm font-medium text-rose-700 ring-1 ring-rose-200"
+                            >
+                              {workspaceName}
+                              <span
+                                role="button"
+                                tabIndex={0}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  removeInviteWorkspace(workspaceName);
+                                }}
+                                onKeyDown={(event) => {
+                                  if (event.key === "Enter" || event.key === " ") {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    removeInviteWorkspace(workspaceName);
+                                  }
+                                }}
+                                className="rounded-full px-1 text-rose-400 transition hover:text-rose-600"
+                                aria-label={`Remove ${workspaceName}`}
+                              >
+                                ×
+                              </span>
+                            </span>
+                          ))
+                        )}
+                      </div>
+
+                      <span className="shrink-0 text-slate-400">▾</span>
+                    </button>
+
+                    {isInviteWorkspaceDropdownOpen ? (
+                      <div className="absolute left-0 top-full z-10 mt-2 w-full rounded-2xl border border-slate-200 bg-white p-1.5 shadow-lg">
+                        <div className="max-h-44 overflow-auto">
+                          {workspaceOptions.map((workspace) => {
+                            const checked = inviteWorkspaceNames.includes(workspace.name);
+
+                            return (
+                              <button
+                                key={workspace.id}
+                                type="button"
+                                onClick={() => toggleInviteWorkspace(workspace.name)}
+                                className={`flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition ${
+                                  checked ? "bg-rose-50 text-rose-900" : "text-slate-700 hover:bg-slate-50"
+                                }`}
+                              >
+                                <span className="truncate font-medium">{workspace.name}</span>
+                                {checked ? (
+                                  <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs font-semibold text-rose-700">
+                                    Selected
+                                  </span>
+                                ) : null}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
 
-                <div className="md:col-span-2">
-                  <label className="mb-1 block text-sm font-medium text-slate-600">Permission Profile</label>
-                  <select
-                    value={inviteForm.permissionProfile}
-                    onChange={(event) => setInviteForm((prev) => ({ ...prev, permissionProfile: event.target.value }))}
-                    className="w-full rounded-2xl border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100"
-                  >
-                    {ROLE_OPTIONS.map((role) => {
-                      const profile = DEFAULT_PERMISSION_PROFILE_BY_ROLE[role];
-                      return (
-                        <option key={role} value={profile}>
-                          {profile}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
               </div>
 
               <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">

@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { DashboardCard } from "../DashboardCard";
 import { QuickActions } from "../QuickActions";
-import { RecentActivity } from "../RecentActivity";
 import { WeddingHeader } from "../WeddingHeader";
 import { WeddingInfoForm } from "../WeddingInfoForm";
 import { WeddingProfileCard } from "../WeddingProfileCard";
@@ -25,7 +24,6 @@ import { TaskDetailCard } from "../TaskDetailCard";
 import { GuestDetailCard } from "../GuestDetailCard";
 import { GuestFilter } from "../GuestFilter";
 import { GuestForm } from "../GuestForm";
-import { GuestSearchBar } from "../GuestSearchBar";
 import { GuestStatistics } from "../GuestStatistics";
 import { GuestTable } from "../GuestTable";
 import { RSVPDetailCard } from "../RSVPDetailCard";
@@ -248,7 +246,6 @@ export function DashboardModuleView() {
       </section>
 
       <QuickActions />
-      <RecentActivity />
     </div>
   );
 }
@@ -264,18 +261,34 @@ export function WeddingProfileModuleView() {
 }
 
 export function BudgetModuleView() {
+  const [budgetSearchQuery, setBudgetSearchQuery] = useState("");
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-slate-900">Budget</h1>
-          <p className="mt-2 text-slate-600">Monitor spending, savings, and payments in this section.</p>
-        </div>
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900">Budget Management</h1>
+            <p className="mt-1 text-sm text-slate-500">Track wedding spending, budget usage, and payment progress.</p>
+          </div>
 
-        <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
-          Add Expense
-        </button>
-      </div>
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center md:justify-end">
+            <input
+              type="search"
+              value={budgetSearchQuery}
+              onChange={(event) => setBudgetSearchQuery(event.target.value)}
+              placeholder="Search budget"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 sm:min-w-64"
+            />
+            <button
+              type="button"
+              className="rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+            >
+              Add Expense
+            </button>
+          </div>
+        </div>
+      </section>
 
       <BudgetOverview />
 
@@ -292,18 +305,34 @@ export function BudgetModuleView() {
 }
 
 export function VendorsModuleView() {
+  const [vendorSearchQuery, setVendorSearchQuery] = useState("");
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-slate-900">Vendors</h1>
-          <p className="mt-2 text-slate-600">Keep vendor contacts, quotes, and confirmations here.</p>
-        </div>
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900">Vendor Management</h1>
+            <p className="mt-1 text-sm text-slate-500">Manage vendor partners, confirmations, and service details.</p>
+          </div>
 
-        <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
-          + Add Vendor
-        </button>
-      </div>
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center md:justify-end">
+            <input
+              type="search"
+              value={vendorSearchQuery}
+              onChange={(event) => setVendorSearchQuery(event.target.value)}
+              placeholder="Search vendor"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 sm:min-w-64"
+            />
+            <button
+              type="button"
+              className="rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+            >
+              Add Vendor
+            </button>
+          </div>
+        </div>
+      </section>
 
       <VendorSummary />
       <VendorFilter />
@@ -314,14 +343,34 @@ export function VendorsModuleView() {
 }
 
 export function TasksModuleView() {
+  const [taskSearchQuery, setTaskSearchQuery] = useState("");
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-slate-900">Tasks</h1>
-          <p className="mt-2 text-slate-600">Manage your wedding preparation tasks in one place.</p>
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900">Task Management</h1>
+            <p className="mt-1 text-sm text-slate-500">Organize and monitor planning tasks across the wedding timeline.</p>
+          </div>
+
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center md:justify-end">
+            <input
+              type="search"
+              value={taskSearchQuery}
+              onChange={(event) => setTaskSearchQuery(event.target.value)}
+              placeholder="Search task"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 sm:min-w-64"
+            />
+            <button
+              type="button"
+              className="rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+            >
+              Add Task
+            </button>
+          </div>
         </div>
-      </div>
+      </section>
 
       <TaskSummary />
       <TaskFilter />
@@ -334,6 +383,7 @@ export function TasksModuleView() {
 export function GuestsModuleView() {
   const [guests, setGuests] = useState(initialGuests);
   const [selectedGuestId, setSelectedGuestId] = useState(initialGuests[0].id);
+  const [guestSearchQuery, setGuestSearchQuery] = useState("");
 
   const selectedGuest = useMemo(() => {
     return guests.find((guest) => guest.id === selectedGuestId) ?? guests[0];
@@ -363,26 +413,37 @@ export function GuestsModuleView() {
   };
 
   return (
-    <div className="p-8 sm:p-10">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-slate-900">Guests</h1>
-          <p className="mt-2 text-slate-600">Track guest lists, seating ideas, and RSVP updates here.</p>
-        </div>
+    <div className="space-y-6">
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900">Guest Management</h1>
+            <p className="mt-1 text-sm text-slate-500">Manage guest lists, seating plans, and RSVP-linked guest details.</p>
+          </div>
 
-        <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
-          Add Guest
-        </button>
-      </div>
-
-      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="w-full lg:max-w-md">
-          <GuestSearchBar />
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center md:justify-end">
+            <input
+              type="search"
+              value={guestSearchQuery}
+              onChange={(event) => setGuestSearchQuery(event.target.value)}
+              placeholder="Search guest"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 sm:min-w-64"
+            />
+            <button
+              type="button"
+              className="rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+            >
+              Add Guest
+            </button>
+          </div>
         </div>
+      </section>
+
+      <div>
         <GuestFilter />
       </div>
 
-      <section className="mb-6 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+      <section className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -467,25 +528,38 @@ export function GuestsModuleView() {
 }
 
 export function RSVPModuleView() {
-  return (
-    <div className="p-8 sm:p-10">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-slate-900">RSVP</h1>
-          <p className="mt-2 text-slate-600">Track guest responses and wedding confirmations from one place.</p>
-        </div>
+  const [rsvpSearchQuery, setRsvpSearchQuery] = useState("");
 
-        <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
-          Send Invitation
-        </button>
-      </div>
+  return (
+    <div className="space-y-6">
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900">RSVP Management</h1>
+            <p className="mt-1 text-sm text-slate-500">Track invitation responses, confirmations, and attendance updates.</p>
+          </div>
+
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center md:justify-end">
+            <input
+              type="search"
+              value={rsvpSearchQuery}
+              onChange={(event) => setRsvpSearchQuery(event.target.value)}
+              placeholder="Search RSVP"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 sm:min-w-64"
+            />
+            <button
+              type="button"
+              className="rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+            >
+              Send Invitation / Add RSVP
+            </button>
+          </div>
+        </div>
+      </section>
 
       <RSVPOverview />
 
-      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="w-full lg:max-w-md">
-          <RSVPSearchBar />
-        </div>
+      <div>
         <RSVPFilter />
       </div>
 
@@ -498,14 +572,34 @@ export function RSVPModuleView() {
 }
 
 export function LiveRundownModuleView() {
+  const [liveRundownSearchQuery, setLiveRundownSearchQuery] = useState("");
+
   return (
-    <div className="p-8 sm:p-10">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-slate-900">Live Rundown</h1>
-          <p className="mt-2 text-slate-600">Keep the wedding day operations aligned with a shared, live schedule.</p>
+    <div className="space-y-6">
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900">Live Rundown</h1>
+            <p className="mt-1 text-sm text-slate-500">Keep wedding-day operations aligned with a shared live event timeline.</p>
+          </div>
+
+          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center md:justify-end">
+            <input
+              type="search"
+              value={liveRundownSearchQuery}
+              onChange={(event) => setLiveRundownSearchQuery(event.target.value)}
+              placeholder="Search live rundown"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 sm:min-w-64"
+            />
+            <button
+              type="button"
+              className="rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
+            >
+              Add Event
+            </button>
+          </div>
         </div>
-      </div>
+      </section>
 
       <LiveRundownBoard />
     </div>

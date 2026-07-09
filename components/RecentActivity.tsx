@@ -5,6 +5,13 @@ type ActivityItem = {
   icon: string;
 };
 
+type RecentActivityProps = {
+  showHeading?: boolean;
+  compact?: boolean;
+  className?: string;
+  showCard?: boolean;
+};
+
 const activities: ActivityItem[] = [
   {
     title: "RSVP Received",
@@ -32,40 +39,48 @@ const activities: ActivityItem[] = [
   },
 ];
 
-export function RecentActivity() {
-  return (
-    <section className="mt-6">
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold text-slate-900">Recent Activity</h2>
-        <p className="mt-1 text-sm text-slate-600">
-          A quick view of recent planning updates.
-        </p>
-      </div>
-
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-        <div className="space-y-4">
-          {activities.map((activity, index) => (
-            <div key={activity.title} className="flex gap-3">
-              <div className="flex flex-col items-center">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 text-lg">
-                  {activity.icon}
-                </div>
-                {index < activities.length - 1 ? (
-                  <div className="mt-2 h-full w-px bg-slate-200" />
-                ) : null}
-              </div>
-
-              <div className="flex-1 pb-2">
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                  <h3 className="font-semibold text-slate-900">{activity.title}</h3>
-                  <span className="text-sm text-slate-500">{activity.time}</span>
-                </div>
-                <p className="mt-1 text-sm text-slate-600">{activity.description}</p>
-              </div>
+export function RecentActivity({ showHeading = true, compact = false, className = "mt-6", showCard = true }: RecentActivityProps) {
+  const content = (
+    <div className="space-y-4">
+      {activities.map((activity, index) => (
+        <div key={activity.title} className="flex gap-3">
+          <div className="flex flex-col items-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 text-lg">
+              {activity.icon}
             </div>
-          ))}
+            {index < activities.length - 1 ? (
+              <div className="mt-2 h-full w-px bg-slate-200" />
+            ) : null}
+          </div>
+
+          <div className="flex-1 pb-2">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <h3 className="font-semibold text-slate-900">{activity.title}</h3>
+              <span className="text-sm text-slate-500">{activity.time}</span>
+            </div>
+            <p className="mt-1 text-sm text-slate-600">{activity.description}</p>
+          </div>
         </div>
-      </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <section className={className}>
+      {showHeading ? (
+        <div className="mb-4">
+          <h2 className="text-xl font-semibold text-slate-900">Recent Activity</h2>
+          <p className="mt-1 text-sm text-slate-600">A quick view of recent planning updates.</p>
+        </div>
+      ) : null}
+
+      {showCard ? (
+        <div className={`rounded-2xl border border-slate-200 bg-white ${compact ? "p-3 sm:p-4" : "p-4 sm:p-5"} shadow-sm`}>
+          {content}
+        </div>
+      ) : (
+        <div className={compact ? "p-1" : "p-0"}>{content}</div>
+      )}
     </section>
   );
 }
