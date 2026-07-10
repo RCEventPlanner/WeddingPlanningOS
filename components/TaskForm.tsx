@@ -32,11 +32,40 @@ const vendorOptions = [
 const priorityOptions = ["Low", "Medium", "High", "Urgent"];
 const statusOptions = ["Not Started", "In Progress", "Waiting", "Completed", "Cancelled"];
 
-export function TaskForm() {
+export type TaskFormValues = {
+  category?: string;
+  assignedTo?: string;
+  taskName?: string;
+  relatedVendor?: string;
+  dueDate?: string;
+  priority?: string;
+  status?: string;
+  estimatedTime?: string;
+  description?: string;
+  notes?: string;
+};
+
+type TaskFormProps = {
+  className?: string;
+  title?: string;
+  saveLabel?: string;
+  onCancel?: () => void;
+  onSave?: () => void;
+  values?: TaskFormValues;
+};
+
+export function TaskForm({
+  className,
+  title = "Task Details",
+  saveLabel = "Save Task",
+  onCancel,
+  onSave,
+  values,
+}: TaskFormProps) {
   return (
-    <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <section className={className ?? "mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"}>
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-slate-900">Task Details</h2>
+        <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
         <p className="mt-1 text-sm text-slate-600">
           Use this form to capture wedding task details and vendor coordination.
         </p>
@@ -50,7 +79,7 @@ export function TaskForm() {
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Category <span className="text-rose-500">*</span>
               </label>
-              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="Venue">
+              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue={values?.category ?? "Venue"}>
                 {categoryOptions.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -63,7 +92,7 @@ export function TaskForm() {
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Assigned To <span className="text-rose-500">*</span>
               </label>
-              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="Rachel Chong">
+              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue={values?.assignedTo ?? "Rachel Chong"}>
                 {assignedOptions.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -79,7 +108,7 @@ export function TaskForm() {
               <input
                 type="text"
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="Confirm Venue Booking"
+                defaultValue={values?.taskName ?? "Confirm Venue Booking"}
               />
             </div>
 
@@ -87,7 +116,7 @@ export function TaskForm() {
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Related Vendor (Optional)
               </label>
-              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="The Garden Hall">
+              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue={values?.relatedVendor ?? "The Garden Hall"}>
                 <option value="" disabled>
                   Select a vendor
                 </option>
@@ -106,7 +135,7 @@ export function TaskForm() {
               <input
                 type="date"
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="2026-08-15"
+                defaultValue={values?.dueDate ?? "2026-08-15"}
               />
             </div>
 
@@ -114,7 +143,7 @@ export function TaskForm() {
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Priority <span className="text-rose-500">*</span>
               </label>
-              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="High">
+              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue={values?.priority ?? "High"}>
                 {priorityOptions.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -127,7 +156,7 @@ export function TaskForm() {
               <label className="mb-2 block text-sm font-medium text-slate-700">
                 Status <span className="text-rose-500">*</span>
               </label>
-              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="In Progress">
+              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue={values?.status ?? "In Progress"}>
                 {statusOptions.map((option) => (
                   <option key={option} value={option}>
                     {option}
@@ -143,7 +172,7 @@ export function TaskForm() {
               <input
                 type="text"
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="2 hours"
+                defaultValue={values?.estimatedTime ?? "2 hours"}
               />
             </div>
 
@@ -153,7 +182,7 @@ export function TaskForm() {
               </label>
               <textarea
                 className="min-h-24 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="Confirm venue availability, deposit schedule, and guest capacity for the ceremony and reception."
+                defaultValue={values?.description ?? "Confirm venue availability, deposit schedule, and guest capacity for the ceremony and reception."}
               />
             </div>
 
@@ -163,7 +192,7 @@ export function TaskForm() {
               </label>
               <textarea
                 className="min-h-24 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-                defaultValue="Reach out to the venue coordinator for the latest floorplan and vendor restrictions."
+                defaultValue={values?.notes ?? "Reach out to the venue coordinator for the latest floorplan and vendor restrictions."}
               />
             </div>
           </div>
@@ -171,11 +200,19 @@ export function TaskForm() {
       </div>
 
       <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
-        <button className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300"
+        >
           Cancel
         </button>
-        <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
-          Save Task
+        <button
+          type="button"
+          onClick={onSave}
+          className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
+        >
+          {saveLabel}
         </button>
       </div>
     </section>

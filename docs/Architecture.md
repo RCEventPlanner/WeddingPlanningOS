@@ -358,6 +358,89 @@ Allow every participant to instantly understand:
 - Upcoming event
 - Completed events
 
+---
+
+## Wedding Guest Operations Architecture
+
+The guest-operation workflow follows a single-direction data flow:
+
+Guest Management
+→ RSVP Management
+→ Table Assignment
+→ Floor Plan
+→ Wedding Day Check-in
+
+### Guest Management
+
+Source of basic guest identity data.
+
+Owns:
+
+- Guest Full Name
+- Phone Number
+- Email Address
+- Preferred Name
+- Guest From
+- Guest Group
+
+### RSVP Management
+
+Owns attendance and banquet-related data.
+
+Owns:
+
+- RSVP Status
+- Adults
+- Children
+- Meal Preferences
+- Invitation Status
+
+### Table Assignment
+
+Owns the relationship between confirmed RSVP guests and tables.
+
+Owns:
+
+- Table Name
+- Table Capacity
+- Assigned Guests
+- Assigned Seats
+- Remaining Seats
+
+### Floor Plan
+
+Future visual layer for Table Assignment.
+
+Responsibilities:
+
+- Store the uploaded venue-layout reference
+- Position tables visually
+- Display table capacity and occupancy
+- Reference existing Table Assignment data
+
+Floor Plan must not duplicate guest, RSVP or table records.
+
+### Wedding Day Check-in
+
+Future operational layer for wedding-day attendance.
+
+Reads:
+
+- Guest identity from Guest Management
+- Attendance and meal data from RSVP Management
+- Seating data from Table Assignment
+- Visual table locations from Floor Plan
+
+Check-in status should be stored separately and must not overwrite RSVP status.
+
+### Architecture Rules
+
+- Each data type must have one source of truth.
+- Floor Plan is a visualization layer, not a separate seating database.
+- Wedding Day Check-in is an operational status layer.
+- Future modules should reuse existing Guest, RSVP and Table Assignment records.
+- These modules must not create duplicated guest profiles.
+
 This significantly improves communication during live wedding operations.
 
 ---

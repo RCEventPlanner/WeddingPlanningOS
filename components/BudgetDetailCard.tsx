@@ -1,4 +1,6 @@
 type BudgetDetailCardProps = {
+  className?: string;
+  showActions?: boolean;
   expenseName?: string;
   category?: string;
   vendorName?: string;
@@ -24,6 +26,8 @@ type BudgetDetailCardProps = {
 };
 
 export function BudgetDetailCard({
+  className,
+  showActions = true,
   expenseName = "Venue Deposit",
   category = "Venue",
   vendorName = "The Garden Hall",
@@ -48,7 +52,7 @@ export function BudgetDetailCard({
   receiptUpload = "Placeholder receipt upload",
 }: BudgetDetailCardProps) {
   return (
-    <section className="mt-6 rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/80 p-6 shadow-sm sm:p-8">
+    <section className={className ?? "mt-6 rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/80 p-6 shadow-sm sm:p-8"}>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">Expense Profile</h2>
@@ -191,14 +195,16 @@ export function BudgetDetailCard({
         </div>
       </div>
 
-      <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
-        <button className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300">
-          Edit Expense
-        </button>
-        <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
-          Back to Budget List
-        </button>
-      </div>
+      {showActions && (
+        <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
+          <button className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300">
+            Edit Expense
+          </button>
+          <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
+            Back to Budget List
+          </button>
+        </div>
+      )}
     </section>
   );
 }

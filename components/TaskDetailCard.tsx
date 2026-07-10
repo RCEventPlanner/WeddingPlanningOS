@@ -1,4 +1,5 @@
 type TaskDetailCardProps = {
+  className?: string;
   category?: string;
   taskName?: string;
   relatedVendor?: string;
@@ -9,9 +10,11 @@ type TaskDetailCardProps = {
   estimatedTime?: string;
   description?: string;
   notes?: string;
+  onEdit?: () => void;
 };
 
 export function TaskDetailCard({
+  className,
   category = "Venue",
   taskName = "Confirm Venue Booking",
   relatedVendor = "The Garden Hall",
@@ -22,14 +25,25 @@ export function TaskDetailCard({
   estimatedTime = "2 Hours",
   description = "Confirm venue booking details, payment schedule and contract with the venue before the deadline.",
   notes = "Waiting for final quotation from the venue manager.",
+  onEdit,
 }: TaskDetailCardProps) {
   return (
-    <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-slate-900">Task Details</h2>
-        <p className="mt-1 text-sm text-slate-600">
-          Review the selected task summary and related coordination notes.
-        </p>
+    <section className={className ?? "mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"}>
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-slate-900">Task Details</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Review the selected task summary and related coordination notes.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={onEdit}
+          className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
+        >
+          Edit Task
+        </button>
       </div>
 
       <div className="space-y-8">

@@ -1,4 +1,9 @@
 type BudgetFormProps = {
+  className?: string;
+  title?: string;
+  saveLabel?: string;
+  onCancel?: () => void;
+  onSave?: () => void;
   expenseName?: string;
   category?: string;
   vendorName?: string;
@@ -58,6 +63,11 @@ const vendorOptions = [
 ];
 
 export function BudgetForm({
+  className,
+  title = "Expense Details",
+  saveLabel = "Save Expense",
+  onCancel,
+  onSave,
   expenseName = "Venue Deposit",
   category = "Venue",
   vendorName = "RC Event Planner",
@@ -75,9 +85,9 @@ export function BudgetForm({
   notes = "Payment was completed on schedule.",
 }: BudgetFormProps) {
   return (
-    <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <section className={className ?? "mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"}>
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-slate-900">Expense Details</h2>
+        <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
         <p className="mt-1 text-sm text-slate-600">
           Add or update expense information with a reusable budget form.
         </p>
@@ -358,11 +368,19 @@ export function BudgetForm({
       </div>
 
       <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
-        <button className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300"
+        >
           Cancel
         </button>
-        <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
-          Save Expense
+        <button
+          type="button"
+          onClick={onSave}
+          className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
+        >
+          {saveLabel}
         </button>
       </div>
     </section>

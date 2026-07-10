@@ -1,4 +1,6 @@
 type RSVPDetailCardProps = {
+  className?: string;
+  onEdit?: () => void;
   guestName?: string;
   preferredName?: string;
   phoneNumber?: string;
@@ -24,6 +26,8 @@ const statusStyles: Record<NonNullable<RSVPDetailCardProps["rsvpStatus"]>, strin
 };
 
 export function RSVPDetailCard({
+  className,
+  onEdit,
   guestName = "Rachel Chong",
   preferredName = "Auntie Rachel",
   phoneNumber = "012-3456789",
@@ -42,7 +46,7 @@ export function RSVPDetailCard({
   notes = "Family guest",
 }: RSVPDetailCardProps) {
   return (
-    <section className="mt-6 rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/80 p-6 shadow-sm sm:p-8">
+    <section className={className ?? "mt-6 rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/80 p-6 shadow-sm sm:p-8"}>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-xl font-semibold text-slate-900">RSVP Profile</h2>
@@ -51,9 +55,18 @@ export function RSVPDetailCard({
           </p>
         </div>
 
-        <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${statusStyles[rsvpStatus]}`}>
-          {rsvpStatus}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${statusStyles[rsvpStatus]}`}>
+            {rsvpStatus}
+          </span>
+          <button
+            type="button"
+            onClick={onEdit}
+            className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
+          >
+            Edit RSVP
+          </button>
+        </div>
       </div>
 
       <div className="space-y-8">
@@ -148,13 +161,8 @@ export function RSVPDetailCard({
         </div>
       </div>
 
-      <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
-        <button className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300">
-          Edit RSVP
-        </button>
-        <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
-          Back to RSVP List
-        </button>
+      <div className="mt-8 border-t border-slate-200 pt-6 text-sm text-slate-500">
+        Read-only profile view. Use Edit RSVP to update details.
       </div>
     </section>
   );

@@ -1,4 +1,9 @@
 type RSVPFormProps = {
+  className?: string;
+  title?: string;
+  saveLabel?: string;
+  onCancel?: () => void;
+  onSave?: () => void;
   guestName?: string;
   preferredName?: string;
   phoneNumber?: string;
@@ -18,6 +23,11 @@ type RSVPFormProps = {
 const mealOptions = Array.from({ length: 11 }, (_, i) => i);
 
 export function RSVPForm({
+  className,
+  title = "RSVP Details",
+  saveLabel = "Save RSVP",
+  onCancel,
+  onSave,
   guestName = "Rachel Chong",
   preferredName = "Auntie Rachel",
   phoneNumber = "012-3456789",
@@ -34,9 +44,9 @@ export function RSVPForm({
   notes = "Family guest",
 }: RSVPFormProps) {
   return (
-    <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+    <section className={className ?? "mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"}>
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-slate-900">RSVP Details</h2>
+        <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
         <p className="mt-1 text-sm text-slate-600">
           Capture guest response details with a reusable RSVP form.
         </p>
@@ -251,11 +261,19 @@ export function RSVPForm({
       </div>
 
       <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:justify-end">
-        <button className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300"
+        >
           Cancel
         </button>
-        <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700">
-          Save RSVP
+        <button
+          type="button"
+          onClick={onSave}
+          className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
+        >
+          {saveLabel}
         </button>
       </div>
     </section>

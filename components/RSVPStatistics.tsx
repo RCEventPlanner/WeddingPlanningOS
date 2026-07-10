@@ -7,15 +7,6 @@ type RSVPStatisticsProps = {
   attendanceRate?: string;
 };
 
-const stats = [
-  { label: "Total Invitations", value: "120" },
-  { label: "Invitations Sent", value: "98" },
-  { label: "Pending Responses", value: "18" },
-  { label: "Confirmed Guests", value: "76" },
-  { label: "Declined Guests", value: "4" },
-  { label: "Attendance Rate", value: "85%" },
-];
-
 export function RSVPStatistics({
   totalInvitations = 120,
   invitationsSent = 98,
@@ -42,16 +33,18 @@ export function RSVPStatistics({
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {summary.map((item) => (
-          <div
-            key={item.label}
-            className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 shadow-sm transition hover:shadow-md"
-          >
-            <p className="text-sm font-medium text-slate-600">{item.label}</p>
-            <p className="mt-3 text-2xl font-semibold text-slate-900">{item.value}</p>
-          </div>
-        ))}
+      <div className="overflow-x-auto">
+        <div className="grid min-w-[72rem] gap-4 md:grid-cols-6">
+          {summary.map((item) => (
+            <div
+              key={item.label}
+              className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 shadow-sm transition hover:shadow-md"
+            >
+              <p className="text-sm font-medium text-slate-600">{item.label}</p>
+              <p className="mt-3 text-2xl font-semibold text-slate-900">{item.value}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

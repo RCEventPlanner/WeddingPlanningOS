@@ -799,5 +799,64 @@ DEVLOG.md is updated manually by the project owner.
 - Dashboard provides project overview only.
 - Operational workflows belong to Live Rundown.
 - Avoid duplicated information across modules.
+
+---
+
+## Future Wedding Day Operations
+
+### Floor Plan
+
+Planned capabilities:
+
+- Upload banquet hall or venue floor-plan image
+- Use the uploaded image as the table-layout foundation
+- Create and position tables
+- Drag, resize and rotate tables
+- Display table capacity and occupancy
+- Connect tables with RSVP Table Assignment
+- Prepare printable table-layout output
+
+Dependencies:
+
+- Guest Management
+- RSVP Management
+- Table Assignment
+
+Status:
+Planned - not implemented
+
+### Wedding Day Check-in
+
+Planned capabilities:
+
+- Search guests
+- View RSVP and assigned-table information
+- Check guests in
+- Track adults and children
+- Track meal preferences
+- Display table occupancy
+- Support walk-in guests
+- Prepare future QR check-in
+- Prepare future live attendance dashboard
+
+Dependencies:
+
+- Guest Management
+- RSVP Management
+- Table Assignment
+- Floor Plan
+
+Status:
+Planned - not implemented
+
+Development flow:
+
+Guest Management
+→ RSVP Management
+→ Table Assignment
+→ Floor Plan
+→ Wedding Day Check-in
+→ Live Rundown
+→ Wedding Report
 - Every piece of information should have a single source of truth.
 - Mobile-first experience is required for Live Rundown.
