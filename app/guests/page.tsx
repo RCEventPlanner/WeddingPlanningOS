@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { GuestDetailCard } from "../../components/GuestDetailCard";
-import { GuestFilter } from "../../components/GuestFilter";
+import { GuestFilter, type GuestFilters } from "../../components/GuestFilter";
 import { GuestForm } from "../../components/GuestForm";
 import { GuestSearchBar } from "../../components/GuestSearchBar";
 import { GuestStatistics } from "../../components/GuestStatistics";
@@ -105,6 +105,7 @@ const initialGuests: Guest[] = [
 export default function GuestsPage() {
   const [guests, setGuests] = useState(initialGuests);
   const [selectedGuestId, setSelectedGuestId] = useState(initialGuests[0].id);
+  const [guestFilters, setGuestFilters] = useState<GuestFilters>({ guestFrom: "All", guestGroup: "All" });
 
   const selectedGuest = useMemo(() => {
     return guests.find((guest) => guest.id === selectedGuestId) ?? guests[0];
@@ -152,7 +153,7 @@ export default function GuestsPage() {
         <div className="w-full lg:max-w-md">
           <GuestSearchBar />
         </div>
-        <GuestFilter />
+        <GuestFilter filters={guestFilters} onChange={setGuestFilters} />
       </div>
 
       <section className="mb-6 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
@@ -226,10 +227,47 @@ export default function GuestsPage() {
         </div>
       </section>
 
-      <GuestTable guests={guests} onSelectGuest={setSelectedGuestId} onAssignTable={assignGuestTable} />
-      <GuestForm guest={selectedGuest} tableOptions={tableAssignments} onAssignTable={assignGuestTable} />
-      <GuestDetailCard guest={selectedGuest} onAssignTable={assignGuestTable} tableOptions={tableAssignments} />
-      <GuestStatistics totalGuests={guests.length} assignedGuests={guests.filter((guest) => guest.assignedTable !== null).length} unassignedGuests={unassignedGuests.length} tableCount={tableAssignments.length} />
+      <GuestTable
+        guests={guests.map((guest) => ({
+          id: String(guest.id),
+          fullName: guest.name,
+          preferredName: guest.preferredName,
+          phoneNumber: guest.phone,
+          emailAddress: guest.emailAddress,
+          guestFrom: guest.guestFrom,
+          guestGroup: guest.group,
+          inviteStatus: guest.status === "Confirmed" ? "Sent" : "Not Sent",
+        }))}
+        selectedGuestId={String(selectedGuestId)}
+        onSelectGuest={(guestId) => setSelectedGuestId(Number(guestId))}
+        onViewGuest={() => undefined}
+        onEditGuest={() => undefined}
+        onDeleteGuest={() => undefined}
+        onSendInvitation={() => undefined}
+      />
+      <GuestForm
+        values={{
+          fullName: selectedGuest.name,
+          preferredName: selectedGuest.preferredName,
+          phoneNumber: selectedGuest.phone,
+          emailAddress: selectedGuest.emailAddress,
+          guestFrom: selectedGuest.guestFrom as "Groom's Side" | "Bride's Side" | "Both",
+          guestGroup: selectedGuest.group,
+        }}
+      />
+      <GuestDetailCard
+        guestName={selectedGuest.name}
+        preferredName={selectedGuest.preferredName}
+        phoneNumber={selectedGuest.phone}
+        emailAddress={selectedGuest.emailAddress}
+        guestFrom={selectedGuest.guestFrom}
+        guestGroup={selectedGuest.group}
+      />
+      <GuestStatistics
+        totalGuests={guests.length}
+        confirmedGuests={guests.filter((guest) => guest.status === "Confirmed").length}
+        pendingGuests={guests.filter((guest) => guest.status === "Pending").length}
+      />
     </div>
   );
 }

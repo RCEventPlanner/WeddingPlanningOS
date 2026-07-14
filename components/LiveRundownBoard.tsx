@@ -2,1044 +2,361 @@
 
 import { useMemo, useState } from "react";
 
+type RundownStatus = "" | "Current" | "Completed" | "Delayed" | "Skipped";
+
 type RundownRow = {
-  status: "Completed" | "Current" | "Upcoming" | "Delayed" | "Skipped" | "Cancelled";
-  time: string;
-  scheduledTime: string;
-  actualStartTime: string;
-  expectedDuration: string;
-  actualDuration: string;
-  delay: string;
-  shiftedTime?: string;
+  id: string;
+  estimateTime: string;
+  actualTime: string;
   program: string;
-  usedTime: string;
+  usedTime: number;
+  coordinatorAction: string;
+  status: RundownStatus;
+  remarks: string;
+  vendorInvolve: string[];
   foodServing: string;
   song: string;
   screen: string;
-  publicRemarks: string;
-  internalRemarks: string;
-  responsibleRoles: string[];
-  coordinator: string;
 };
 
-type PermissionLevel = "No Access" | "View" | "Edit" | "Manage";
-type PreviewUserRole = "Planner" | "Coordinator" | "Couple" | "Vendor User";
-type LiveRundownPermissionKey =
-  | "View"
-  | "Edit Event"
-  | "Delete Event"
-  | "Edit Status"
-  | "Edit Time"
-  | "Edit Remarks"
-  | "Recalculate Timeline"
-  | "View Internal Remarks";
+const vendorOptions = ["Catering", "DJ", "Emcee", "Photographer", "Videographer", "AV", "Decor"];
 
-const rundownRows: RundownRow[] = [
+type EditableRow = Omit<RundownRow, "usedTime" | "status"> & {
+  usedTime: string;
+  status: RundownStatus;
+};
+
+const initialRows: RundownRow[] = [
   {
-    status: "Completed",
-    time: "6:30 PM",
-    scheduledTime: "6:30 PM",
-    actualStartTime: "6:28 PM",
-    expectedDuration: "30 mins",
-    actualDuration: "28 mins",
-    delay: "—",
+    id: "guest-arrival",
+    estimateTime: "6:30 PM",
+    actualTime: "6:28 PM",
     program: "Guest Registration",
-    usedTime: "30 mins",
-    foodServing: "-",
+    usedTime: 30,
+    coordinatorAction: "Prepare registration desk and welcome team.",
+    status: "Completed",
+    remarks: "Reception ready",
+    vendorInvolve: ["Photographer", "Videographer"],
+    foodServing: "",
     song: "Background Playlist",
     screen: "Welcome Slide",
-    publicRemarks: "Reception ready",
-    internalRemarks: "Planner note: confirm VIP entry path.",
-    responsibleRoles: ["Reception"],
-    coordinator: "Rachel Chong",
   },
   {
-    status: "Current",
-    time: "7:00 PM",
-    scheduledTime: "7:00 PM",
-    actualStartTime: "7:00 PM",
-    expectedDuration: "10 mins",
-    actualDuration: "8 mins",
-    delay: "2 mins",
+    id: "first-march-in",
+    estimateTime: "7:00 PM",
+    actualTime: "",
     program: "First March In",
-    usedTime: "10 mins",
+    usedTime: 10,
+    coordinatorAction: "Cue emcee, DJ, photographer and videographer.",
+    status: "",
+    remarks: "Standby all teams",
+    vendorInvolve: ["DJ", "Emcee", "Photographer", "Videographer"],
     foodServing: "1st Course",
     song: "Canon in D",
     screen: "Opening Animation",
-    publicRemarks: "Standby all teams",
-    internalRemarks: "Coordinator note: sync cue with DJ at T-2 mins.",
-    responsibleRoles: ["Planner", "Emcee", "DJ", "Photographer", "Videographer"],
-    coordinator: "Rachel Chong",
   },
   {
-    status: "Upcoming",
-    time: "7:20 PM",
-    scheduledTime: "7:20 PM",
-    actualStartTime: "7:20 PM",
-    expectedDuration: "5 mins",
-    actualDuration: "—",
-    delay: "—",
+    id: "opening-speech",
+    estimateTime: "7:10 PM",
+    actualTime: "",
     program: "Opening Speech",
-    usedTime: "5 mins",
-    foodServing: "-",
+    usedTime: 5,
+    coordinatorAction: "Confirm microphone and emcee standby.",
+    status: "",
+    remarks: "Emcee standby",
+    vendorInvolve: ["Emcee"],
+    foodServing: "",
     song: "Speech Music",
     screen: "Couple Introduction",
-    publicRemarks: "Emcee standby",
-    internalRemarks: "Internal: mic backup on stage-left.",
-    responsibleRoles: ["Emcee"],
-    coordinator: "Rachel Chong",
   },
   {
-    status: "Delayed",
-    time: "7:45 PM",
-    scheduledTime: "7:45 PM",
-    actualStartTime: "7:52 PM",
-    expectedDuration: "15 mins",
-    actualDuration: "17 mins",
-    delay: "7 mins",
+    id: "dinner-service",
+    estimateTime: "7:15 PM",
+    actualTime: "",
     program: "Dinner Service",
-    usedTime: "15 mins",
+    usedTime: 15,
+    coordinatorAction: "Wait for catering greenlight before next sequence.",
+    status: "",
+    remarks: "Kitchen ready check",
+    vendorInvolve: ["Catering"],
     foodServing: "2nd Course",
     song: "Soft Piano",
     screen: "Dinner Slide",
-    publicRemarks: "Kitchen delayed",
-    internalRemarks: "Internal: hold next sequence until catering greenlight.",
-    responsibleRoles: ["Coordinator", "Catering"],
-    coordinator: "Rachel Chong",
-  },
-  {
-    status: "Skipped",
-    time: "8:10 PM",
-    scheduledTime: "8:10 PM",
-    actualStartTime: "—",
-    expectedDuration: "10 mins",
-    actualDuration: "—",
-    delay: "Skipped",
-    program: "Family Photo Session",
-    usedTime: "10 mins",
-    foodServing: "-",
-    song: "Photo Music",
-    screen: "Family Photo",
-    publicRemarks: "Photography team on hold",
-    internalRemarks: "Internal: move family lineup to after toast.",
-    responsibleRoles: ["Photographer", "Videographer"],
-    coordinator: "Rachel Chong",
-  },
-  {
-    status: "Cancelled",
-    time: "8:30 PM",
-    scheduledTime: "8:30 PM",
-    actualStartTime: "—",
-    expectedDuration: "20 mins",
-    actualDuration: "—",
-    delay: "Cancelled",
-    program: "Cake Cutting",
-    usedTime: "20 mins",
-    foodServing: "Dessert",
-    song: "Wedding March",
-    screen: "Cake Slide",
-    publicRemarks: "Cancelled due to venue change",
-    internalRemarks: "Internal: notify banquet captain and AV team.",
-    responsibleRoles: ["Planner", "Coordinator"],
-    coordinator: "Rachel Chong",
   },
 ];
 
-const statusStyles: Record<RundownRow["status"], string> = {
-  Upcoming: "bg-slate-200 text-slate-700",
-  Current: "bg-blue-100 text-blue-700",
-  Completed: "bg-emerald-100 text-emerald-700",
-  Delayed: "bg-orange-100 text-orange-700",
-  Skipped: "bg-violet-100 text-violet-700",
-  Cancelled: "bg-red-100 text-red-700",
+const statusStyles: Record<RundownStatus, string> = {
+  "": "bg-slate-100 text-slate-500",
+  Current: "bg-emerald-100 text-emerald-700",
+  Completed: "bg-slate-200 text-slate-600",
+  Delayed: "bg-rose-100 text-rose-700",
+  Skipped: "bg-slate-100 text-slate-500",
 };
 
-const statusIcons: Record<RundownRow["status"], string> = {
-  Completed: "✔",
-  Current: "▶",
-  Upcoming: "○",
-  Delayed: "⏱",
-  Skipped: "∅",
-  Cancelled: "✖",
-};
-
-const permissionRank: Record<PermissionLevel, number> = {
-  "No Access": 0,
-  View: 1,
-  Edit: 2,
-  Manage: 3,
-};
-
-const actionPermissionLabels: LiveRundownPermissionKey[] = [
-  "View",
-  "Edit Event",
-  "Delete Event",
-  "Edit Status",
-  "Edit Time",
-  "Edit Remarks",
-  "Recalculate Timeline",
-  "View Internal Remarks",
-];
-
-const baseRolePermissions: Record<PreviewUserRole, Record<LiveRundownPermissionKey, PermissionLevel>> = {
-  Planner: {
-    View: "Manage",
-    "Edit Event": "Manage",
-    "Delete Event": "Manage",
-    "Edit Status": "Manage",
-    "Edit Time": "Manage",
-    "Edit Remarks": "Manage",
-    "Recalculate Timeline": "Manage",
-    "View Internal Remarks": "Manage",
-  },
-  Coordinator: {
-    View: "View",
-    "Edit Event": "View",
-    "Delete Event": "View",
-    "Edit Status": "View",
-    "Edit Time": "View",
-    "Edit Remarks": "View",
-    "Recalculate Timeline": "View",
-    "View Internal Remarks": "No Access",
-  },
-  Couple: {
-    View: "View",
-    "Edit Event": "No Access",
-    "Delete Event": "No Access",
-    "Edit Status": "No Access",
-    "Edit Time": "No Access",
-    "Edit Remarks": "No Access",
-    "Recalculate Timeline": "No Access",
-    "View Internal Remarks": "No Access",
-  },
-  "Vendor User": {
-    View: "View",
-    "Edit Event": "No Access",
-    "Delete Event": "No Access",
-    "Edit Status": "No Access",
-    "Edit Time": "No Access",
-    "Edit Remarks": "No Access",
-    "Recalculate Timeline": "No Access",
-    "View Internal Remarks": "No Access",
-  },
-};
-
-const previewRoleResponsibleRoles: Record<PreviewUserRole, string[]> = {
-  Planner: ["Planner", "Coordinator", "Emcee", "DJ"],
-  Coordinator: ["Coordinator", "Catering", "Reception"],
-  Couple: ["Couple", "Family"],
-  "Vendor User": ["Vendor", "Photographer", "Videographer", "DJ", "Reception", "Catering"],
-};
-
-const hasMinimumLevel = (current: PermissionLevel, required: PermissionLevel): boolean => {
-  return permissionRank[current] >= permissionRank[required];
-};
-
-const parseClockTime = (value: string): number => {
-  const match = value.match(/^(\d{1,2}):(\d{2})\s*([AP]M)$/i);
-
-  if (!match) {
-    return Number.NaN;
-  }
-
-  const hours = Number(match[1]);
+const parseTime = (value: string) => {
+  const match = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!match) return Number.NaN;
+  let hours = Number(match[1]);
   const minutes = Number(match[2]);
-  const period = match[3].toUpperCase();
-  let totalMinutes = hours * 60 + minutes;
-
-  if (period === "PM" && hours !== 12) {
-    totalMinutes += 720;
-  }
-
-  if (period === "AM" && hours === 12) {
-    totalMinutes -= 720;
-  }
-
-  return totalMinutes;
+  if (match[3].toUpperCase() === "PM" && hours !== 12) hours += 12;
+  if (match[3].toUpperCase() === "AM" && hours === 12) hours = 0;
+  return hours * 60 + minutes;
 };
 
-const formatClockTime = (minutes: number): string => {
-  const normalized = ((minutes % 1440) + 1440) % 1440;
-  const hours = Math.floor(normalized / 60);
-  const minutesPart = normalized % 60;
-  const period = hours >= 12 ? "PM" : "AM";
-  const displayHours = hours % 12 === 0 ? 12 : hours % 12;
-
-  return `${displayHours}:${minutesPart.toString().padStart(2, "0")} ${period}`;
+const formatTime = (value: number) => {
+  const hours24 = Math.floor(value / 60) % 24;
+  const minutes = value % 60;
+  const period = hours24 >= 12 ? "PM" : "AM";
+  const hours = hours24 % 12 || 12;
+  return `${hours}:${String(minutes).padStart(2, "0")} ${period}`;
 };
 
-const parseDurationMinutes = (value: string): number => {
-  const match = value.match(/(\d+)/);
-  return match ? Number(match[1]) : 0;
+const normalizeActualTime = (value: string, referenceTime: string) => {
+  const trimmed = value.trim().toUpperCase().replace(/\s+/g, "");
+  const explicit = trimmed.match(/^(\d{1,2}):(\d{2})(AM|PM)$/);
+  if (explicit) return `${Number(explicit[1])}:${explicit[2]} ${explicit[3]}`;
+
+  const compact = trimmed.match(/^(\d{3,4})$/);
+  if (!compact) return value;
+  const digits = compact[1].padStart(4, "0");
+  const hour = Number(digits.slice(0, 2));
+  const minute = Number(digits.slice(2));
+  if (hour > 12 || minute > 59) return value;
+
+  const reference = parseTime(referenceTime);
+  const candidates = [hour * 60 + minute, (hour % 12) * 60 + minute + 720];
+  const future = candidates.filter((candidate) => Number.isFinite(reference) && candidate >= reference);
+  const selected = future.length > 0 ? Math.min(...future) : candidates[0];
+  return formatTime(selected);
 };
 
-const getDelayMinutes = (row: RundownRow): number => {
-  const scheduledStart = parseClockTime(row.scheduledTime);
-  const actualStart = parseClockTime(row.actualStartTime);
-  const expectedDuration = parseDurationMinutes(row.expectedDuration);
-  const actualDuration = parseDurationMinutes(row.actualDuration);
-
-  const startDelay = Number.isNaN(scheduledStart) || Number.isNaN(actualStart) ? 0 : actualStart - scheduledStart;
-  const durationDelay = actualDuration - expectedDuration;
-
-  return Math.max(0, startDelay, durationDelay);
-};
+const toEditable = (row: RundownRow): EditableRow => ({ ...row, usedTime: String(row.usedTime) });
 
 export function LiveRundownBoard() {
-  const [previewRole, setPreviewRole] = useState<PreviewUserRole>("Planner");
-  const [coordinatorEditBundleGranted, setCoordinatorEditBundleGranted] = useState(false);
-  const [viewMode, setViewMode] = useState<"Full Rundown" | "My Rundown">("Full Rundown");
-  const [menuOpenIndex, setMenuOpenIndex] = useState<number | null>(null);
-  const [detailOpenIndex, setDetailOpenIndex] = useState<number | null>(null);
-  const [editOpenIndex, setEditOpenIndex] = useState<number | null>(null);
-  const [rundownData, setRundownData] = useState<RundownRow[]>(() =>
-    rundownRows.map((row) => ({ ...row, shiftedTime: row.scheduledTime })),
-  );
-  const [recalculationVersion, setRecalculationVersion] = useState(0);
-  const [lastUpdated, setLastUpdated] = useState("7:05 PM");
+  const [rows, setRows] = useState(initialRows);
+  const [draftRows, setDraftRows] = useState<EditableRow[]>(initialRows.map(toEditable));
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [pendingApply, setPendingApply] = useState<RundownRow[] | null>(null);
+  const [showOptionalColumns, setShowOptionalColumns] = useState(false);
+  const [actualInputs, setActualInputs] = useState<Record<string, string>>({});
 
-  const currentPermissionLevels = useMemo(() => {
-    if (previewRole !== "Coordinator") {
-      return baseRolePermissions[previewRole];
-    }
+  const currentIndex = rows.findIndex((row) => row.status === "Current");
+  const currentEvent = currentIndex >= 0 ? rows[currentIndex] : undefined;
 
-    const coordinatorPermissions = { ...baseRolePermissions.Coordinator };
+  const visibleRows = useMemo(() => rows, [rows]);
 
-    if (coordinatorEditBundleGranted) {
-      coordinatorPermissions["Edit Event"] = "Edit";
-      coordinatorPermissions["Delete Event"] = "Edit";
-      coordinatorPermissions["Edit Status"] = "Edit";
-      coordinatorPermissions["Edit Time"] = "Edit";
-      coordinatorPermissions["Edit Remarks"] = "Edit";
-      coordinatorPermissions["Recalculate Timeline"] = "Manage";
-      coordinatorPermissions["View Internal Remarks"] = "View";
-    }
+  const updateDraft = (id: string, field: keyof EditableRow, value: string) => {
+    setDraftRows((current) => current.map((row) => (row.id === id ? { ...row, [field]: value } : row)));
+  };
 
-    return coordinatorPermissions;
-  }, [previewRole, coordinatorEditBundleGranted]);
+  const toggleVendor = (id: string, vendor: string) => {
+    setDraftRows((current) => current.map((row) => row.id !== id ? row : {
+      ...row,
+      vendorInvolve: row.vendorInvolve.includes(vendor)
+        ? row.vendorInvolve.filter((item) => item !== vendor)
+        : [...row.vendorInvolve, vendor],
+    }));
+  };
 
-  const canViewRundown = hasMinimumLevel(currentPermissionLevels.View, "View");
-  const hasEditBundle = hasMinimumLevel(currentPermissionLevels["Edit Event"], "Edit");
-  const canEditEvent = hasEditBundle && hasMinimumLevel(currentPermissionLevels["Edit Event"], "Edit");
-  const canDeleteEvent = hasEditBundle && hasMinimumLevel(currentPermissionLevels["Delete Event"], "Edit");
-  const canEditStatus = hasEditBundle && hasMinimumLevel(currentPermissionLevels["Edit Status"], "Edit");
-  const canEditTime = hasEditBundle && hasMinimumLevel(currentPermissionLevels["Edit Time"], "Edit");
-  const canEditRemarks = hasEditBundle && hasMinimumLevel(currentPermissionLevels["Edit Remarks"], "Edit");
-  const canRecalculateTimeline =
-    hasEditBundle && hasMinimumLevel(currentPermissionLevels["Recalculate Timeline"], "Manage");
-  const canViewInternalRemarks = hasMinimumLevel(currentPermissionLevels["View Internal Remarks"], "View");
+  const beginEdit = (row: RundownRow) => {
+    if (row.status === "Completed" || row.status === "Delayed" || row.status === "Skipped") return;
+    setDraftRows((current) => current.map((item) => (item.id === row.id ? toEditable(row) : item)));
+    setEditingId(row.id);
+  };
 
-  const currentUserRoles = previewRoleResponsibleRoles[previewRole];
+  const cancelEdit = () => {
+    setDraftRows(rows.map(toEditable));
+    setEditingId(null);
+  };
 
-  const timelineData = useMemo(() => {
-    let cumulativeDelay = 0;
+  const saveEdit = (id: string) => {
+    const draft = draftRows.find((row) => row.id === id);
+    if (!draft) return;
+    const nextRows = rows.map((row) =>
+      row.id === id ? { ...draft, usedTime: Math.max(0, Number(draft.usedTime) || 0) } : row,
+    );
+    setRows(nextRows);
+    setDraftRows(nextRows.map(toEditable));
+    setEditingId(null);
+  };
 
-    const recalculatedRows = rundownData.map((row) => {
-      const isProtected = row.status === "Completed" || row.status === "Skipped" || row.status === "Cancelled";
-      const scheduledStart = parseClockTime(row.scheduledTime);
-      const actualStart = parseClockTime(row.actualStartTime);
-      const delayForCurrentEvent = isProtected ? 0 : getDelayMinutes(row);
-      const usesActualStart =
-        !isProtected && row.actualStartTime !== "—" && Number.isFinite(actualStart) && actualStart !== scheduledStart;
-
-      const shiftedTime = isProtected
-        ? row.scheduledTime
-        : usesActualStart
-          ? formatClockTime(actualStart)
-          : formatClockTime(scheduledStart + cumulativeDelay);
-
-      if (!isProtected) {
-        cumulativeDelay += delayForCurrentEvent;
-      }
-
-      return {
-        ...row,
-        shiftedTime,
-      };
-    });
-
-    const totalDelay = cumulativeDelay;
-    const affectedEvents = recalculatedRows.filter(
-      (row) =>
-        row.status !== "Completed" && row.status !== "Skipped" && row.status !== "Cancelled" && row.shiftedTime !== row.scheduledTime,
-    ).length;
-
-    return {
-      rows: recalculatedRows,
-      totalDelay,
-      affectedEvents,
-      bannerMessage:
-        totalDelay === 0 ? "No timeline changes." : `Wedding is currently delayed by +${totalDelay} minutes.`,
+  const insertRow = (index: number) => {
+    const newRow: RundownRow = {
+      id: `event-${Date.now()}`,
+      estimateTime: rows[index]?.estimateTime ?? "7:00 PM",
+      actualTime: "",
+      program: "New Program",
+      usedTime: 10,
+      coordinatorAction: "",
+      status: "Current",
+      remarks: "",
+      vendorInvolve: [],
+      foodServing: "",
+      song: "",
+      screen: "",
     };
-  }, [rundownData, recalculationVersion]);
-
-  const handleViewDetail = (index: number) => {
-    setMenuOpenIndex(null);
-    setDetailOpenIndex(detailOpenIndex === index ? null : index);
-    setEditOpenIndex(null);
+    const nextRows = [...rows.slice(0, index + 1), newRow, ...rows.slice(index + 1)];
+    setRows(nextRows);
+    setDraftRows(nextRows.map(toEditable));
+    setEditingId(newRow.id);
   };
 
-  const handleEdit = (index: number) => {
-    if (!canEditEvent) {
+  const deleteRow = (id: string) => {
+    const nextRows = rows.filter((row) => row.id !== id);
+    setRows(nextRows);
+    setDraftRows(nextRows.map(toEditable));
+    if (editingId === id) setEditingId(null);
+  };
+
+  const setActualTime = (id: string, actualTime: string) => {
+    const index = rows.findIndex((row) => row.id === id);
+    const row = rows[index];
+    if (!row) return;
+    if (!actualTime.trim()) {
+      const clearedRows = rows.map((item) => item.id === id ? { ...item, actualTime: "", status: "" as RundownStatus } : item);
+      setRows(clearedRows);
+      setDraftRows(clearedRows.map(toEditable));
+      setActualInputs((current) => ({ ...current, [id]: "" }));
       return;
     }
-
-    setMenuOpenIndex(null);
-    setDetailOpenIndex(null);
-    setEditOpenIndex(editOpenIndex === index ? null : index);
+    const nextRows: RundownRow[] = rows.map((item, itemIndex) => {
+      if (itemIndex < index) {
+        if (!item.actualTime) return { ...item, status: "Skipped" };
+        const itemWasDelayed = parseTime(item.actualTime) > parseTime(item.estimateTime);
+        return { ...item, status: itemWasDelayed ? "Delayed" : "Completed" };
+      }
+      if (itemIndex === index) return { ...item, actualTime, status: "Current" };
+      return item;
+    });
+    setRows(nextRows);
+    setDraftRows(nextRows.map(toEditable));
+    setActualInputs((current) => ({ ...current, [id]: actualTime }));
   };
 
-  const handleActualStartChange = (index: number, value: string) => {
-    if (!canEditTime) {
-      return;
-    }
-
-    setRundownData((currentRows) =>
-      currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, actualStartTime: value } : row)),
-    );
-    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
+  const commitActualTime = (id: string) => {
+    const index = rows.findIndex((row) => row.id === id);
+    const row = rows[index];
+    if (!row) return;
+    const reference = rows[index - 1]?.actualTime || rows[index - 1]?.estimateTime || row.estimateTime;
+    const rawValue = actualInputs[id] ?? row.actualTime;
+    const normalized = normalizeActualTime(rawValue, reference);
+    setActualTime(id, normalized);
   };
 
-  const handleActualDurationChange = (index: number, value: string) => {
-    if (!canEditTime) {
-      return;
-    }
-
-    setRundownData((currentRows) =>
-      currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, actualDuration: value } : row)),
-    );
-    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
+  const prepareApply = () => {
+    let previousActual = Number.NaN;
+    let upstreamDelayDetected = false;
+    const proposed: RundownRow[] = rows.map((row) => {
+      const anchor = parseTime(row.actualTime);
+      if (row.status === "Completed" && Number.isFinite(anchor)) {
+        previousActual = anchor + row.usedTime;
+        return row;
+      }
+      if (Number.isFinite(anchor)) {
+        const expectedStart = previousActual;
+        const shouldSynchronize = row.status === "Current" || upstreamDelayDetected;
+        if (Number.isFinite(expectedStart) && anchor > expectedStart) upstreamDelayDetected = true;
+        previousActual = anchor + row.usedTime;
+        if (shouldSynchronize && Number.isFinite(expectedStart)) {
+          const synchronizedTime = formatTime(expectedStart);
+          previousActual = expectedStart + row.usedTime;
+          return { ...row, estimateTime: synchronizedTime, actualTime: synchronizedTime, status: "Current" };
+        }
+        return row;
+      }
+      if (!Number.isFinite(previousActual)) return row;
+      const next = { ...row, estimateTime: formatTime(previousActual) };
+      previousActual += row.usedTime;
+      return next;
+    });
+    setPendingApply(proposed);
   };
 
-  const handleStatusChange = (index: number, value: RundownRow["status"]) => {
-    if (!canEditStatus) {
-      return;
-    }
-
-    setRundownData((currentRows) =>
-      currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, status: value } : row)),
-    );
-    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
-  };
-
-  const handlePublicRemarksChange = (index: number, value: string) => {
-    if (!canEditRemarks) {
-      return;
-    }
-
-    setRundownData((currentRows) =>
-      currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, publicRemarks: value } : row)),
-    );
-    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
-  };
-
-  const handleInternalRemarksChange = (index: number, value: string) => {
-    if (!canEditRemarks || !canViewInternalRemarks) {
-      return;
-    }
-
-    setRundownData((currentRows) =>
-      currentRows.map((row, rowIndex) => (rowIndex === index ? { ...row, internalRemarks: value } : row)),
-    );
-    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
-  };
-
-  const handleRecalculateTimeline = () => {
-    if (!canRecalculateTimeline) {
-      return;
-    }
-
-    setRecalculationVersion((currentValue) => currentValue + 1);
-    setLastUpdated(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }));
-  };
-
-  const visibleRows = !canViewRundown
-    ? []
-    : viewMode === "My Rundown"
-      ? timelineData.rows.filter((row) => row.responsibleRoles.some((role) => currentUserRoles.includes(role)))
-      : timelineData.rows;
-
-  const previewRows = visibleRows.filter(
-    (row) => row.status !== "Completed" && row.status !== "Skipped" && row.status !== "Cancelled",
-  );
-
-  const myRundownStats = {
-    myEvents: visibleRows.length,
-    completed: visibleRows.filter((row) => row.status === "Completed").length,
-    upcoming: visibleRows.filter((row) => row.status === "Upcoming").length,
-    delayed: visibleRows.filter((row) => row.status === "Delayed").length,
+  const applySchedule = () => {
+    if (!pendingApply) return;
+    const lastActualIndex = pendingApply.reduce((lastIndex, row, index) => row.actualTime ? index : lastIndex, -1);
+    const finalizedRows = pendingApply.map((row, index) => {
+      if (index < lastActualIndex) {
+        if (!row.actualTime) return { ...row, status: "Skipped" as RundownStatus };
+        return { ...row, status: parseTime(row.actualTime) > parseTime(row.estimateTime) ? "Delayed" as RundownStatus : "Completed" as RundownStatus };
+      }
+      if (index === lastActualIndex) return { ...row, status: "Current" as RundownStatus };
+      return { ...row, status: "" as RundownStatus };
+    });
+    setRows(finalizedRows);
+    setDraftRows(finalizedRows.map(toEditable));
+    setPendingApply(null);
   };
 
   return (
-    <section className="mt-6 space-y-6">
-      <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-          <div>
-            <p className="text-sm font-medium text-slate-500">Permission Preview</p>
-            <h2 className="mt-1 text-xl font-semibold text-slate-900">Live Rundown Role Experience</h2>
-            <p className="mt-1 text-sm text-slate-500">UI visibility demo only. No backend enforcement is applied.</p>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="block">
-              <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">Preview As</span>
-              <select
-                value={previewRole}
-                onChange={(event) => {
-                  setPreviewRole(event.target.value as PreviewUserRole);
-                  setMenuOpenIndex(null);
-                  setDetailOpenIndex(null);
-                  setEditOpenIndex(null);
-                }}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-              >
-                <option value="Planner">Planner</option>
-                <option value="Coordinator">Coordinator</option>
-                <option value="Couple">Couple</option>
-                <option value="Vendor User">Vendor User</option>
-              </select>
-            </label>
-
-            {previewRole === "Coordinator" ? (
-              <label className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={coordinatorEditBundleGranted}
-                  onChange={(event) => {
-                    setCoordinatorEditBundleGranted(event.target.checked);
-                    setMenuOpenIndex(null);
-                    setEditOpenIndex(null);
-                  }}
-                  className="h-4 w-4 rounded border-slate-300 text-rose-500"
-                />
-                Grant Coordinator Edit Bundle
-              </label>
-            ) : (
-              <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-600">
-                Default role template active
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-4 flex flex-wrap gap-2">
-          {actionPermissionLabels.map((action) => {
-            const level = currentPermissionLevels[action];
-            const visible = action === "View"
-              ? canViewRundown
-              : action === "Edit Event"
-                ? canEditEvent
-                : action === "Delete Event"
-                  ? canDeleteEvent
-                  : action === "Edit Status"
-                    ? canEditStatus
-                    : action === "Edit Time"
-                      ? canEditTime
-                      : action === "Edit Remarks"
-                        ? canEditRemarks
-                        : action === "Recalculate Timeline"
-                          ? canRecalculateTimeline
-                          : canViewInternalRemarks;
-
-            return (
-              <span
-                key={action}
-                className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                  visible ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"
-                }`}
-              >
-                {action}: {visible ? "Visible" : "Hidden"} ({level})
-              </span>
-            );
-          })}
-        </div>
-      </div>
-
+    <section className="space-y-6">
       <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
         <p className="text-sm font-medium text-slate-500">Current Event</p>
-        <p className="mt-3 text-2xl font-semibold text-slate-900">First March In</p>
+        <p className="mt-2 text-2xl font-semibold text-slate-900">{currentEvent?.program ?? "No current event"}</p>
+        <p className="mt-1 text-sm text-slate-500">{currentEvent?.estimateTime ?? "Add an event to begin."}</p>
       </div>
 
-      <div className="rounded-3xl border border-amber-200 bg-amber-50 p-4 shadow-sm">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold text-amber-900">Timeline Shift Status</p>
-            <p className="text-sm text-amber-800">{timelineData.bannerMessage}</p>
-          </div>
-          {canRecalculateTimeline ? (
-            <button
-              type="button"
-              onClick={handleRecalculateTimeline}
-              className="rounded-full border border-amber-200 bg-white px-4 py-2 text-sm font-semibold text-amber-900 hover:bg-amber-100"
-            >
-              Recalculate Timeline
-            </button>
-          ) : null}
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-xl font-semibold text-slate-900">Rundown</h2>
+        <p className="text-sm text-slate-500">Edit a row to prevent accidental changes. Apply schedule changes when ready.</p>
+      </div>
+        <button type="button" onClick={() => setShowOptionalColumns((value) => !value)} className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+          {showOptionalColumns ? "Hide Vendor Columns" : "Show Vendor Columns"}
+        </button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">My Events</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">{myRundownStats.myEvents}</p>
-        </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Completed</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">{myRundownStats.completed}</p>
-        </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Upcoming</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">{myRundownStats.upcoming}</p>
-        </div>
-        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Delayed</p>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">{myRundownStats.delayed}</p>
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+        <p className="text-sm text-amber-900">Review the proposed Estimate Times before applying them.</p>
+        <button type="button" onClick={prepareApply} className="rounded-full bg-amber-700 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-800">Apply Schedule</button>
       </div>
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="mb-3 flex items-center justify-between">
-          <p className="text-sm font-semibold text-slate-900">Timeline Preview</p>
-          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500">Live</span>
-        </div>
+      {pendingApply ? <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><p className="font-semibold text-slate-900">Apply schedule changes?</p><div className="mt-3 space-y-2 text-sm text-slate-600">{pendingApply.map((row, index) => row.estimateTime !== rows[index]?.estimateTime ? <p key={row.id}>{row.program}: {rows[index]?.estimateTime} → <strong>{row.estimateTime}</strong></p> : null)}</div><div className="mt-4 flex gap-2"><button type="button" onClick={applySchedule} className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white">Apply</button><button type="button" onClick={() => setPendingApply(null)} className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700">Cancel</button></div></div> : null}
 
-        <div className="space-y-3">
-          {previewRows.slice(0, 3).map((row) => (
-            <div key={`${row.program}-${row.scheduledTime}`} className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
-              <span className="text-sm font-medium text-slate-700">{row.program}</span>
-              <span className="text-sm font-semibold text-slate-900">
-                {row.scheduledTime} → {row.shiftedTime}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-          <div className="flex flex-1 flex-col gap-3 md:flex-row">
-            <div className="md:flex-1">
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Search Program
-              </label>
-              <input
-                type="text"
-                placeholder="Search Program"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400"
-              />
-            </div>
-
-            <div className="md:w-72">
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Filter by Responsible Role (Optional)
-              </label>
-              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="All Roles">
-                <option value="All Roles">All Roles</option>
-                <option value="Reception">Reception</option>
-                <option value="Planner">Planner</option>
-                <option value="Emcee">Emcee</option>
-                <option value="DJ">DJ</option>
-                <option value="Photographer">Photographer</option>
-                <option value="Videographer">Videographer</option>
-              </select>
-            </div>
-
-            <div className="md:w-64">
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Filter by Status (Optional)
-              </label>
-              <select className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-rose-400" defaultValue="All Statuses">
-                <option value="All Statuses">All Statuses</option>
-                <option value="Upcoming">Upcoming</option>
-                <option value="Current">Current</option>
-                <option value="Completed">Completed</option>
-                <option value="Delayed">Delayed</option>
-                <option value="Skipped">Skipped</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-            <span className="text-sm font-medium text-slate-700">View Mode</span>
-            <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 p-1">
-              <button
-                type="button"
-                onClick={() => setViewMode("Full Rundown")}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                  viewMode === "Full Rundown" ? "bg-slate-900 text-white" : "text-slate-500"
-                }`}
-              >
-                Full Rundown
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode("My Rundown")}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-                  viewMode === "My Rundown" ? "bg-slate-900 text-white" : "text-slate-500"
-                }`}
-              >
-                My Rundown
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <p className="mt-3 text-sm text-slate-500">
-          {viewMode === "My Rundown"
-            ? "My Rundown is a preview of role-specific filtering that will be enabled after authentication and permissions are implemented."
-            : "Full Rundown displays every event for the wedding-day timeline."}
-        </p>
-      </div>
-
-      {viewMode === "My Rundown" && visibleRows.length === 0 && (
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-          <p className="text-base font-semibold text-slate-900">No assigned events.</p>
-          <button
-            type="button"
-            onClick={() => setViewMode("Full Rundown")}
-            className="mt-4 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
-          >
-            Switch to Full Rundown
-          </button>
-        </div>
-      )}
-
-      <div className="block space-y-3 lg:hidden">
-        {visibleRows.map((row, index) => (
-          <article key={`${row.time}-${row.program}`} className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="flex items-start justify-between gap-3">
-              <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[row.status]}`}>
-                <span>{statusIcons[row.status]}</span>
-                <span>{row.status}</span>
-              </span>
-
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setMenuOpenIndex(menuOpenIndex === index ? null : index)}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-xl text-slate-700"
-                  aria-label="Open actions menu"
-                >
-                  ⋮
-                </button>
-
-                {menuOpenIndex === index && (
-                  <div className="absolute right-0 z-10 mt-2 w-40 rounded-2xl border border-slate-200 bg-white p-1 shadow-lg">
-                    <button
-                      type="button"
-                      onClick={() => handleViewDetail(index)}
-                      className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
-                    >
-                      View Detail
-                    </button>
-                    {canEditEvent ? (
-                      <button
-                        type="button"
-                        onClick={() => handleEdit(index)}
-                        className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50"
-                      >
-                        Edit Event
-                      </button>
-                    ) : null}
-                    {canDeleteEvent ? (
-                      <button type="button" className="flex w-full items-center rounded-xl px-3 py-2 text-left text-sm font-medium text-slate-700 hover:bg-slate-50">
-                        Delete Event
-                      </button>
-                    ) : null}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Scheduled Time</p>
-              <p className="mt-1 text-base font-semibold text-slate-900">{row.scheduledTime}</p>
-            </div>
-
-            <div className="mt-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Program</p>
-              <p className="mt-1 text-base font-semibold text-slate-900">{row.program}</p>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Expected Duration</p>
-                <p className="mt-1 text-sm text-slate-700">{row.expectedDuration}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Coordinator</p>
-                <p className="mt-1 text-sm text-slate-700">{row.coordinator}</p>
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Responsible Roles</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {row.responsibleRoles.map((role) => (
-                  <span key={`${row.program}-${role}`} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">
-                    {role}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Public Remarks</p>
-              <p className="mt-1 text-sm text-slate-700">{row.publicRemarks}</p>
-            </div>
-
-            {canViewInternalRemarks ? (
-              <div className="mt-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Internal Remarks</p>
-                <p className="mt-1 text-sm text-slate-700">{row.internalRemarks}</p>
-              </div>
-            ) : null}
-
-            {detailOpenIndex === index && (
-              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-slate-900">Time Management</p>
-                    <span className="mt-2 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
-                      <span>{statusIcons[row.status]}</span>
-                      <span>{row.status}</span>
-                    </span>
-                  </div>
-                  <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-500">
-                    Detail
-                  </span>
-                </div>
-
-                <div className="mt-3 grid grid-cols-2 gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Scheduled Time</p>
-                    <p className="mt-1 text-sm text-slate-700">{row.scheduledTime}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Actual Start Time</p>
-                    <p className="mt-1 text-sm text-slate-700">{row.actualStartTime}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Expected Duration</p>
-                    <p className="mt-1 text-sm text-slate-700">{row.expectedDuration}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Actual Duration</p>
-                    <p className="mt-1 text-sm text-slate-700">{row.actualDuration}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Delay</p>
-                    <p className="mt-1 text-sm text-slate-700">{row.delay}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Shifted Time</p>
-                    <p className="mt-1 text-sm text-slate-700">{row.shiftedTime ?? row.scheduledTime}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {editOpenIndex === index && (
-              <div className="mt-4 rounded-2xl border border-rose-100 bg-rose-50/60 p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-semibold text-slate-900">Edit Time Management</p>
-                  <span className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-slate-500">
-                    Demo
-                  </span>
-                </div>
-
-                <div className="mt-3 space-y-3">
-                  {canEditStatus ? (
-                    <label className="block">
-                      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-                        Status
-                      </span>
-                      <select
-                        value={row.status}
-                        onChange={(event) => handleStatusChange(index, event.target.value as RundownRow["status"])}
-                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
-                      >
-                        <option value="Upcoming">Upcoming</option>
-                        <option value="Current">Current</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Delayed">Delayed</option>
-                        <option value="Skipped">Skipped</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </label>
-                  ) : null}
-
-                  <label className="block">
-                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-                      Scheduled Time
-                    </span>
-                    <input
-                      type="text"
-                      value={row.scheduledTime}
-                      readOnly
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
-                    />
-                  </label>
-
-                  {canEditTime ? (
-                    <label className="block">
-                      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-                        Actual Start Time
-                      </span>
-                      <input
-                        type="text"
-                        value={row.actualStartTime}
-                        onChange={(event) => handleActualStartChange(index, event.target.value)}
-                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
-                      />
-                    </label>
-                  ) : null}
-
-                  <label className="block">
-                    <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-                      Expected Duration
-                    </span>
-                    <input
-                      type="text"
-                      value={row.expectedDuration}
-                      readOnly
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
-                    />
-                  </label>
-
-                  {canEditTime ? (
-                    <label className="block">
-                      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-                        Actual Duration
-                      </span>
-                      <input
-                        type="text"
-                        value={row.actualDuration}
-                        onChange={(event) => handleActualDurationChange(index, event.target.value)}
-                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
-                      />
-                    </label>
-                  ) : null}
-
-                  {canEditRemarks ? (
-                    <label className="block">
-                      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-                        Public Remarks
-                      </span>
-                      <textarea
-                        value={row.publicRemarks}
-                        onChange={(event) => handlePublicRemarksChange(index, event.target.value)}
-                        rows={3}
-                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
-                      />
-                    </label>
-                  ) : null}
-
-                  {canEditRemarks && canViewInternalRemarks ? (
-                    <label className="block">
-                      <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-400">
-                        Internal Remarks
-                      </span>
-                      <textarea
-                        value={row.internalRemarks}
-                        onChange={(event) => handleInternalRemarksChange(index, event.target.value)}
-                        rows={3}
-                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-400"
-                      />
-                    </label>
-                  ) : null}
-
-                  <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-                    <span className="block text-xs font-semibold uppercase tracking-wide text-slate-400">
-                      Delay
-                    </span>
-                    <span className="mt-1 block text-sm text-slate-700">{getDelayMinutes(row)} mins</span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </article>
-        ))}
-      </div>
-
-      <div className="hidden overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm lg:block">
-        <table className="min-w-full divide-y divide-slate-200 text-sm">
-          <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+      <div className="overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <table className="min-w-[1200px] w-full text-left text-sm">
+          <thead className="sticky top-0 z-10 bg-slate-50 text-xs uppercase tracking-wide text-slate-500 shadow-sm">
             <tr>
-              <th className="px-4 py-4">Status</th>
-              <th className="px-4 py-4">Time</th>
-              <th className="px-4 py-4">Program</th>
-              <th className="px-4 py-4">Used Time</th>
-              <th className="px-4 py-4">Food Serving</th>
-              <th className="px-4 py-4">Song</th>
-              <th className="px-4 py-4">Screen</th>
-              <th className="px-4 py-4">Remarks</th>
-              <th className="px-4 py-4">Responsible Roles</th>
-              <th className="px-4 py-4">Coordinator</th>
-              <th className="px-4 py-4">Actions</th>
+              <th className="px-3 py-3">Estimate Time</th><th className="px-3 py-3">Actual Time</th><th className="px-3 py-3">Program</th><th className="px-3 py-3">Used Time</th>
+              {showOptionalColumns ? <><th className="px-3 py-3">Food Serving</th><th className="px-3 py-3">Song</th><th className="px-3 py-3">Screen</th></> : null}
+              <th className="px-3 py-3">Remarks</th><th className="px-3 py-3">Vendor Involve</th><th className="px-3 py-3">Coordinator / Action</th><th className="px-3 py-3">Status</th>
+              <th className="px-3 py-3">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-200 bg-white">
-            {visibleRows.map((row) => (
-              <tr key={`${row.time}-${row.program}`} className="align-top hover:bg-slate-50">
-                <td className="px-4 py-4">
-                  <span
-                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[row.status]}`}
-                  >
-                    <span>{statusIcons[row.status]}</span>
-                    <span>{row.status}</span>
-                  </span>
-                </td>
-                <td className="px-4 py-4 font-medium text-slate-900">{row.shiftedTime ?? row.scheduledTime}</td>
-                <td className="px-4 py-4 text-slate-700">{row.program}</td>
-                <td className="px-4 py-4 text-slate-700">{row.usedTime}</td>
-                <td className="px-4 py-4 text-slate-700">{row.foodServing}</td>
-                <td className="px-4 py-4 text-slate-700">{row.song}</td>
-                <td className="px-4 py-4 text-slate-700">{row.screen}</td>
-                <td className="px-4 py-4 text-slate-700">
-                  <p>{row.publicRemarks}</p>
-                  {canViewInternalRemarks ? (
-                    <p className="mt-1 text-xs font-medium text-slate-500">Internal: {row.internalRemarks}</p>
-                  ) : null}
-                </td>
-                <td className="px-4 py-4">
-                  <div className="flex flex-wrap gap-1">
-                    {row.responsibleRoles.map((role) => (
-                      <span
-                        key={`${row.program}-${role}`}
-                        className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600"
-                      >
-                        {role}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-                <td className="px-4 py-4 text-slate-700">{row.coordinator}</td>
-                <td className="px-4 py-4">
-                  <div className="flex flex-wrap gap-2">
-                    <button className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200">
-                      View
-                    </button>
-                    {canEditEvent ? (
-                      <button className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200">
-                        Edit Event
-                      </button>
-                    ) : null}
-                    {canDeleteEvent ? (
-                      <button className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-200">
-                        Delete Event
-                      </button>
-                    ) : null}
-                  </div>
-                </td>
-              </tr>
-            ))}
+          <tbody>
+            {visibleRows.map((row, index) => {
+              const editing = editingId === row.id;
+              const draft = draftRows.find((item) => item.id === row.id) ?? toEditable(row);
+              const rowClass = row.status === "Current" ? "bg-emerald-50 text-emerald-950" : row.status === "Completed" || row.status === "Delayed" ? "bg-slate-200 text-slate-700" : "bg-white text-slate-700";
+              const actualIsDelayed = row.status === "Delayed";
+              return (
+                <tr key={row.id} className={`border-t border-slate-100 align-top ${rowClass}`}>
+                  {(["estimateTime", "actualTime", "program", "usedTime"] as const).map((field) => (
+                    <td key={field} className="px-3 py-3">
+                      {field === "actualTime" && !editing ? (
+                        <input disabled={row.status === "Completed" || row.status === "Delayed" || row.status === "Skipped"} value={actualInputs[row.id] ?? row.actualTime} onChange={(event) => setActualInputs((current) => ({ ...current, [row.id]: event.target.value }))} onBlur={() => commitActualTime(row.id)} placeholder="e.g. 710" className={`w-32 rounded-lg border px-2 py-1.5 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-70 ${actualIsDelayed ? "border-rose-300 text-rose-700" : "border-slate-200 text-slate-700"}`} />
+                      ) : editing ? (
+                        <input value={String(draft[field])} onChange={(event) => updateDraft(row.id, field, event.target.value)} className="w-full min-w-24 rounded-lg border border-rose-200 px-2 py-1.5 text-sm outline-none focus:border-rose-400" />
+                      ) : field === "usedTime" ? `${row.usedTime} min` : row[field]}
+                    </td>
+                  ))}
+                  {showOptionalColumns ? <><td className="px-3 py-3">{editing ? <input value={draft.foodServing} onChange={(event) => updateDraft(row.id, "foodServing", event.target.value)} className="w-28 rounded-lg border border-rose-200 px-2 py-1.5 text-sm outline-none" /> : row.foodServing || "—"}</td><td className="px-3 py-3">{editing ? <input value={draft.song} onChange={(event) => updateDraft(row.id, "song", event.target.value)} className="w-28 rounded-lg border border-rose-200 px-2 py-1.5 text-sm outline-none" /> : row.song || "—"}</td><td className="px-3 py-3">{editing ? <input value={draft.screen} onChange={(event) => updateDraft(row.id, "screen", event.target.value)} className="w-28 rounded-lg border border-rose-200 px-2 py-1.5 text-sm outline-none" /> : row.screen || "—"}</td></> : null}
+                  <td className="px-3 py-3">{editing ? <textarea value={draft.remarks} onChange={(event) => updateDraft(row.id, "remarks", event.target.value)} className="min-w-40 rounded-lg border border-rose-200 px-2 py-1.5 text-sm outline-none" /> : row.remarks || "—"}</td>
+                  <td className="px-3 py-3">{editing ? <div className="min-w-40 space-y-1">{vendorOptions.map((vendor) => <label key={vendor} className="flex items-center gap-2 text-xs"><input type="checkbox" checked={draft.vendorInvolve.includes(vendor)} onChange={() => toggleVendor(row.id, vendor)} />{vendor}</label>)}</div> : row.vendorInvolve.length > 0 ? row.vendorInvolve.join(", ") : "—"}</td>
+                  <td className="px-3 py-3">{editing ? <textarea value={draft.coordinatorAction} onChange={(event) => updateDraft(row.id, "coordinatorAction", event.target.value)} className="min-w-48 rounded-lg border border-rose-200 px-2 py-1.5 text-sm outline-none" /> : row.coordinatorAction}</td>
+                  <td className="px-3 py-3"><span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${statusStyles[row.status]}`}>{row.status || "—"}</span></td>
+                  {showOptionalColumns ? <><td className="px-3 py-3">{row.foodServing || "—"}</td><td className="px-3 py-3">{row.song || "—"}</td><td className="px-3 py-3">{row.screen || "—"}</td></> : null}
+                  <td className="px-3 py-3"><div className="flex min-w-40 flex-col items-start gap-2">{editing ? <div className="flex flex-wrap gap-2"><button type="button" onClick={() => saveEdit(row.id)} className="rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-semibold text-white">Save</button><button type="button" onClick={cancelEdit} className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700">Cancel</button></div> : <><div className="flex flex-wrap gap-2">{row.status !== "Completed" && row.status !== "Delayed" && row.status !== "Skipped" ? <><button type="button" onClick={() => insertRow(index - 1)} className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700">Before</button><button type="button" onClick={() => insertRow(index)} className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700">+ After</button></> : null}</div><div className="flex flex-wrap gap-2">{row.status !== "Completed" && row.status !== "Delayed" && row.status !== "Skipped" ? <button type="button" onClick={() => beginEdit(row)} className="rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700">Edit</button> : null}<button type="button" onClick={() => deleteRow(row.id)} className="rounded-lg border border-rose-200 px-2.5 py-1.5 text-xs font-semibold text-rose-700">Delete</button></div></>}</div></td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
-      <p className="text-xs text-slate-400">Last updated: {lastUpdated}</p>
+      <div className="grid gap-4 md:grid-cols-3">
+        {(["Current", "Completed", "Delayed"] as const).map((status) => <div key={status} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{status}</p><p className="mt-2 text-2xl font-semibold text-slate-900">{rows.filter((row) => row.status === status).length}</p></div>)}
+      </div>
     </section>
   );
 }

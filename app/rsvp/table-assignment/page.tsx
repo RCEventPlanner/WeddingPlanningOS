@@ -401,6 +401,12 @@ export default function RsvpTableAssignmentPage() {
     );
   };
 
+  const assignPartyToTable = (partyId: string, tableId: string | null) => {
+    setGuestCards((currentGuests) =>
+      currentGuests.map((guest) => guest.partyId === partyId ? { ...guest, tableId } : guest),
+    );
+  };
+
   const openAddTableModal = () => {
     setTableFormMode("add");
     setEditingTableId(null);
@@ -726,9 +732,12 @@ export default function RsvpTableAssignmentPage() {
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => {
                   event.preventDefault();
-                  const guestId = event.dataTransfer.getData("text/plain");
-                  if (guestId) {
-                    assignGuestToTable(guestId, null);
+                  const dragPayload = event.dataTransfer.getData("text/plain");
+                  if (dragPayload.startsWith("group:")) {
+                    assignPartyToTable(dragPayload.replace("group:", ""), null);
+                    setDraggingGuestId(null);
+                  } else if (dragPayload) {
+                    assignGuestToTable(dragPayload.replace("guest:", ""), null);
                     setDraggingGuestId(null);
                   }
                 }}
@@ -764,9 +773,12 @@ export default function RsvpTableAssignmentPage() {
                       onDragOver={(event) => event.preventDefault()}
                       onDrop={(event) => {
                         event.preventDefault();
-                        const guestId = event.dataTransfer.getData("text/plain");
-                        if (guestId) {
-                          assignGuestToTable(guestId, table.id);
+                        const dragPayload = event.dataTransfer.getData("text/plain");
+                        if (dragPayload.startsWith("group:")) {
+                          assignPartyToTable(dragPayload.replace("group:", ""), table.id);
+                          setDraggingGuestId(null);
+                        } else if (dragPayload) {
+                          assignGuestToTable(dragPayload.replace("guest:", ""), table.id);
                           setDraggingGuestId(null);
                         }
                       }}
@@ -876,7 +888,16 @@ export default function RsvpTableAssignmentPage() {
 
             <div className="space-y-4">
               {groupedRsvpSeatCards.map((group) => (
-                <section key={group.partyId} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                <section
+                  key={group.partyId}
+                  draggable
+                  onDragStart={(event) => {
+                    setDraggingGuestId(`group:${group.partyId}`);
+                    event.dataTransfer.setData("text/plain", `group:${group.partyId}`);
+                  }}
+                  onDragEnd={() => setDraggingGuestId(null)}
+                  className={`cursor-grab rounded-2xl border border-slate-200 bg-slate-50 p-3 active:cursor-grabbing ${draggingGuestId === `group:${group.partyId}` ? "ring-2 ring-rose-300" : ""}`}
+                >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <p className="text-sm font-semibold text-slate-900">{group.guestName}</p>
                     <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700">
@@ -895,7 +916,8 @@ export default function RsvpTableAssignmentPage() {
                         draggable
                         onDragStart={(event) => {
                           setDraggingGuestId(guest.id);
-                          event.dataTransfer.setData("text/plain", guest.id);
+                          event.stopPropagation();
+                          event.dataTransfer.setData("text/plain", `guest:${guest.id}`);
                         }}
                         onDragEnd={() => setDraggingGuestId(null)}
                         className={`cursor-grab rounded-2xl border p-4 shadow-sm transition active:cursor-grabbing ${getGuestCardStyle(guest.seatType, guest.mealPreference)}`}

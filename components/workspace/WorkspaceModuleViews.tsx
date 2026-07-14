@@ -2256,32 +2256,12 @@ export function RSVPModuleView() {
 }
 
 export function LiveRundownModuleView() {
-  const [liveRundownSearchQuery, setLiveRundownSearchQuery] = useState("");
-
   return (
     <div className="space-y-6">
       <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-slate-900">Live Rundown</h1>
-            <p className="mt-1 text-sm text-slate-500">Keep wedding-day operations aligned with a shared live event timeline.</p>
-          </div>
-
-          <div className="flex w-full flex-col gap-2 sm:flex-row md:w-auto md:items-center md:justify-end">
-            <input
-              type="search"
-              value={liveRundownSearchQuery}
-              onChange={(event) => setLiveRundownSearchQuery(event.target.value)}
-              placeholder="Search live rundown"
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 sm:min-w-64"
-            />
-            <button
-              type="button"
-              className="rounded-2xl bg-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-600"
-            >
-              Add Event
-            </button>
-          </div>
+        <div>
+          <h1 className="text-2xl font-semibold text-slate-900">Live Rundown</h1>
+          <p className="mt-1 text-sm text-slate-500">Plan and operate the wedding-day schedule directly in the rundown table.</p>
         </div>
       </section>
 

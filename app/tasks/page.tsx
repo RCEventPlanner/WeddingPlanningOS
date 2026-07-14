@@ -1,9 +1,12 @@
+"use client";
+
+import { useState } from "react";
 import { TaskSummary } from "../../components/TaskSummary";
-import { TaskFilter } from "../../components/TaskFilter";
-import { TaskTable } from "../../components/TaskTable";
-import { TaskDetailCard } from "../../components/TaskDetailCard";
+import { TaskFilter, type TaskFilters } from "../../components/TaskFilter";
 
 export default function TasksPage() {
+  const [filters, setFilters] = useState<TaskFilters>({ priority: "All", status: "All" });
+
   return (
     <div className="p-8 sm:p-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -16,9 +19,7 @@ export default function TasksPage() {
       </div>
 
       <TaskSummary />
-      <TaskFilter />
-      <TaskTable />
-      <TaskDetailCard />
+      <TaskFilter filters={filters} onChange={setFilters} />
     </div>
   );
 }

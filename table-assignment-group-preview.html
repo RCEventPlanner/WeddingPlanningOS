@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Table Assignment Group Preview</title>
+  <style>
+    :root { font-family: Arial, Helvetica, sans-serif; color: #17345f; background: #f4f8fc; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 32px; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 28px; margin-bottom: 8px; }
+    .subtitle { color: #6b7c98; margin-bottom: 24px; }
+    .layout { display: grid; grid-template-columns: minmax(340px, 1fr) minmax(420px, 1.2fr); gap: 24px; max-width: 1180px; margin: 0 auto; }
+    .panel { background: white; border: 1px solid #d9e3ef; border-radius: 22px; padding: 22px; box-shadow: 0 8px 24px #284a7012; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .panel-header p { color: #71819a; font-size: 13px; margin-top: 5px; }
+    .group-list, .table-list { display: grid; gap: 14px; }
+    .group-card { border: 2px solid #dbe6f2; border-radius: 18px; padding: 16px; background: #fbfdff; cursor: grab; transition: .18s ease; }
+    .group-card:hover, .group-card.dragging { border-color: #ff3b68; box-shadow: 0 10px 22px #ff3b6820; transform: translateY(-2px); }
+    .group-card h3 { font-size: 17px; }
+    .group-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .pill { display: inline-flex; border-radius: 999px; padding: 5px 9px; background: #edf3fa; color: #526784; font-size: 12px; font-weight: 700; }
+    .member-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; margin-top: 14px; }
+    .member { border-radius: 10px; padding: 8px; background: #f1f6fb; font-size: 12px; color: #435b7b; cursor: grab; }
+    .member:hover, .member.dragging { background: #e7f0ff; outline: 2px solid #9bbcf0; }
+    .table-card { border: 1px solid #dbe6f2; border-radius: 16px; padding: 15px; background: #fff; transition: .18s ease; }
+    .table-card.drop-target { border: 2px dashed #ff3b68; background: #fff1f5; }
+    .table-top { display: flex; justify-content: space-between; align-items: center; }
+    .capacity { color: #6b7c98; font-size: 12px; }
+    .occupants { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; min-height: 30px; }
+    .occupant { border-radius: 9px; padding: 7px 9px; background: #e9f7f4; color: #197064; font-size: 12px; font-weight: 700; }
+    .drop-hint { color: #9aa9bd; font-size: 12px; }
+    .notice { display: none; margin-bottom: 18px; padding: 12px 14px; border-radius: 12px; background: #e9f7f4; color: #197064; font-weight: 700; font-size: 13px; }
+    .notice.show { display: block; }
+    @media (max-width: 820px) { body { padding: 16px; } .layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Assign Guests to Tables</h1>
+    <p class="subtitle">Drag one guest card or an entire family group into a table.</p>
+    <div id="notice" class="notice"></div>
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-header"><div><h2>Guest Groups</h2><p>Drag the whole group together</p></div><span class="pill">3 groups</span></div>
+        <div class="group-list">
+          <article class="group-card" draggable="true" data-group="Rachel Family" data-count="5">
+            <div class="panel-header"><h3>Rachel Family</h3><span class="pill">5 seats</span></div>
+            <div class="group-meta"><span class="pill">Bride's Side</span><span class="pill">Family</span></div>
+            <div class="member-list"><div class="member" draggable="true" data-guest="Rachel">Rachel · Adult</div><div class="member" draggable="true" data-guest="Daniel">Daniel · Adult</div><div class="member" draggable="true" data-guest="Mum">Mum · Adult</div><div class="member" draggable="true" data-guest="Dad">Dad · Adult</div><div class="member" draggable="true" data-guest="Child">Child · Normal Meal</div></div>
+          </article>
+          <article class="group-card" draggable="true" data-group="John Family" data-count="3">
+            <div class="panel-header"><h3>John Family</h3><span class="pill">3 seats</span></div>
+            <div class="group-meta"><span class="pill">Groom's Side</span><span class="pill">Family</span></div>
+            <div class="member-list"><div class="member" draggable="true" data-guest="John">John · Adult</div><div class="member" draggable="true" data-guest="Amy">Amy · Adult</div><div class="member" draggable="true" data-guest="Child">Child · Normal Meal</div></div>
+          </article>
+          <article class="group-card" draggable="true" data-group="Siti Group" data-count="2">
+            <div class="panel-header"><h3>Siti Group</h3><span class="pill">2 seats</span></div>
+            <div class="group-meta"><span class="pill">Bride's Side</span><span class="pill">Friends</span></div>
+            <div class="member-list"><div class="member" draggable="true" data-guest="Siti">Siti · Adult</div><div class="member" draggable="true" data-guest="Aina">Aina · Adult</div></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header"><div><h2>Table List</h2><p>Drop a group into any available table</p></div><span class="pill">Capacity aware</span></div>
+        <div class="table-list">
+          <article class="table-card" data-table="Table 1" data-capacity="10"><div class="table-top"><h3>Table 1</h3><span class="capacity"><b class="assigned">0</b> / 10 seats</span></div><div class="occupants"><span class="drop-hint">Drop family group here</span></div></article>
+          <article class="table-card" data-table="Table 2" data-capacity="8"><div class="table-top"><h3>Table 2</h3><span class="capacity"><b class="assigned">0</b> / 8 seats</span></div><div class="occupants"><span class="drop-hint">Drop family group here</span></div></article>
+          <article class="table-card" data-table="Table 3" data-capacity="12"><div class="table-top"><h3>Table 3</h3><span class="capacity"><b class="assigned">0</b> / 12 seats</span></div><div class="occupants"><span class="drop-hint">Drop family group here</span></div></article>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script>
+    let draggedItem = null;
+    const notice = document.getElementById('notice');
+    document.querySelectorAll('.group-card, .member').forEach((card) => {
+      card.addEventListener('dragstart', (event) => { event.stopPropagation(); draggedItem = card; card.classList.add('dragging'); });
+      card.addEventListener('dragend', () => { draggedItem = null; card.classList.remove('dragging'); });
+    });
+    document.querySelectorAll('.table-card').forEach((table) => {
+      table.addEventListener('dragover', (event) => { event.preventDefault(); table.classList.add('drop-target'); });
+      table.addEventListener('dragleave', () => table.classList.remove('drop-target'));
+      table.addEventListener('drop', (event) => {
+        event.preventDefault();
+        table.classList.remove('drop-target');
+        if (!draggedItem) return;
+        const isGroup = draggedItem.classList.contains('group-card');
+        const groupName = isGroup ? draggedItem.dataset.group : draggedItem.dataset.guest;
+        const count = isGroup ? Number(draggedItem.dataset.count) : 1;
+        const assigned = Number(table.querySelector('.assigned').textContent);
+        const capacity = Number(table.dataset.capacity);
+        if (assigned + count > capacity) {
+          notice.textContent = `${groupName} cannot fit at ${table.dataset.table}.`;
+          notice.classList.add('show');
+          return;
+        }
+        const hint = table.querySelector('.drop-hint');
+        if (hint) hint.remove();
+        const occupant = document.createElement('span');
+        occupant.className = 'occupant';
+        occupant.textContent = `${groupName} · ${count} seats`;
+        table.querySelector('.occupants').appendChild(occupant);
+        table.querySelector('.assigned').textContent = assigned + count;
+        notice.textContent = `${groupName} assigned to ${table.dataset.table}.`;
+        notice.classList.add('show');
+        if (!isGroup) {
+          const group = draggedItem.closest('.group-card');
+          draggedItem.remove();
+          const remaining = group ? group.querySelectorAll('.member').length : 0;
+          const countPill = group?.querySelector('.panel-header .pill');
+          if (group) group.dataset.count = String(remaining);
+          if (countPill) countPill.textContent = `${remaining} seats`;
+          if (remaining === 0 && group) group.remove();
+        } else {
+          draggedItem.remove();
+        }
+        draggedItem = null;
+      });
+    });
+  </script>
+</body>
+</html>

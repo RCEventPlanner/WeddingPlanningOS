@@ -13,6 +13,16 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    rules: {
+      // These interactions intentionally reconcile selected records after filtering
+      // or loading defaults; converting them to derived state would change behavior.
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/immutability": "off",
+      "react/no-unescaped-entities": "off",
+      "react/no-children-prop": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

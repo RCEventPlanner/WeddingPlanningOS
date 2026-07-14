@@ -1,9 +1,12 @@
+"use client";
+
+import { useState } from "react";
 import { VendorSummary } from "../../components/VendorSummary";
-import { VendorFilter } from "../../components/VendorFilter";
-import { VendorTable } from "../../components/VendorTable";
-import { VendorDetailCard } from "../../components/VendorDetailCard";
+import { VendorFilter, type VendorFilters } from "../../components/VendorFilter";
 
 export default function VendorsPage() {
+  const [filters, setFilters] = useState<VendorFilters>({ category: "All", vendorName: "All" });
+
   return (
     <div className="p-8 sm:p-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -20,9 +23,7 @@ export default function VendorsPage() {
       </div>
 
       <VendorSummary />
-      <VendorFilter />
-      <VendorTable />
-      <VendorDetailCard />
+      <VendorFilter filters={filters} vendorOptions={[]} onChange={setFilters} />
     </div>
   );
 }
